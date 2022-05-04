@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: shkeeper-vsys
+    app.kubernetes.io/name: shkeeper
+    app.kubernetes.io/managed-by: Helm
+  name: shkeeper
+  namespace: shkeeper
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app.kubernetes.io/instance: shkeeper-vsys
+    app.kubernetes.io/name: shkeeper
+  type: LoadBalancer

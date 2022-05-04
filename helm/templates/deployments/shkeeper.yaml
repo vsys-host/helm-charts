@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shkeeper-deployment
+  namespace: shkeeper
+  labels:
+    app.kubernetes.io/instance: shkeeper-vsys
+    app.kubernetes.io/name: shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: shkeeper-vsys
+      app.kubernetes.io/name: shkeeper
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: shkeeper-vsys
+        app.kubernetes.io/name: shkeeper
+    spec:
+      hostname: shkeeper
+      containers:
+      - name: shkeeper
+        image: vsyshost/shkeeper
+        ports:
+        - containerPort: 5000
+        env:
+          - name: BTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: bitcoin-rpc
+                key: username
+                optional: false
+          - name: BTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: bitcoin-rpc
+                key: password
+                optional: false
+          - name: LTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: litecoin-rpc
+                key: username
+                optional: false
+          - name: LTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: litecoin-rpc
+                key: password
+                optional: false
+          - name: DOGE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: dogecoin-rpc
+                key: username
+                optional: false
+          - name: DOGE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: dogecoin-rpc
+                key: password
+                optional: false
+          - name: SHKEEPER_BTC_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+                optional: false
+        volumeMounts:
+        - name: shkeeper-db-storage
+          mountPath: /shkeeper.io/instance
+      volumes:
+      - name: shkeeper-db-storage
+        persistentVolumeClaim:
+          claimName: shkeeper-db-claim

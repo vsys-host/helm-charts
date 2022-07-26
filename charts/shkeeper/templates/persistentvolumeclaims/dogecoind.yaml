@@ -4,6 +4,7 @@ metadata:
   name: dogecoind-claim
   namespace: shkeeper
 spec:
+  storageClassName: {{ .Values.storageClassName }}
   accessModes:
   - ReadWriteOnce
   resources:

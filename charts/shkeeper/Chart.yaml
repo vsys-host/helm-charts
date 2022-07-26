@@ -25,6 +25,6 @@ appVersion: "1.18.0"
 
 dependencies:
   - name: kubernetes-secret-generator
-    version: 3.3.4 
+    version: 3.3.5
     repository: https://helm.mittwald.de
     alias: cred-generator

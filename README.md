@@ -5,16 +5,16 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 
 Once Helm has been set up correctly, add the repo as follows:
 
-  helm repo add <alias> https://vsys-host.github.io/helm-charts
+  helm repo add vsys-host https://vsys-host.github.io/helm-charts
 
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
 <alias>` to see the charts.
 
-To install the <chart-name> chart:
+To install the shkeeper chart:
 
-    helm install my-<chart-name> <alias>/<chart-name>
+    helm install my-shkeeper vsys-host/shkeeper
 
 To uninstall the chart:
 
-    helm delete my-<chart-name>
+    helm delete my-shkeeper

@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 RUN apt-get update && apt-get -y install python3 python3-pip git sqlite3 curl
 

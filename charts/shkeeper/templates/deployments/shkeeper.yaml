@@ -37,6 +37,7 @@ spec:
             value: {{ if .Values.doge.enabled }}enabled{{ else }}disabled{{ end }}
           - name: USDT_WALLET
             value: {{ if .Values.usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:
               secretKeyRef:
@@ -49,6 +50,8 @@ spec:
                 name: bitcoin-rpc
                 key: password
                 optional: false
+          {{- end }}
+          {{- if .Values.ltc.enabled }}
           - name: LTC_USERNAME
             valueFrom:
               secretKeyRef:
@@ -61,6 +64,8 @@ spec:
                 name: litecoin-rpc
                 key: password
                 optional: false
+          {{- end }}
+          {{- if .Values.doge.enabled }}
           - name: DOGE_USERNAME
             valueFrom:
               secretKeyRef:
@@ -73,6 +78,8 @@ spec:
                 name: dogecoin-rpc
                 key: password
                 optional: false
+          {{- end }}
+          {{- if .Values.usdt.enabled }}
           - name: USDT_USERNAME
             valueFrom:
               secretKeyRef:
@@ -85,6 +92,7 @@ spec:
                 name: usdt-rpc
                 key: password
                 optional: false
+          {{- end }}
           - name: SHKEEPER_BTC_BACKEND_KEY
             valueFrom:
               secretKeyRef:

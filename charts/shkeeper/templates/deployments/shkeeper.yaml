@@ -28,7 +28,7 @@ spec:
           - name: TRON_API_SERVER_HOST
             value: {{ .Values.tron.server.host }}
           - name: TRON_API_SERVER_PORT
-            value: {{ .Values.tron.server.port }}
+            value: {{ .Values.tron.server.port | quote }}
           - name: BTC_WALLET
             value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: LTC_WALLET

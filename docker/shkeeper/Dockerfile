@@ -11,8 +11,8 @@ RUN pip3 install -r requirements.txt
 CMD gunicorn \
     --access-logfile - \
     --reload \
-    --workers 4 \
-    --threads 8 \
+    --workers 1 \
+    --threads 16 \
     --worker-class gthread \
     --timeout 600 \
     -b 0.0.0.0:5000 \

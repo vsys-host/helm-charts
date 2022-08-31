@@ -25,6 +25,18 @@ spec:
         ports:
         - containerPort: 5000
         env:
+          - name: TRON_API_SERVER_HOST
+            value: {{ .Values.tron.server.host }}
+          - name: TRON_API_SERVER_PORT
+            value: {{ .Values.tron.server.port }}
+          - name: BTC_WALLET
+            value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: LTC_WALLET
+            value: {{ if .Values.ltc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: DOGE_WALLET
+            value: {{ if .Values.doge.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: USDT_WALLET
+            value: {{ if .Values.usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: BTC_USERNAME
             valueFrom:
               secretKeyRef:
@@ -59,6 +71,18 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: dogecoin-rpc
+                key: password
+                optional: false
+          - name: USDT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: username
+                optional: false
+          - name: USDT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
                 key: password
                 optional: false
           - name: SHKEEPER_BTC_BACKEND_KEY

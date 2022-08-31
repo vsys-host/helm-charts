@@ -1,1 +1,15 @@
 storageClassName:
+
+tron:
+  server:
+    host: 'tron-shkeeper'
+    port: 6000
+
+btc:
+  enabled: true
+ltc:
+  enabled: true
+doge:
+  enabled: true
+usdt:
+  enabled: false

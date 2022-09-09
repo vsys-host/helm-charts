@@ -1,7 +1,7 @@
 # shkeeper-helm-docker
 
 ## What is Shkeeper Helm?
-We have made a Shkeeper Helm for easy-way deployment of Shkeeper wallets holder and crypto deamons(Now available BTC, LTC, DOGE), which used by Shkeeper.
+We have made a Shkeeper Helm for easy-way deployment of Shkeeper wallets holder and crypto daemons (Now available BTC, LTC, DOGE), which used by Shkeeper.
 You can easily deploy it with Helm manager on your kubernetes cluster, and it makes all instalation on itself. After deployment Shkeeper, cluster will 
 manage four deployments: shkeeper, dogecoind, litecoind and bitcoind. All images are stored 
 as public on our [docker hub account](https://hub.docker.com/u/vsyshost).

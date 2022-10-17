@@ -37,8 +37,8 @@ spec:
             value: {{ if .Values.doge.enabled }}enabled{{ else }}disabled{{ end }}
           - name: USDT_WALLET
             value: {{ if .Values.usdt.enabled }}enabled{{ else }}disabled{{ end }}
-          - name: USDС_WALLET
-            value: {{ if .Values.usdс.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: USDC_WALLET
+            value: {{ if .Values.usdc.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:

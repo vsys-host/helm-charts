@@ -13,3 +13,5 @@ doge:
   enabled: true
 usdt:
   enabled: false
+usdс:
+  enabled: false

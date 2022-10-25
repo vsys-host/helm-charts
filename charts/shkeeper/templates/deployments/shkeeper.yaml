@@ -95,6 +95,20 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+          {{- if .Values.usdc.enabled }}
+          - name: USDC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: username
+                optional: false
+          - name: USDC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: password
+                optional: false
+          {{- end }}
           - name: SHKEEPER_BTC_BACKEND_KEY
             valueFrom:
               secretKeyRef:

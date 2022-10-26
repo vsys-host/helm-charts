@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: shkeeper
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      hostname: mongodb
+      containers:
+      - name: mongodb
+        image: mongo:6
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: shkeeper
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: shkeeper
+        volumeMounts:
+        - name: mongodb
+          mountPath: /data/db
+      volumes:
+      - name: mongodb
+        persistentVolumeClaim:
+          claimName: mongodb

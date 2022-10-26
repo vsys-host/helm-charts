@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: shkeeper
+  labels:
+    app: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      hostname: mariadb
+      containers:
+      - name: mariadb
+        image: mariadb:10.9.3
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            value: shkeeper
+          - name: MARIADB_DATABASE
+            value: shkeeper
+        volumeMounts:
+        - name: mariadb
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mariadb
+        persistentVolumeClaim:
+          claimName: mariadb

@@ -18,10 +18,16 @@ spec:
         app.kubernetes.io/instance: shkeeper-vsys
         app.kubernetes.io/name: shkeeper
     spec:
+
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
       hostname: shkeeper
       containers:
       - name: shkeeper
-        image: vsyshost/shkeeper
+        image: {{ .Values.shkeeper.image }}
         ports:
         - containerPort: 5000
         env:

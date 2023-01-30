@@ -15,3 +15,9 @@ usdt:
   enabled: false
 usdc:
   enabled: false
+
+shkeeper:
+  image: vsyshost/shkeeper
+
+dev:
+  imagePullSecrets:

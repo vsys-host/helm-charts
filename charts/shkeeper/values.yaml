@@ -1,9 +1,18 @@
+#
+# General
+#
+
+shkeeper:
+  image: vsyshost/shkeeper
+
+dev:
+  imagePullSecrets:
+
 storageClassName:
 
-tron:
-  server:
-    host: 'tron-shkeeper'
-    port: 6000
+#
+# BTC and forks
+#
 
 btc:
   enabled: true
@@ -11,13 +20,38 @@ ltc:
   enabled: true
 doge:
   enabled: true
+
+#
+# Tron
+#
+
+tron:
+  server:
+    host: 'tron-shkeeper'
+    port: 6000
+
 usdt:
   enabled: false
 usdc:
   enabled: false
 
-shkeeper:
-  image: vsyshost/shkeeper
+#
+# Ethereum
+#
 
-dev:
-  imagePullSecrets:
+eth_fullnode:
+  enabled: false
+  url: http://ethereum:8545
+  mainnet: true
+  nodeSelector: {}
+  tolerations: {}
+
+ethereum_shkeeper:
+  image: vsyshost/ethereum-shkeeper
+
+eth:
+  enabled: false
+eth_usdt:
+  enabled: false
+eth_usdc:
+  enabled: false

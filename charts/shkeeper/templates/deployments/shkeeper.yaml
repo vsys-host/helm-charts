@@ -45,6 +45,12 @@ spec:
             value: {{ if .Values.usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: USDC_WALLET
             value: {{ if .Values.usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ETH
+            value: {{ if .Values.eth.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ETH_USDT_WALLET
+            value: {{ if .Values.eth_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ETH_USDC_WALLET
+            value: {{ if .Values.eth_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:
@@ -112,6 +118,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: usdt-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled}}
+          - name: ETH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: username
+                optional: false
+          - name: ETH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
                 key: password
                 optional: false
           {{- end }}

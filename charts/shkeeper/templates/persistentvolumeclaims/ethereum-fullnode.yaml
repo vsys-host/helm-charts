@@ -1,0 +1,14 @@
+{{ if .Values.eth_fullnode.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ethereum-datadir
+  namespace: shkeeper
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1000Gi
+{{ end }}

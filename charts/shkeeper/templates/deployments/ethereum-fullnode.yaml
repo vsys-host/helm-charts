@@ -1,0 +1,97 @@
+{{- if .Values.eth_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ethereum
+  namespace: shkeeper
+  labels:
+    app: ethereum
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ethereum
+  template:
+    metadata:
+      labels:
+        app: ethereum
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.eth_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.eth_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      # executor
+      - name: geth
+        image: ethereum/client-go:alltools-stable
+        command:
+          - geth
+          {{- if .Values.eth_fullnode.mainnet }}
+          - --mainnet
+          {{- else }}
+          - --goerli
+          {{- end }}
+          - --syncmode=snap
+          - --allow-insecure-unlock
+          - --datadir=/datadir
+          - --http
+          - --http.api="db,eth,net,web3,personal"
+          - --http.addr=0.0.0.0
+          - --ws
+          - --ws.addr=0.0.0.0
+        volumeMounts:
+        - name: ethereum-datadir
+          mountPath: /datadir
+
+      # consensus
+      - name: prysm-beacon
+        image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
+        args:
+          - --datadir=/datadir
+          - --rpc-host=0.0.0.0
+          - --grpc-gateway-host=0.0.0.0
+          - --monitoring-host=0.0.0.0
+          - --execution-endpoint=/datadir/geth.ipc
+          - --accept-terms-of-use
+          {{- if .Values.eth_fullnode.mainnet }}
+          - --mainnet
+          - --checkpoint-sync-url=https://sync.invis.tools
+          - --genesis-beacon-api-url=https://sync.invis.tools
+          {{- else }}
+          - --goerli
+          - --checkpoint-sync-url=https://goerli-sync.invis.tools
+          - --genesis-beacon-api-url=https://goerli-sync.invis.tools
+          {{- end }}
+        volumeMounts:
+        - name: ethereum-datadir
+          mountPath: /datadir
+
+      # nginx with keys
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - name: ethereum-nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: ethereum-nginx-config
+          mountPath: /etc/nginx/templates/default.conf.template
+          subPath: default.conf.template
+        - mountPath: /datadir
+          name: ethereum-datadir
+        env:
+        - name: SHKEEPER_BACKEND_KEY
+          valueFrom:
+            secretKeyRef:
+              name: shkeeper-eth-key
+              key: password
+
+      volumes:
+      - name: ethereum-datadir
+        persistentVolumeClaim:
+          claimName: ethereum-datadir
+      - name: ethereum-nginx-config
+        configMap:
+          name: ethereum-nginx-config
+{{- end }}

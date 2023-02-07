@@ -84,7 +84,7 @@ spec:
         - name: SHKEEPER_BACKEND_KEY
           valueFrom:
             secretKeyRef:
-              name: shkeeper-eth-key
+              name: shkeeper-btc-key
               key: password
 
       volumes:

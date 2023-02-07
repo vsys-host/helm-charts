@@ -37,8 +37,9 @@ spec:
           - --allow-insecure-unlock
           - --datadir=/datadir
           - --http
-          - --http.api="db,eth,net,web3,personal"
+          - --http.api="db,eth,net,web3,personal,web3"
           - --http.addr=0.0.0.0
+          - --http.vhosts=*
           - --ws
           - --ws.addr=0.0.0.0
         volumeMounts:

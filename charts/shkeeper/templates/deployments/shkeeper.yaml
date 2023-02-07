@@ -45,7 +45,7 @@ spec:
             value: {{ if .Values.usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: USDC_WALLET
             value: {{ if .Values.usdc.enabled }}enabled{{ else }}disabled{{ end }}
-          - name: ETH
+          - name: ETH_WALLET
             value: {{ if .Values.eth.enabled }}enabled{{ else }}disabled{{ end }}
           - name: ETH_USDT_WALLET
             value: {{ if .Values.eth_usdt.enabled }}enabled{{ else }}disabled{{ end }}

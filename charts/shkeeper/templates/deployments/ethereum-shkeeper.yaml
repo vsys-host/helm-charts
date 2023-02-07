@@ -38,59 +38,59 @@ spec:
         - containerPort: 6000
           name: http
         env:
-           - name: ETH_USERNAME
-             valueFrom:
-               secretKeyRef:
-                 name: eth-rpc
-                 key: username
-           - name: ETH_PASSWORD
-             valueFrom:
-               secretKeyRef:
-                 name: eth-rpc
-                 key: password
-            - name: SHKEEPER_BACKEND_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: shkeeper-btc-key
-                  key: password
-            - name: CURRENT_ETH_NETWORK
-            {{- if .Values.eth_fullnode.mainnet }}
-              value: "mainnet"
-            {{- else }}
-              value: "goerli"
-            {{- end }}
-            - name: FULLNODE_URL
-              value: {{ .Values.eth_fullnode.url }}
+          - name: ETH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: username
+          - name: ETH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_ETH_NETWORK
+          {{- if .Values.eth_fullnode.mainnet }}
+            value: "mainnet"
+          {{- else }}
+            value: "goerli"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.eth_fullnode.url }}
 
       - name: tasks
         image: {{ .Values.ethereum_shkeeper.image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
-            - name: BTC_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: usdt-rpc
-                  key: username
-            - name: BTC_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: usdt-rpc
-                  key: password
-            - name: SHKEEPER_BACKEND_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: shkeeper-btc-key
-                  key: password
-            - name: CURRENT_ETH_NETWORK
-            {{- if .Values.eth_fullnode.mainnet }}
-              value: "mainnet"
-            {{- else }}
-              value: "goerli"
-            {{- end }}
-            - name: FULLNODE_URL
-              value: {{ .Values.eth_fullnode.url }}
-            - name: C_FORCE_ROOT
-              value: "1"
+          - name: ETH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: username
+          - name: ETH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_ETH_NETWORK
+          {{- if .Values.eth_fullnode.mainnet }}
+            value: "mainnet"
+          {{- else }}
+            value: "goerli"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.eth_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
 
       - name: redis
         image: redis

@@ -44,7 +44,7 @@ eth_fullnode:
   url: http://ethereum:8545
   mainnet: true
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
 
 ethereum_shkeeper:
   image: vsyshost/ethereum-shkeeper

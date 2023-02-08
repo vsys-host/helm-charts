@@ -55,7 +55,7 @@ spec:
                 key: password
           - name: CURRENT_ETH_NETWORK
           {{- if .Values.eth_fullnode.mainnet }}
-            value: "mainnet"
+            value: "main"
           {{- else }}
             value: "goerli"
           {{- end }}

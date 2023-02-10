@@ -55,9 +55,9 @@ spec:
                 key: password
           - name: CURRENT_ETH_NETWORK
           {{- if .Values.eth_fullnode.mainnet }}
-            value: "main"
+            value: &CURRENT_ETH_NETWORK_VALUE "main"
           {{- else }}
-            value: "goerli"
+            value: &CURRENT_ETH_NETWORK_VALUE "goerli"
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.eth_fullnode.url }}
@@ -83,9 +83,9 @@ spec:
                 key: password
           - name: CURRENT_ETH_NETWORK
           {{- if .Values.eth_fullnode.mainnet }}
-            value: "mainnet"
+            value: *CURRENT_ETH_NETWORK_VALUE
           {{- else }}
-            value: "goerli"
+            value: *CURRENT_ETH_NETWORK_VALUE
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.eth_fullnode.url }}

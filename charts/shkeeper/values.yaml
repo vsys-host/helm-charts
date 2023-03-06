@@ -2,13 +2,17 @@
 # General
 #
 
-shkeeper:
-  image: vsyshost/shkeeper
-
 dev:
   imagePullSecrets:
 
 storageClassName:
+
+#
+# Shkeeper
+#
+
+shkeeper:
+  image: vsyshost/shkeeper:1.0.4
 
 #
 # BTC and forks
@@ -25,11 +29,22 @@ doge:
 # Tron
 #
 
-tron:
-  server:
-    host: 'tron-shkeeper'
-    port: 6000
+tron_fullnode:
+  enabled: false
+  url: http://java-tron:8090
+  solidity_url: http://java-tron:8091
+  mainnet: true
+  JAVA_TOOL_OPTIONS: ""
+  nodeSelector: {}
+  tolerations: []
 
+tron_shkeeper:
+  image: vsyshost/tron-shkeeper:1.0.1
+  host: 'tron-shkeeper'
+  port: 6000
+
+trx:
+  enabled: false
 usdt:
   enabled: false
 usdc:
@@ -47,7 +62,7 @@ eth_fullnode:
   tolerations: []
 
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper
+  image: vsyshost/ethereum-shkeeper  # not published yet
 
 eth:
   enabled: false

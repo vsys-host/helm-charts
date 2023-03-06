@@ -32,9 +32,9 @@ spec:
         - containerPort: 5000
         env:
           - name: TRON_API_SERVER_HOST
-            value: {{ .Values.tron.server.host }}
+            value: {{ .Values.tron_shkeeper.host }}
           - name: TRON_API_SERVER_PORT
-            value: {{ .Values.tron.server.port | quote }}
+            value: {{ .Values.tron_shkeeper.port | quote }}
           - name: BTC_WALLET
             value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: LTC_WALLET

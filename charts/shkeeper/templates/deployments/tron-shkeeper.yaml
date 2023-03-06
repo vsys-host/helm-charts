@@ -1,0 +1,131 @@
+{{- if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tron-shkeeper
+  namespace: shkeeper
+  labels:
+    app: tron-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tron-shkeeper
+  template:
+    metadata:
+      labels:
+        app: tron-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.tron_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=64
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        env:
+          - name: BTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: username
+          - name: BTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: SHKEEPER_HOST
+            value: "shkeeper:5000"
+          - name: UPDATE_TOKEN_BALANCES_EVERY_SECONDS
+            value: "600"
+          - name: TX_FEE
+            value: "40"
+          - name: TX_FEE_LIMIT
+            value: "50"
+          - name: BLOCK_SCANNER_STATS_LOG_PERIOD
+            value: "10"
+          - name: BLOCK_SCANNER_MAX_BLOCK_CHUNK_SIZE
+            value: "10"
+          - name: FULLNODE_URL
+            value: {{ .Values.tron_fullnode.url }}
+          - name: SOLIDITYNODE_URL
+            value: {{ .Values.tron_fullnode.solidity_url }}
+
+      - name: tasks
+        image: {{ .Values.tron_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        env:
+          - name: BTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: username
+          - name: BTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: SHKEEPER_HOST
+            value: "shkeeper:5000"
+          - name: UPDATE_TOKEN_BALANCES_EVERY_SECONDS
+            value: "600"
+          - name: TX_FEE
+            value: "40"
+          - name: TX_FEE_LIMIT
+            value: "50"
+          - name: BLOCK_SCANNER_STATS_LOG_PERIOD
+            value: "10"
+          - name: BLOCK_SCANNER_MAX_BLOCK_CHUNK_SIZE
+            value: "10"
+          - name: FULLNODE_URL
+            value: {{ .Values.tron_fullnode.url }}
+          - name: SOLIDITYNODE_URL
+            value: {{ .Values.tron_fullnode.solidity_url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+
+      - name: redis
+        image: redis:7
+        command: ["redis-server", "--loglevel", "warning",  "--bind",  "0.0.0.0", "--protected-mode", "no", "--appendonly", "yes", "--shutdown-on-sigint", "save", "--shutdown-on-sigterm", "save"]
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: tron-shkeeper-data
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: tron-shkeeper-redis-data
+{{- end }}

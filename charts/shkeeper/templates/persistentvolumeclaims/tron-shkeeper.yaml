@@ -1,0 +1,14 @@
+{{- if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tron-shkeeper-datadir
+  namespace: shkeeper
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+{{ end }}

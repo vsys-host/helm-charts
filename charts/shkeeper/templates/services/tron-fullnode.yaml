@@ -1,0 +1,18 @@
+{{ if .Values.tron_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-tron
+  namespace: shkeeper
+spec:
+  selector:
+    app: java-tron
+  ports:
+  - name: fullnode
+    port: 8090
+    targetPort: fullnode
+  - name: soliditynode
+    port: 8091
+    targetPort: soliditynode
+{{ end }}

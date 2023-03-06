@@ -1,0 +1,15 @@
+{{- if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tron-shkeeper
+  namespace: shkeeper
+spec:
+  selector:
+    app: tron-shkeeper
+  ports:
+  - name: app-tcp
+    port: 6000
+    protocol: TCP
+{{ end }}

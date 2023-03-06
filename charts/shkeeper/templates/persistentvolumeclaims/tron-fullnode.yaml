@@ -1,0 +1,14 @@
+{{ if .Values.tron_fullnode.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tron-output-directory
+  namespace: shkeeper
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2000Gi
+{{ end }}

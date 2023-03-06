@@ -1,0 +1,48 @@
+{{- if .Values.tron_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-tron
+  namespace: shkeeper
+  labels:
+    app: java-tron
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-tron
+  template:
+    metadata:
+      labels:
+        app: java-tron
+    spec:
+      tolerations: {{- toYaml .Values.tron_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.tron_fullnode.nodeSelector | nindent 8 }}
+      terminationGracePeriodSeconds: 300
+      containers:
+      - name: java-tron
+        image: vsyshost/javatron:GreatVoyage-v4.7.1
+        ports:
+        - containerPort: 8090
+          name: fullnode
+        - containerPort: 8091
+          name: soliditynode
+        env:
+        - name: JAVA_TOOL_OPTIONS
+          value: {{ .Values.tron_fullnode.JAVA_TOOL_OPTIONS }}
+        - name: NETWORK
+          {{- if .Values.tron_fullnode.mainnet }}
+          value: mainnet
+          {{- else }}
+          value: nile
+          {{- end }}
+        volumeMounts:
+        - name: output-directory
+          mountPath: /data
+      volumes:
+      - name: output-directory
+        persistentVolumeClaim:
+          claimName: tron-output-directory
+{{- end }}

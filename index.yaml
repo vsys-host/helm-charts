@@ -3,6 +3,21 @@ entries:
   shkeeper:
   - apiVersion: v2
     appVersion: 1.19.0
+    created: "2023-03-07T18:08:10.952825601Z"
+    dependencies:
+    - alias: cred-generator
+      name: kubernetes-secret-generator
+      repository: https://helm.mittwald.de
+      version: 3.3.4
+    description: A self-hosted and open-source cryptocurrency payment processor
+    digest: b6db0240a9696131ce909effc3912f569e9171e1404a9f593366425023d6ed3a
+    name: shkeeper
+    type: application
+    urls:
+    - https://github.com/vsys-host/helm-charts/releases/download/shkeeper-1.1.4/shkeeper-1.1.4.tgz
+    version: 1.1.4
+  - apiVersion: v2
+    appVersion: 1.19.0
     created: "2023-03-07T17:04:56.305946501Z"
     dependencies:
     - alias: cred-generator

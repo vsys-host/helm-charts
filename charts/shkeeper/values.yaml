@@ -70,3 +70,23 @@ eth_usdt:
   enabled: false
 eth_usdc:
   enabled: false
+
+#
+# Monero
+#
+
+monero:
+
+  enabled: false
+  image: vsyshost/monero:v0.18.1.2
+  mainnet: true
+
+  fullnode:
+    enabled: false
+    monerod:
+      host: "monerod"
+      port: "1111"
+      user: "monerod"
+      password: "monerod"
+      nodeSelector: {}
+      tolerations: []

@@ -1,0 +1,75 @@
+{{- if .Values.monero.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monero-wallet-rpc
+  namespace: shkeeper
+  labels:
+    app: monero-wallet-rpc
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monero-wallet-rpc
+  template:
+    metadata:
+      labels:
+        app: monero-wallet-rpc
+    spec:
+      containers:
+      - name: monero-wallet-rpc
+        image:  {{ .Values.monero.image }}
+
+        command:
+          - /monero/start-monero-wallet-rpc.sh
+          - --daemon-address={{ .Values.monero.fullnode.monerod.host }}:{{ .Values.monero.fullnode.monerod.port }}
+          - --daemon-login={{ .Values.monero.fullnode.monerod.user }}:{{ .Values.monero.fullnode.monerod.password }}
+          - --confirm-external-bind
+          - --rpc-bind-ip=0.0.0.0
+          - --rpc-bind-port=2222
+          - --rpc-login=$(MONERO_WALLET_RPC_USER):$(MONERO_WALLET_RPC_PASS)
+          - --log-file=/monero/persistent/logs/monero-wallet-rpc.log
+          - --wallet-dir=/monero/persistent/wallet
+          - --tx-notify=/monero/walletnotify.sh %s
+          - --max-log-files=10
+          - --trusted-daemon
+          - --non-interactive
+          {{- if not .Values.monero.mainnet }}
+          - --stagenet
+          {{- end }}
+
+        env:
+          - name: MONERO_WALLET_RPC_USER
+            valueFrom:
+              secretKeyRef:
+                name: monero-wallet-rpc
+                key: username
+                optional: false
+          - name: MONERO_WALLET_RPC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: monero-wallet-rpc
+                key: password
+                optional: false
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+                optional: false
+
+        ports:
+        - containerPort: 2222
+          name: api
+
+        volumeMounts:
+        - name: monero-wallet-rpc
+          mountPath: /monero/persistent
+
+      volumes:
+      - name: monero-wallet-rpc
+        persistentVolumeClaim:
+          claimName: monero-wallet-rpc
+{{- end }}

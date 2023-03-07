@@ -135,6 +135,28 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+          {{- if .Values.monero.enabled }}
+          - name: MONERO_WALLET_RPC_USER
+            valueFrom:
+              secretKeyRef:
+                name: monero-wallet-rpc
+                key: username
+                optional: false
+          - name: MONERO_WALLET_RPC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: monero-wallet-rpc
+                key: password
+                optional: false
+          - name: MONERO_WALLET_RPC_HOST
+            value: {{ .Values.monero.fullnode.monerod.host }}
+          - name: MONERO_WALLET_RPC_PORT
+            value: {{ .Values.monero.fullnode.monerod.port }}
+          - name: MONERO_WALLET_RPC_USER
+            value: {{ .Values.monero.fullnode.monerod.user }}
+          - name: MONERO_WALLET_RPC_PASS
+            value: {{ .Values.monero.fullnode.monerod.pass }}
+          {{- end }}
           - name: SHKEEPER_BTC_BACKEND_KEY
             valueFrom:
               secretKeyRef:

@@ -1,0 +1,15 @@
+{{- if .Values.monero.fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monerod
+  namespace: shkeeper
+spec:
+  selector:
+    app: monerod
+  ports:
+  - name: api
+    port: {{ .Values.monero.fullnode.monerod.port }}
+    targetPort: api
+{{ end }}

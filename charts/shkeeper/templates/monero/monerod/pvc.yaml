@@ -1,0 +1,14 @@
+{{- if .Values.monero.fullnode.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monerod
+  namespace: shkeeper
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+{{ end }}

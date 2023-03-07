@@ -1,0 +1,52 @@
+{{- if .Values.monero.fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monerod
+  namespace: shkeeper
+  labels:
+    app: monerod
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monerod
+  template:
+    metadata:
+      labels:
+        app: monerod
+    spec:
+      tolerations: {{- toYaml .Values.monero.fullnode.monerod.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.monero.fullnode.monerod.nodeSelector | nindent 8 }}
+      terminationGracePeriodSeconds: 300
+      containers:
+      - name: monerod
+        image:  {{ .Values.monero.image }}
+
+        command:
+          - /monero/monerod
+          - --confirm-external-bind
+          - --rpc-bind-ip=0.0.0.0
+          - --rpc-bind-port={{ .Values.monero.fullnode.monerod.port }}
+          - --rpc-login={{ .Values.monero.fullnode.monerod.user }}:{{ .Values.monero.fullnode.monerod.password }}
+          - --non-interactive
+          - --prune-blockchain
+          {{- if not .Values.monero.mainnet }}
+          - --stagenet
+          {{- end }}
+
+        ports:
+        - containerPort: {{ .Values.monero.fullnode.monerod.port }}
+          name: api
+
+        volumeMounts:
+        - name: monerod
+          mountPath: /root/.bitmonero
+
+      volumes:
+      - name: monerod
+        persistentVolumeClaim:
+          claimName: monerod
+{{- end }}

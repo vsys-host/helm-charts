@@ -1,0 +1,14 @@
+{{- if .Values.monero.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monero-wallet-rpc
+  namespace: shkeeper
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+{{ end }}

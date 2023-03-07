@@ -11,4 +11,17 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tron-shkeeper-redis-data
+  namespace: shkeeper
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 {{ end }}

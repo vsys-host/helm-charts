@@ -51,6 +51,8 @@ spec:
             value: {{ if .Values.eth_usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: ETH_USDC_WALLET
             value: {{ if .Values.eth_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: MONERO_WALLET
+            value: {{ if .Values.monero.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:
@@ -155,7 +157,7 @@ spec:
           - name: MONERO_WALLET_RPC_USER
             value: {{ .Values.monero.fullnode.monerod.user }}
           - name: MONERO_WALLET_RPC_PASS
-            value: {{ .Values.monero.fullnode.monerod.pass }}
+            value: {{ .Values.monero.fullnode.monerod.password }}
           {{- end }}
           - name: SHKEEPER_BTC_BACKEND_KEY
             valueFrom:

@@ -150,13 +150,13 @@ spec:
                 name: monero-wallet-rpc
                 key: password
                 optional: false
-          - name: MONERO_WALLET_RPC_HOST
+          - name: MONERO_DAEMON_HOST
             value: {{ .Values.monero.fullnode.monerod.host }}
-          - name: MONERO_WALLET_RPC_PORT
+          - name: MONERO_DAEMON_PORT
             value: {{ .Values.monero.fullnode.monerod.port | quote }}
-          - name: MONERO_WALLET_RPC_USER
+          - name: MONERO_DAEMON_USER
             value: {{ .Values.monero.fullnode.monerod.user }}
-          - name: MONERO_WALLET_RPC_PASS
+          - name: MONERO_DAEMON_PASS
             value: {{ .Values.monero.fullnode.monerod.password }}
           {{- end }}
           - name: SHKEEPER_BTC_BACKEND_KEY

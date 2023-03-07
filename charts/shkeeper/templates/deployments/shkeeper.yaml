@@ -153,7 +153,7 @@ spec:
           - name: MONERO_WALLET_RPC_HOST
             value: {{ .Values.monero.fullnode.monerod.host }}
           - name: MONERO_WALLET_RPC_PORT
-            value: {{ .Values.monero.fullnode.monerod.port }}
+            value: {{ .Values.monero.fullnode.monerod.port | quote }}
           - name: MONERO_WALLET_RPC_USER
             value: {{ .Values.monero.fullnode.monerod.user }}
           - name: MONERO_WALLET_RPC_PASS

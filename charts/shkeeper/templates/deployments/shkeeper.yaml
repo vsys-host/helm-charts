@@ -97,6 +97,20 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+          {{- if .Values.trx.enabled }}
+          - name: TRX_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: username
+                optional: false
+          - name: TRX_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: password
+                optional: false
+          {{- end }}
           {{- if .Values.usdt.enabled }}
           - name: USDT_USERNAME
             valueFrom:

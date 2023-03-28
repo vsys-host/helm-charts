@@ -22,12 +22,15 @@ spec:
         env:
           - name: MARIADB_ROOT_PASSWORD
             value: shkeeper
-          - name: MARIADB_DATABASE
-            value: shkeeper
         volumeMounts:
         - name: mariadb
           mountPath: /var/lib/mysql
+        - name: mariadb-docker-entrypoint-initdb-d
+          mountPath: /docker-entrypoint-initdb.d
       volumes:
       - name: mariadb
         persistentVolumeClaim:
           claimName: mariadb
+      - name: mariadb-docker-entrypoint-initdb-d
+        configMap:
+          name: mariadb-docker-entrypoint-initdb-d

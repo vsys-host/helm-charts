@@ -1,4 +1,3 @@
-{{- if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -24,4 +23,3 @@ spec:
   resources:
     requests:
       storage: 1Gi
-{{ end }}

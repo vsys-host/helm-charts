@@ -62,7 +62,7 @@ eth_fullnode:
   tolerations: []
 
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.0.2
+  image: vsyshost/ethereum-shkeeper:1.0.3
 
 eth:
   enabled: false

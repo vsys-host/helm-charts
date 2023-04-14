@@ -12,7 +12,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:1.1.14
+  image: vsyshost/shkeeper:1.1.15
 
 #
 # BTC and forks

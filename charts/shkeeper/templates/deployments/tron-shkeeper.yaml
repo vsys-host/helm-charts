@@ -72,6 +72,10 @@ spec:
             value: {{ .Values.tron_fullnode.url }}
           - name: SOLIDITYNODE_URL
             value: {{ .Values.tron_fullnode.solidity_url }}
+          - name: MULTISERVER_CONFIG_JSON
+            value: {{ .Values.tron_shkeeper.multiserver_config_json | default "" | quote }}
+          - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
+            value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
 
       - name: tasks
         image: {{ .Values.tron_shkeeper.image }}
@@ -113,6 +117,10 @@ spec:
             value: {{ .Values.tron_fullnode.solidity_url }}
           - name: C_FORCE_ROOT
             value: "1"
+          - name: MULTISERVER_CONFIG_JSON
+            value: {{ .Values.tron_shkeeper.multiserver_config_json | default "" | quote }}
+          - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
+            value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
 
       - name: redis
         image: redis:7

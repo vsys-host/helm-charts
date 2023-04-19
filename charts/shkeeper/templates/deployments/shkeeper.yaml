@@ -181,6 +181,8 @@ spec:
                 name: shkeeper-btc-key
                 key: password
                 optional: false
+          - name: TRON_MULTISERVER_GUI
+            value: {{ .Values.shkeeper.tron_multiserver_gui | default "" | quote }}
         volumeMounts:
         - name: shkeeper-db-storage
           mountPath: /shkeeper.io/instance

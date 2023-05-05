@@ -61,6 +61,10 @@ spec:
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.eth_fullnode.url }}
+          {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
 
       - name: tasks
         image: {{ .Values.ethereum_shkeeper.image }}
@@ -91,6 +95,10 @@ spec:
             value: {{ .Values.eth_fullnode.url }}
           - name: C_FORCE_ROOT
             value: "1"
+          {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
 
       - name: redis
         image: redis

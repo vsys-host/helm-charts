@@ -38,6 +38,10 @@ spec:
           {{- else }}
           value: nile
           {{- end }}
+        {{- range $name, $value := .Values.tron_fullnode.extraEnv }}
+        - name: {{ $name | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
         volumeMounts:
         - name: output-directory
           mountPath: /data

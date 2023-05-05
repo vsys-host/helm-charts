@@ -58,23 +58,15 @@ spec:
                 key: password
           - name: SHKEEPER_HOST
             value: "shkeeper:5000"
-          - name: UPDATE_TOKEN_BALANCES_EVERY_SECONDS
-            value: "600"
-          - name: TX_FEE
-            value: "40"
-          - name: TX_FEE_LIMIT
-            value: "50"
-          - name: BLOCK_SCANNER_STATS_LOG_PERIOD
-            value: "10"
-          - name: BLOCK_SCANNER_MAX_BLOCK_CHUNK_SIZE
-            value: "10"
           - name: FULLNODE_URL
             value: {{ .Values.tron_fullnode.url }}
-          - name: SOLIDITYNODE_URL
-            value: {{ .Values.tron_fullnode.solidity_url }}
           {{- if .Values.tron_shkeeper.multiserver_config_json }}
           - name: MULTISERVER_CONFIG_JSON
             value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
+          {{- end }}
+          {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
           {{- end }}
           # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
@@ -103,25 +95,17 @@ spec:
                 key: password
           - name: SHKEEPER_HOST
             value: "shkeeper:5000"
-          - name: UPDATE_TOKEN_BALANCES_EVERY_SECONDS
-            value: "600"
-          - name: TX_FEE
-            value: "40"
-          - name: TX_FEE_LIMIT
-            value: "50"
-          - name: BLOCK_SCANNER_STATS_LOG_PERIOD
-            value: "10"
-          - name: BLOCK_SCANNER_MAX_BLOCK_CHUNK_SIZE
-            value: "10"
           - name: FULLNODE_URL
             value: {{ .Values.tron_fullnode.url }}
-          - name: SOLIDITYNODE_URL
-            value: {{ .Values.tron_fullnode.solidity_url }}
           - name: C_FORCE_ROOT
             value: "1"
           {{- if .Values.tron_shkeeper.multiserver_config_json }}
           - name: MULTISERVER_CONFIG_JSON
             value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
+          {{- end }}
+          {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
           {{- end }}
           # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}

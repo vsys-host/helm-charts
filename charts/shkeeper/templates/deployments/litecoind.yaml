@@ -38,7 +38,7 @@ spec:
 
 
       - name: litecoind
-        image: vsyshost/litecoind
+        image: vsyshost/litecoind:0.21.2.2
         env:
           - name: LTC_USERNAME
             valueFrom:

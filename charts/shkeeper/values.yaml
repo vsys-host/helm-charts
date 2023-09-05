@@ -12,7 +12,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:1.1.20
+  image: vsyshost/shkeeper:2.1.2
 
 #
 # BTC and forks
@@ -39,7 +39,7 @@ tron_fullnode:
   tolerations: []
 
 tron_shkeeper:
-  image: vsyshost/tron-shkeeper:1.0.14
+  image: vsyshost/tron-shkeeper:1.0.15
   host: 'tron-shkeeper'
   port: 6000
 
@@ -62,7 +62,7 @@ eth_fullnode:
   tolerations: []
 
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.0.10
+  image: vsyshost/ethereum-shkeeper:1.0.14
 
 eth:
   enabled: false

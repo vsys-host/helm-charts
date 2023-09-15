@@ -1,0 +1,105 @@
+{{- if or .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bnb-shkeeper
+  namespace: shkeeper
+  labels:
+    app: bnb-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bnb-shkeeper
+  template:
+    metadata:
+      labels:
+        app: bnb-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.bnb_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: BNB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: bnb-rpc
+                key: username
+          - name: BNB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: bnb-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_BNB_NETWORK
+          {{- if .Values.bnb_fullnode.mainnet }}
+            value: &CURRENT_BNB_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_BNB_NETWORK_VALUE "testnet"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.bnb_fullnode.url }}
+          {{- range $name, $value := .Values.bnb_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.bnb_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: BNB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: bnb-rpc
+                key: username
+          - name: BNB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: bnb-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_BNB_NETWORK
+          {{- if .Values.bnb_fullnode.mainnet }}
+            value: *CURRENT_BNB_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_BNB_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.bnb_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.bnb_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

@@ -1,0 +1,79 @@
+{{- if .Values.bnb_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bnb
+  namespace: shkeeper
+  labels:
+    app: bnb
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bnb
+  template:
+    metadata:
+      labels:
+        app: bnb
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.bnb_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.bnb_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      # executor
+      - name: geth
+        image:vsyshost/bnb-geth:1.2.12
+        command:
+          - ./geth
+          {{- if .Values.bnb_fullnode.mainnet }}
+          - --config ./config-mainnet.toml
+          {{- else }}
+          - --config ./config-testnet.toml
+          {{- end }}
+          - --allow-insecure-unlock
+          - --datadir=/datadir
+          - --cache 8000
+          - --rpc.allow-unprotected-txs
+          - --txlookuplimit 0
+          - --allow-insecure-unlock 
+          - --http
+          - --http.api="db,eth,net,web3,personal,web3"
+          - --http.addr=0.0.0.0
+          - --http.vhosts=*
+          - --ws
+          - --ws.addr=0.0.0.0
+        volumeMounts:
+        - name: bnb-datadir
+          mountPath: /datadir
+
+      
+      # nginx with keys
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - name: bnb-nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: bnb-nginx-config
+          mountPath: /etc/nginx/templates/default.conf.template
+          subPath: default.conf.template
+        - mountPath: /datadir
+          name: bnb-datadir
+        env:
+        - name: SHKEEPER_BACKEND_KEY
+          valueFrom:
+            secretKeyRef:
+              name: shkeeper-btc-key
+              key: password
+
+      volumes:
+      - name: bnb-datadir
+        persistentVolumeClaim:
+          claimName: bnb-datadir
+      - name: bnb-nginx-config
+        configMap:
+          name: bnb-nginx-config
+{{- end }}

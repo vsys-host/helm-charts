@@ -90,3 +90,24 @@ monero:
       password: "monerod"
       nodeSelector: {}
       tolerations: []
+
+#
+# BNB
+#
+
+bnb_fullnode:
+  enabled: false
+  url: http://bnb:8545
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+bnb_shkeeper:
+  image: vsyshost/bnb-shkeeper:1.0.2
+
+bnb:
+  enabled: false
+bnb_usdt:
+  enabled: false
+bnb_usdc:
+  enabled: false

@@ -1,0 +1,34 @@
+{{ if .Values.eth_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bnb
+  namespace: shkeeper
+spec:
+  selector:
+    app: bnb
+  ports:
+  - name: nginx
+    port: 8081
+    protocol: TCP
+  # executor
+  - name: fullnode-tcp
+    port: 30303
+    protocol: TCP
+  - name: fullnode-udp
+    port: 30303
+    protocol: UDP
+  - name: http-tcp
+    port: 8545
+    protocol: TCP
+  - name: http-udp
+    port: 8545
+    protocol: UDP
+  - name: ws-tcp
+    port: 8546
+    protocol: TCP
+  - name: ws-udp
+    port: 8546
+    protocol: UDP
+{{ end }}

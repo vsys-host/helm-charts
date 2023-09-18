@@ -172,6 +172,20 @@ spec:
                 name: monero-wallet-rpc
                 key: password
                 optional: false
+          {{- if or .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled}}
+          - name: BNB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: bnb-rpc
+                key: username
+                optional: false
+          - name: BNB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: bnb-rpc
+                key: password
+                optional: false
+          {{- end }}
           - name: MONERO_DAEMON_HOST
             value: {{ .Values.monero.fullnode.monerod.host }}
           - name: MONERO_DAEMON_PORT

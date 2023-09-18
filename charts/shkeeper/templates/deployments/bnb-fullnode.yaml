@@ -25,19 +25,19 @@ spec:
 
       # executor
       - name: geth
-        image: vsyshost/bnb-geth:1.2.12
+        image: vsyshost/bnb-geth:1.2.13
         command:
           - ./geth
           {{- if .Values.bnb_fullnode.mainnet }}
-          - --config ./config-mainnet.toml
+          - --config=./config-mainnet.toml
           {{- else }}
-          - --config ./config-testnet.toml
+          - --config=./config-testnet.toml
           {{- end }}
           - --allow-insecure-unlock
           - --datadir=/datadir
-          - --cache 8000
+          - --cache=8000
           - --rpc.allow-unprotected-txs
-          - --txlookuplimit 0
+          - --txlookuplimit=0
           - --allow-insecure-unlock 
           - --http
           - --http.api="db,eth,net,web3,personal,web3"

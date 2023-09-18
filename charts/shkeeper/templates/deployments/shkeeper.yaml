@@ -55,6 +55,12 @@ spec:
             value: {{ if .Values.eth_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: MONERO_WALLET
             value: {{ if .Values.monero.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: BNB_WALLET
+            value: {{ if .Values.bnb.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: BNB_USDT_WALLET
+            value: {{ if .Values.bnb_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: BNB_USDC_WALLET
+            value: {{ if .Values.bnb_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:

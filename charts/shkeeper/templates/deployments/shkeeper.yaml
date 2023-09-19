@@ -159,20 +159,7 @@ spec:
                 key: password
                 optional: false
           {{- end }}
-          {{- if .Values.monero.enabled }}
-          - name: MONERO_WALLET_RPC_USER
-            valueFrom:
-              secretKeyRef:
-                name: monero-wallet-rpc
-                key: username
-                optional: false
-          - name: MONERO_WALLET_RPC_PASS
-            valueFrom:
-              secretKeyRef:
-                name: monero-wallet-rpc
-                key: password
-                optional: false
-          {{- if or .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled}}
+           {{- if or .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled}}
           - name: BNB_USERNAME
             valueFrom:
               secretKeyRef:
@@ -186,6 +173,19 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+          {{- if .Values.monero.enabled }}
+          - name: MONERO_WALLET_RPC_USER
+            valueFrom:
+              secretKeyRef:
+                name: monero-wallet-rpc
+                key: username
+                optional: false
+          - name: MONERO_WALLET_RPC_PASS
+            valueFrom:
+              secretKeyRef:
+                name: monero-wallet-rpc
+                key: password
+                optional: false
           - name: MONERO_DAEMON_HOST
             value: {{ .Values.monero.fullnode.monerod.host }}
           - name: MONERO_DAEMON_PORT

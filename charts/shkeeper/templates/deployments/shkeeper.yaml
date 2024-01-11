@@ -61,6 +61,8 @@ spec:
             value: {{ if .Values.bnb_usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: BNB_USDC_WALLET
             value: {{ if .Values.bnb_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: XRP_WALLET
+            value: {{ if .Values.xrp.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:

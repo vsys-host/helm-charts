@@ -1,0 +1,105 @@
+{{- if .Values.xrp.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xrp-shkeeper
+  namespace: shkeeper
+  labels:
+    app: xrp-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xrp-shkeeper
+  template:
+    metadata:
+      labels:
+        app: xrp-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.xrp_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: XRP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: xrp-rpc
+                key: username
+          - name: XRP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: xrp-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: XRP_NETWORK
+          {{- if .Values.XRP_fullnode.mainnet }}
+            value: &XRP_NETWORK_VALUE "main"
+          {{- else }}
+            value: &XRP_NETWORK_VALUE "testnet"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.xrp_fullnode.url }}
+          {{- range $name, $value := .Values.xrp_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.xrp_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: XRP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: xrp-rpc
+                key: username
+          - name: XRP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: xrp-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: XRP_NETWORK
+          {{- if .Values.xrp_fullnode.mainnet }}
+            value: *XRP_NETWORK_VALUE
+          {{- else }}
+            value: *XRP_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.xrp_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.xrp_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

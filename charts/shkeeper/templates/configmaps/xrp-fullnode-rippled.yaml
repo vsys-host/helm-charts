@@ -1,0 +1,79 @@
+{{- if .Values.xrp_fullnode.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xrp-fullnode-config
+  namespace: shkeeper
+data:
+  rippled.cfg: |
+    [server]
+    port_rpc_admin_local
+    port_http
+    
+    [port_rpc_admin_local]
+    port = 5005
+    ip = 127.0.0.1
+    admin = 127.0.0.1
+    protocol = http
+    
+    [port_http]
+    port = 51234
+    ip = 0.0.0.0
+    protocol = http
+    
+    [node_size]
+    tiny
+    
+    [node_db]
+    type=NuDB
+    path=/var/lib/rippled/db/nudb
+    advisory_delete=0
+    
+    # How many ledgers do we want to keep (history)?
+    # Integer value that defines the number of ledgers
+    # between online deletion events
+    online_delete=256000 #about 10 days
+    
+    [ledger_history]
+    # How many ledgers do we want to keep (history)?
+    # Integer value (ledger count)
+    # or (if you have lots of TB SSD storage): 'full'
+    256000 #about 10 days
+    
+    [database_path]
+    /var/lib/rippled/db
+    
+    [debug_logfile]
+    /var/log/rippled/debug.log
+    
+    [sntp_servers]
+    time.windows.com
+    time.apple.com
+    time.nist.gov
+    pool.ntp.org
+    
+    [ips]
+    r.ripple.com 51235
+    
+    [validators_file]
+    validators.txt
+    
+    [rpc_startup]
+    { "command": "log_level", "severity": "info" }
+    
+    # severity (order: lots of information .. only errors)
+    # debug
+    # info
+    # warn
+    # error
+    # fatal
+    
+    [ssl_verify]
+    1
+  validators.txt: |
+    [validator_list_sites]
+    https://vl.ripple.com
+
+    [validator_list_keys]
+    ED2677ABFFD1B33AC6FBC3062B71F1E8397C1505E1C42C64D11AD1B28FF73F4734
+{{- end }}

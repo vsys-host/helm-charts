@@ -1,0 +1,15 @@
+{{ if .Values.xrp_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xrp
+  namespace: shkeeper
+spec:
+  selector:
+    app: xrp
+  ports:
+  - name: http-tcp
+    port: 51234
+    protocol: TCP
+{{ end }}

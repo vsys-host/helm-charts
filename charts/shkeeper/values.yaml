@@ -111,3 +111,20 @@ bnb_usdt:
   enabled: false
 bnb_usdc:
   enabled: false
+
+#
+# XRP
+#
+
+xrp_fullnode:
+  enabled: false
+  url: http://xrp:51234
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+xrp_shkeeper:
+  image: vsyshost/xrp-shkeeper:1.0.1
+
+xrp:
+  enabled: false

@@ -175,6 +175,20 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+          {{- if .Values.xrp.enabled}}
+          - name: XRP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: xrp-rpc
+                key: username
+                optional: false
+          - name: XRP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: xrp-rpc
+                key: password
+                optional: false
+          {{- end }}
           {{- if .Values.monero.enabled }}
           - name: MONERO_WALLET_RPC_USER
             valueFrom:

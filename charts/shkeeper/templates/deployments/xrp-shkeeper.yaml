@@ -54,7 +54,7 @@ spec:
                 name: shkeeper-btc-key
                 key: password
           - name: XRP_NETWORK
-          {{- if .Values.XRP_fullnode.mainnet }}
+          {{- if .Values.xrp_fullnode.mainnet }}
             value: &XRP_NETWORK_VALUE "main"
           {{- else }}
             value: &XRP_NETWORK_VALUE "testnet"

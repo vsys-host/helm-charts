@@ -1,4 +1,4 @@
-{{- if .Values.bnb_fullnode.enabled }}
+{{- if .Values.xrp_fullnode.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

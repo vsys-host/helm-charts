@@ -48,7 +48,7 @@ spec:
 
       # consensus
       - name: prysm-beacon
-        image: gcr.io/prysmaticlabs/prysm/beacon-chain:v4.0.6-portable
+        image: gcr.io/prysmaticlabs/prysm/beacon-chain:v5.0.1
         args:
           - --datadir=/datadir
           - --rpc-host=0.0.0.0

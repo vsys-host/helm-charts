@@ -25,7 +25,7 @@ spec:
 
       # executor
       - name: geth
-        image: vsyshost/bnb-geth:1.2.13
+        image: vsyshost/bnb-geth:1.2.16
         command:
           - ./geth
           {{- if .Values.bnb_fullnode.mainnet }}
@@ -37,7 +37,8 @@ spec:
           - --datadir=/datadir
           - --cache=8000
           - --rpc.allow-unprotected-txs
-          - --txlookuplimit=0
+          - --history.transactions=0
+          - --maxpeers=250
           - --allow-insecure-unlock 
           - --http
           - --http.api="db,eth,net,web3,personal,web3"
@@ -45,6 +46,9 @@ spec:
           - --http.vhosts=*
           - --ws
           - --ws.addr=0.0.0.0
+          - --syncmode=full
+          - --tries-verify-mode=local
+          - --db.engine=pebble
         volumeMounts:
         - name: bnb-datadir
           mountPath: /datadir

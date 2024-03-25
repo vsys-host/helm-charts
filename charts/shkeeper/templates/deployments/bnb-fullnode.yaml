@@ -47,8 +47,8 @@ spec:
           - --ws
           - --ws.addr=0.0.0.0
           - --syncmode=full
-          - --tries-verify-mode=none
           - --db.engine=pebble
+          - --state.scheme=path
         volumeMounts:
         - name: bnb-datadir
           mountPath: /datadir

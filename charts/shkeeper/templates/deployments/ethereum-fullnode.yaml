@@ -31,7 +31,7 @@ spec:
           {{- if .Values.eth_fullnode.mainnet }}
           - --mainnet
           {{- else }}
-          - --goerli
+          - --sepolia
           {{- end }}
           - --syncmode=snap
           - --allow-insecure-unlock
@@ -61,9 +61,9 @@ spec:
           - --checkpoint-sync-url=https://sync.invis.tools
           - --genesis-beacon-api-url=https://sync.invis.tools
           {{- else }}
-          - --goerli
-          - --checkpoint-sync-url=https://goerli-sync.invis.tools
-          - --genesis-beacon-api-url=https://goerli-sync.invis.tools
+          - --sepolia
+          - --checkpoint-sync-url=https://sepolia.beaconstate.info
+          - --genesis-beacon-api-url=https://sepolia.beaconstate.info
           {{- end }}
         volumeMounts:
         - name: ethereum-datadir

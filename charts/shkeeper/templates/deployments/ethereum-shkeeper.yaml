@@ -57,7 +57,7 @@ spec:
           {{- if .Values.eth_fullnode.mainnet }}
             value: &CURRENT_ETH_NETWORK_VALUE "main"
           {{- else }}
-            value: &CURRENT_ETH_NETWORK_VALUE "goerli"
+            value: &CURRENT_ETH_NETWORK_VALUE "sepolia"
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.eth_fullnode.url }}

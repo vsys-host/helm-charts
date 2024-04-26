@@ -103,7 +103,7 @@ bnb_fullnode:
   tolerations: []
 
 bnb_shkeeper:
-  image: vsyshost/bnb-shkeeper:1.0.4
+  image: vsyshost/bnb-shkeeper:1.1.0
 
 bnb:
   enabled: false

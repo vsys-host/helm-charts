@@ -39,6 +39,18 @@ spec:
 
       - name: dogecoind
         image: vsyshost/dogecoind
+        {{- if not .Values.doge.mainnet }}
+        - /shkeeper/dogecoind
+        - -testnet
+        - -prune=2200
+        - -rpcport=22555
+        - -rpcpassword=$DOGE_PASSWORD
+        - -rpcuser=$DOGE_USERNAME
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        - -wallet=shkeeper
+        - -walletnotify=/shkeeper/walletnotify.sh %s
+        {{- end }}
         env:
           - name: DOGE_USERNAME
             valueFrom:

@@ -20,10 +20,13 @@ shkeeper:
 
 btc:
   enabled: true
+  mainnet: true
 ltc:
   enabled: true
+  mainnet: true
 doge:
   enabled: true
+  mainnet: true
 
 #
 # Tron

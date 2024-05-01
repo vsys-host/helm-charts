@@ -40,6 +40,7 @@ spec:
       - name: litecoind
         image: vsyshost/litecoind:0.21.2.2
         {{- if not .Values.ltc.mainnet }}
+        command:
         - /shkeeper/litecoind
         - -testnet
         - -rpcport=9332

@@ -40,6 +40,7 @@ spec:
       - name: bitcoind
         image: vsyshost/bitcoind
         {{- if not .Values.btc.mainnet }}
+        command:
         - /shkeeper/bitcoind
         - -testnet
         - -rpcport=8332

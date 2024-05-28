@@ -12,7 +12,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.1.27
+  image: vsyshost/shkeeper:2.1.28
 
 #
 # BTC and forks
@@ -42,7 +42,7 @@ tron_fullnode:
   tolerations: []
 
 tron_shkeeper:
-  image: vsyshost/tron-shkeeper:1.0.17
+  image: vsyshost/tron-shkeeper:1.0.18
   host: 'tron-shkeeper'
   port: 6000
 

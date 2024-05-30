@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: java-tron
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app: java-tron
 spec:

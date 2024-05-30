@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: monerod
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app: monerod
 spec:

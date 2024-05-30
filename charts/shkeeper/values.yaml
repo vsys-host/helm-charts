@@ -2,6 +2,8 @@
 # General
 #
 
+namespace: shkeeper
+
 dev:
   imagePullSecrets:
 
@@ -13,6 +15,7 @@ storageClassName:
 
 shkeeper:
   image: vsyshost/shkeeper:2.1.29
+  port: 5000
 
 #
 # BTC and forks

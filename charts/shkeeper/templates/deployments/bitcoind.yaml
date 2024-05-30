@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bitcoind-deployment
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app: bitcoind
 spec:

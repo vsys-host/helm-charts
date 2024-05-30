@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mariadb
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app: mariadb
 spec:

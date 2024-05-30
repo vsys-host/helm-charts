@@ -6,12 +6,12 @@ metadata:
     app.kubernetes.io/name: shkeeper
     app.kubernetes.io/managed-by: Helm
   name: shkeeper
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
 spec:
   externalTrafficPolicy: Cluster
   ports:
   - name: http
-    port: 5000
+    port: {{ .Values.shkeeper.port }}
     protocol: TCP
     targetPort: 5000
   selector:

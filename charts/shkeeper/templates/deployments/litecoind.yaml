@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: litecoind-deployment
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app: litecoind
 spec:

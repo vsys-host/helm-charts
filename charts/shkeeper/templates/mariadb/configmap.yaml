@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mariadb-docker-entrypoint-initdb-d
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
 data:
   create_db.sql: |
     CREATE DATABASE IF NOT EXISTS `shkeeper`;

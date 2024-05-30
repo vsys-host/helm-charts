@@ -4,7 +4,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tron-shkeeper
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: tron-shkeeper

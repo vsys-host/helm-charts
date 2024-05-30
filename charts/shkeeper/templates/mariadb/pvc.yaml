@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mariadb
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
 spec:
   storageClassName: {{ .Values.storageClassName }}
   accessModes:

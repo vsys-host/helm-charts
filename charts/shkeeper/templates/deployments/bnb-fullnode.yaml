@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bnb
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app: bnb
 spec:
@@ -39,7 +39,7 @@ spec:
           - --rpc.allow-unprotected-txs
           - --history.transactions=0
           - --maxpeers=250
-          - --allow-insecure-unlock 
+          - --allow-insecure-unlock
           - --http
           - --http.api="db,eth,net,web3,personal,web3"
           - --http.addr=0.0.0.0
@@ -53,7 +53,7 @@ spec:
         - name: bnb-datadir
           mountPath: /datadir
 
-      
+
       # nginx with keys
       - name: nginx
         image: nginx

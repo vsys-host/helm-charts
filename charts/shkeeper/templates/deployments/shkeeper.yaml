@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shkeeper-deployment
-  namespace: shkeeper
+  namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/instance: shkeeper-vsys
     app.kubernetes.io/name: shkeeper

@@ -134,3 +134,8 @@ xrp_shkeeper:
 
 xrp:
   enabled: false
+
+cred-generator:
+  watchNamespace: shkeeper
+  rbac:
+    create: false

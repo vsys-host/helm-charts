@@ -19,8 +19,8 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Add dependencies
-        run: helm repo add cred-generator https://helm.mittwald.de
+      # - name: Add dependencies
+      #   run: helm repo add cred-generator https://helm.mittwald.de
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.1.0

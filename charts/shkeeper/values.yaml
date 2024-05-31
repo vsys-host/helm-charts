@@ -134,15 +134,3 @@ xrp_shkeeper:
 
 xrp:
   enabled: false
-
-cred-generator:
-  watchNamespace: shkeeper
-  rbac:
-    create: false
-    clusterRole: false
-
-kubernetes-secret-generator:
-  watchNamespace: shkeeper
-  rbac:
-    create: false
-    clusterRole: false

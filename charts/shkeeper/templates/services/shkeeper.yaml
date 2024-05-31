@@ -8,7 +8,6 @@ metadata:
   name: shkeeper
   namespace: {{ .Values.namespace }}
 spec:
-  externalTrafficPolicy: Cluster
   ports:
   - name: http
     port: 5000

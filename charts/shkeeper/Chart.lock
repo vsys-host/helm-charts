@@ -1,6 +1,0 @@
-dependencies:
-- name: kubernetes-secret-generator
-  repository: https://helm.mittwald.de
-  version: 3.4.0
-digest: sha256:1b5998844f66b2313e2477a4b73caafc5d4c0ebbd3f5f442cfd2fd41697e3908
-generated: "2024-05-31T09:24:49.899317171Z"

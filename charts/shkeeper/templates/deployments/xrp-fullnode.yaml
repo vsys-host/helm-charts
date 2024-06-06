@@ -33,9 +33,15 @@ spec:
         - name: xrp-fullnode-config
           mountPath: /config/validators.txt
           subPath: validators.txt
+        volumeMounts:
+        - name: xrp-datadir
+          mountPath: /var/lib/rippled
 
 
       volumes:
+      - name: xrp-datadir
+        persistentVolumeClaim:
+          claimName: xrp-datadir
       - name: xrp-fullnode-config
         configMap:
           name: xrp-fullnode-config

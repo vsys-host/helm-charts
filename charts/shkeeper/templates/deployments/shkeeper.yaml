@@ -63,6 +63,12 @@ spec:
             value: {{ if .Values.bnb_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: XRP_WALLET
             value: {{ if .Values.xrp.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: MATIC_WALLET
+            value: {{ if .Values.matic.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: POLYGON_USDT_WALLET
+            value: {{ if .Values.polygon_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: POLYGON_USDC_WALLET
+            value: {{ if .Values.polygon_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:
@@ -186,6 +192,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: xrp-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
+          - name: POLYGON_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: polygon-rpc
+                key: username
+                optional: false
+          - name: POLYGON_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: polygon-rpc
                 key: password
                 optional: false
           {{- end }}

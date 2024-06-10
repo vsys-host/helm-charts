@@ -149,5 +149,9 @@ polygon_fullnode:
 polygon_shkeeper:
   image: vsyshost/polygon-shkeeper:1.0.0
 
-polygon:
+matic:
+  enabled: false
+polygon_usdt:
+  enabled: false
+polygon_usdc:
   enabled: false

@@ -1,4 +1,4 @@
-{{- if or .Values.polygon.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
+{{- if or .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
 ---
 apiVersion: v1
 kind: Service

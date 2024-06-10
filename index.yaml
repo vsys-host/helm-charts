@@ -3,6 +3,16 @@ entries:
   shkeeper:
   - apiVersion: v2
     appVersion: 1.19.0
+    created: "2024-06-10T13:09:59.015614877Z"
+    description: A self-hosted and open-source cryptocurrency payment processor
+    digest: 9571f6ca02e69a70f6f56abc509590f2f038480e3cbc99c81e13ac3983a64da4
+    name: shkeeper
+    type: application
+    urls:
+    - https://github.com/vsys-host/helm-charts/releases/download/shkeeper-1.4.4/shkeeper-1.4.4.tgz
+    version: 1.4.4
+  - apiVersion: v2
+    appVersion: 1.19.0
     created: "2024-06-10T12:34:16.411553898Z"
     description: A self-hosted and open-source cryptocurrency payment processor
     digest: 738a9fe68dad8b67510d6d2c0b655a47d04403bf7ec3f2c5fc91fc66ed5f1eb9

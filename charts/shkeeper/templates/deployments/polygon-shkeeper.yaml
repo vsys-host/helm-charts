@@ -41,12 +41,12 @@ spec:
           - name: POLYGON_USERNAME
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: polygon-rpc
                 key: username
           - name: POLYGON_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: polygon-rpc
                 key: password
           - name: SHKEEPER_BACKEND_KEY
             valueFrom:

@@ -1,0 +1,71 @@
+{{- if .Values.polygon_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polygon
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: polygon
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polygon
+  template:
+    metadata:
+      labels:
+        app: polygon
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.polygon_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.polygon_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+        - name: heimdall
+          image: 0xpolygon/heimdall:1.0.7
+          command:
+            - heimdalld
+            - start
+          args:
+            {{- if .Values.polygon_fullnode.mainnet }}
+            - --chain=mainnet
+            {{- else }}
+            - --chain=amoy
+            {{- end }}
+            - --rest-server
+            - --home=/var/lib/heimdall
+          ports:
+            - containerPort: 26656
+          volumeMounts:
+            - name: heimdall-config-volume
+              mountPath: /var/lib/heimdall
+
+        - name: bor
+          image: 0xpolygon/bor:1.3.2
+          command:
+            - bor
+            - server
+            - --config=/var/lib/bor/config.toml
+          ports:
+            - containerPort: 30303
+          volumeMounts:
+            - name: bor-config-volume
+              mountPath: /var/lib/bor
+
+        - name: rabbitmq
+          image: rabbitmq:3.8
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+
+      volumes:
+        - name: heimdall-config-volume
+          persistentVolumeClaim:
+            claimName: heimdall-config-volume
+        - name: bor-config-volume
+          persistentVolumeClaim:
+            claimName: bor-config-volume
+      
+{{- end }}

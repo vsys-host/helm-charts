@@ -134,3 +134,20 @@ xrp_shkeeper:
 
 xrp:
   enabled: false
+
+#
+# Polygon
+#
+
+polygon_fullnode:
+  enabled: false
+  url: http://polygon:51234
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+polygon_shkeeper:
+  image: vsyshost/polygon-shkeeper:1.0.0
+
+polygon:
+  enabled: false

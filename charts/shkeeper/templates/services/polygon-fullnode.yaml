@@ -1,0 +1,24 @@
+{{ if .Values.polygon_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polygon
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: polygon
+  ports:
+  - name: heimdall-port
+    port: 26656
+    protocol: TCP
+  - name: rabbit-port
+    port: 5672
+    protocol: TCP
+  - name: rabbit-port2
+    port: 15672
+    protocol: TCP
+  - name: bor-port
+    port: 30303
+    protocol: TCP
+{{ end }}

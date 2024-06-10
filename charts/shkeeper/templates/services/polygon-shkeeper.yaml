@@ -1,0 +1,15 @@
+{{- if or .Values.polygon.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polygon-shkeeper
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: polygon-shkeeper
+  ports:
+  - name: app-tcp
+    port: 6000
+    protocol: TCP
+{{ end }}

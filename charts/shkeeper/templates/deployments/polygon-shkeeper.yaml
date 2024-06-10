@@ -1,0 +1,105 @@
+{{- if or .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polygon-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: polygon-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polygon-shkeeper
+  template:
+    metadata:
+      labels:
+        app: polygon-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.polygon_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: POLYGON_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: username
+          - name: POLYGON_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: eth-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_POLYGON_NETWORK
+          {{- if .Values.polygon_fullnode.mainnet }}
+            value: &CURRENT_POLYGON_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_POLYGON_NETWORK_VALUE "amoy"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.polygon_fullnode.url }}
+          {{- range $name, $value := .Values.polygon_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.polygon_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: POLYGON_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: polygon-rpc
+                key: username
+          - name: POLYGON_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: polygon-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_POLYGON_NETWORK
+          {{- if .Values.polygon_fullnode.mainnet }}
+            value: *CURRENT_POLYGON_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_POLYGON_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.polygon_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.polygon_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

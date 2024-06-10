@@ -147,7 +147,7 @@ polygon_fullnode:
   tolerations: []
 
 polygon_shkeeper:
-  image: vsyshost/polygon-shkeeper:1.0.0
+  image: vsyshost/polygon-shkeeper:1.0.1
 
 matic:
   enabled: false

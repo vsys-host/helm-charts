@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 300
       containers:
       - name: java-tron
-        image: vsyshost/javatron:GreatVoyage-v4.7.4
+        image: vsyshost/javatron:GreatVoyage-v4.7.5
         ports:
         - containerPort: 8090
           name: fullnode

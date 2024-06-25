@@ -155,3 +155,24 @@ polygon_usdt:
   enabled: false
 polygon_usdc:
   enabled: false
+
+#
+# Avalanche
+#
+
+avalanche_fullnode:
+  enabled: false
+  url: http://avalanche:9650/ext/bc/C/rpc
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+avalanche_shkeeper:
+  image: vsyshost/avalanche-shkeeper:1.0.0
+
+avax:
+  enabled: false
+avalanche_usdt:
+  enabled: false
+avalanche_usdc:
+  enabled: false

@@ -69,6 +69,12 @@ spec:
             value: {{ if .Values.polygon_usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: POLYGON_USDC_WALLET
             value: {{ if .Values.polygon_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: AVAX_WALLET
+            value: {{ if .Values.avax.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: AVALANCHE_USDT_WALLET
+            value: {{ if .Values.avalanche_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: AVALANCHE_USDC_WALLET
+            value: {{ if .Values.avalanche_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:
@@ -206,6 +212,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: polygon-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled}}
+          - name: AVALANCHE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: avalanche-rpc
+                key: username
+                optional: false
+          - name: AVALANCHE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: avalanche-rpc
                 key: password
                 optional: false
           {{- end }}

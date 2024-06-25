@@ -1,0 +1,15 @@
+{{- if or .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: avalanche-shkeeper
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: avalanche-shkeeper
+  ports:
+  - name: app-tcp
+    port: 6000
+    protocol: TCP
+{{ end }}

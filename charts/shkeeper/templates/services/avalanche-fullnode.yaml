@@ -1,0 +1,15 @@
+{{ if .Values.avalanche_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: avalanche
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: avalanche
+  ports:
+  - name: avalnchego
+    port: 9650
+    protocol: TCP
+{{ end }}

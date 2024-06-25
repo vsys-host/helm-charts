@@ -1,0 +1,105 @@
+{{- if or .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avalanche-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: avalanche-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avalanche-shkeeper
+  template:
+    metadata:
+      labels:
+        app: avalanche-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.avalanche_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: AVALANCHE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: avalanche-rpc
+                key: username
+          - name: AVALANCHE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: avalanche-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_AVALANCHE_NETWORK
+          {{- if .Values.avalanche_fullnode.mainnet }}
+            value: &CURRENT_AVALANCHE_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_AVALANCHE_NETWORK_VALUE "testnet"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.avalanche_fullnode.url }}
+          {{- range $name, $value := .Values.avalanche_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.avalanche_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: AVALANCHE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: avalanche-rpc
+                key: username
+          - name: AVALANCHE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: avalanche-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_AVALANCHE_NETWORK
+          {{- if .Values.avalanche_fullnode.mainnet }}
+            value: *CURRENT_AVALANCHE_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_AVALANCHE_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.avalanche_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.avalanche_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

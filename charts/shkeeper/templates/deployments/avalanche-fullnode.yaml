@@ -1,0 +1,51 @@
+{{- if .Values.avalanche_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avalanche
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: avalanche
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avalanche
+  template:
+    metadata:
+      labels:
+        app: avalanche
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.avalanche_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.avalanche_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+        - name: avalanchego
+          image: avaplatform/avalanchego:latest
+          command:
+            - /avalanchego/build/avalanchego
+
+          args:
+            {{- if .Values.avalanche_fullnode.mainnet }}
+            - --network-id=mainnet
+            {{- else }}
+            - --network-id=fuji
+            {{- end }}
+            - --http-host=0.0.0.0
+            - --http-port=9650
+            - --http-allowed-hosts=*
+          ports:
+            - containerPort: 9650
+          volumeMounts:
+            - name: avalanchego-volume
+              mountPath: /root/.avalanchego
+
+      volumes:
+        - name: avalanchego-volume
+          persistentVolumeClaim:
+            claimName: avalanchego-volume
+      
+{{- end }}

@@ -1,0 +1,59 @@
+{{- if .Values.btc_lightning.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lightning-rtl
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: lightning-rtl
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lightning-rtl
+  template:
+    metadata:
+      labels:
+        app: lightning-rtl
+    spec:
+      containers:
+      - name: lightning-rtl
+        image:  {{ .Values.btc_lightning.rtl.image }}
+        env:
+          - name: LN_SERVER_URL
+            value: {{ .Values.btc_lightning.lnd.rest_url }}
+          - name: MACAROON_PATH
+            value: /shared/data/chain/bitcoin/{{ .Values.btc_lightning.network }}
+          - name: DB_DIRECTORY_PATH
+            value: /persistent/database
+          - name: CHANNEL_BACKUP_PATH
+            value: /persistent/backups
+          - name: RTL_SSO
+            value: "1"
+          - name: RTL_COOKIE_PATH
+            value: /shared/rtl-cookie
+          - name: LOGOUT_REDIRECT_LINK
+            value: {{ .Values.btc_lightning.rtl.logout_redirect_link }}
+          {{- range $name, $value := .Values.btc_lightning.rtl.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+        ports:
+        - containerPort: 3000
+          name: web
+
+        volumeMounts:
+        - name: lightning-rtl
+          mountPath: /persistent
+        - name: lightning-lnd
+          mountPath: /shared
+      volumes:
+      - name: lightning-rtl
+        persistentVolumeClaim:
+          claimName: lightning-rtl
+      - name: lightning-lnd
+        persistentVolumeClaim:
+          claimName: lightning-lnd
+{{- end }}

@@ -3,6 +3,7 @@
 #
 
 namespace: shkeeper
+external_ip: 0.0.0.0
 
 dev:
   imagePullSecrets:
@@ -14,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.1.55
+  image: vsyshost/shkeeper:2.2.2
   port: 5000
 
 #
@@ -24,6 +25,9 @@ shkeeper:
 btc:
   enabled: true
   mainnet: true
+  bitcoind:
+    image: vsyshost/bitcoind:27.0
+
 ltc:
   enabled: true
   mainnet: true
@@ -176,3 +180,21 @@ avalanche_usdt:
   enabled: false
 avalanche_usdc:
   enabled: false
+
+#
+# BTC Lightning
+#
+
+btc_lightning:
+  enabled: false
+  network: mainnet
+
+  lnd:
+    image: vsyshost/lndinit:v0.1.22-beta-lnd-v0.18.3-beta
+    rest_url: https://lightning-lnd-rest:8080
+    p2p_port: 9735
+
+  rtl:
+    image: shahanafarooqui/rtl:v0.15.4
+    web_url: http://rtl:3000
+    logout_redirect_link: http://shkeeper:5000/wallet/BTC-LIGHTNING

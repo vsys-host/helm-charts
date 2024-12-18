@@ -1,0 +1,29 @@
+{{- if .Values.btc_lightning.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lightning-lnd-p2p
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: lightning-lnd
+  ports:
+  - name: p2p
+    port: {{ .Values.btc_lightning.lnd.p2p_port }}
+    targetPort: p2p
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lightning-lnd-rest
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: lightning-lnd
+  ports:
+  - name: rest
+    port: 8080
+    targetPort: rest
+{{ end }}

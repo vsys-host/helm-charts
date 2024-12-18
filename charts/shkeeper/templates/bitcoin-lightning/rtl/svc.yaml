@@ -1,0 +1,16 @@
+{{- if .Values.btc_lightning.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: lightning-rtl
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: lightning-rtl
+  ports:
+  - name: web
+    port: 3000
+    targetPort: web
+  type: LoadBalancer
+
+{{ end }}

@@ -38,19 +38,22 @@ spec:
 
 
       - name: bitcoind
-        image: vsyshost/bitcoind
-        {{- if not .Values.btc.mainnet }}
+        image: {{ .Values.btc.bitcoind.image }}
         command:
         - /shkeeper/bitcoind
-        - -testnet
         - -rpcport=8332
         - -prune=550
-        - -rpcpassword=$BTC_PASSWORD
-        - -rpcuser=$BTC_USERNAME
+        - -rpcpassword=$(BTC_PASSWORD)
+        - -rpcuser=$(BTC_USERNAME)
         - -rpcbind=0.0.0.0
         - -rpcallowip=0.0.0.0/0
         - -wallet=shkeeper
         - -walletnotify=/shkeeper/walletnotify.sh %s
+        - -zmqpubrawblock=tcp://0.0.0.0:28334
+        - -zmqpubrawtx=tcp://0.0.0.0:28335
+        - -zmqpubhashblock=tcp://0.0.0.0:28336
+        {{- if not .Values.btc.mainnet }}
+        - -testnet
         {{- end }}
         env:
           - name: BTC_USERNAME

@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/name: shkeeper
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/instance: shkeeper-vsys
@@ -251,6 +253,19 @@ spec:
           - name: MONERO_DAEMON_PASS
             value: {{ .Values.monero.fullnode.monerod.password }}
           {{- end }}
+          {{- if .Values.btc_lightning.enabled }}
+          - name: LND_NETWORK
+            value: {{ .Values.btc_lightning.network }}
+          - name: LND_REST_URL
+            value: {{ .Values.btc_lightning.lnd.rest_url }}
+          - name: RTL_WEB_URL
+            value: {{ .Values.btc_lightning.rtl.web_url }}
+          - name: BITCOINLIGHTNING_WALLET
+            value: enabled
+          {{- else }}
+          - name: BITCOINLIGHTNING_WALLET
+            value: disabled
+          {{- end }}
           - name: SHKEEPER_BTC_BACKEND_KEY
             valueFrom:
               secretKeyRef:
@@ -266,7 +281,16 @@ spec:
         volumeMounts:
         - name: shkeeper-db-storage
           mountPath: /shkeeper.io/instance
+        {{- if .Values.btc_lightning.enabled }}
+        - name: lightning-lnd
+          mountPath: /lightning_shared
+        {{- end }}
       volumes:
       - name: shkeeper-db-storage
         persistentVolumeClaim:
           claimName: shkeeper-db-claim
+      {{- if .Values.btc_lightning.enabled }}
+      - name: lightning-lnd
+        persistentVolumeClaim:
+          claimName: lightning-lnd
+      {{- end }}

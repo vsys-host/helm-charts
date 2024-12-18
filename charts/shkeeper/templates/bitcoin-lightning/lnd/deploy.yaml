@@ -1,0 +1,72 @@
+{{- if .Values.btc_lightning.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lightning-lnd
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: lightning-lnd
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lightning-lnd
+  template:
+    metadata:
+      labels:
+        app: lightning-lnd
+    spec:
+      containers:
+      - name: lightning-lnd
+        image:  {{ .Values.btc_lightning.lnd.image }}
+        args:
+        - --wallet-unlock-password-file=/root/.lnd/wallet-password
+        - --externalip=$(EXTERNAL_IP)
+        - --listen=0.0.0.0:$(P2P_PORT)
+        - --restlisten=0.0.0.0:8080
+        - --tlsextradomain=lightning-lnd-rest
+        - --bitcoin.$(NETWORK)
+        - --bitcoin.node=bitcoind
+        - --bitcoind.rpchost=bitcoind
+        - --bitcoind.rpcuser=$(BITCOIND_RPCUSER)
+        - --bitcoind.rpcpass=$(BITCOIND_RPCPASS)
+        - --bitcoind.zmqpubrawblock=tcp://bitcoind:28334
+        - --bitcoind.zmqpubrawtx=tcp://bitcoind:28335
+        env:
+          - name: EXTERNAL_IP
+            value: {{ .Values.external_ip }}
+          - name: P2P_PORT
+            value: {{ .Values.btc_lightning.lnd.p2p_port | quote }}
+          - name: NETWORK
+            value: {{ .Values.btc_lightning.network }}
+          - name: BITCOIND_RPCUSER
+            valueFrom:
+              secretKeyRef:
+                name: bitcoin-rpc
+                key: username
+                optional: false
+          - name: BITCOIND_RPCPASS
+            valueFrom:
+              secretKeyRef:
+                name: bitcoin-rpc
+                key: password
+                optional: false
+          {{- range $name, $value := .Values.btc_lightning.lnd.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+        ports:
+        - containerPort: {{ .Values.btc_lightning.lnd.p2p_port }}
+          name: p2p
+        - containerPort: 8080
+          name: rest
+        volumeMounts:
+        - name: lightning-lnd
+          mountPath: /root/.lnd
+      volumes:
+      - name: lightning-lnd
+        persistentVolumeClaim:
+          claimName: lightning-lnd
+{{- end }}

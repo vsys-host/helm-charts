@@ -10,5 +10,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 3100Gi
+      storage: {{ .Values.bnb_fullnode.storage.size }}
 {{- end }}

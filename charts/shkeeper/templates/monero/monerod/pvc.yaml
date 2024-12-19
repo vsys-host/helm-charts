@@ -10,5 +10,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: {{ .Values.monero.fullnode.monerod.storage.size }}
 {{- end }}

@@ -10,5 +10,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 2000Gi
+      storage: {{ .Values.tron_fullnode.storage.size }}
 {{- end }}

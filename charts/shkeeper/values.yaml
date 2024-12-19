@@ -10,6 +10,10 @@ dev:
 
 storageClassName:
 
+mariadb: 
+  storage:
+    size: 10Gi
+
 #
 # Shkeeper
 #
@@ -17,6 +21,8 @@ storageClassName:
 shkeeper:
   image: vsyshost/shkeeper:2.2.2
   port: 5000
+  storage:
+    size: 10Gi
 
 #
 # BTC and forks
@@ -27,13 +33,20 @@ btc:
   mainnet: true
   bitcoind:
     image: vsyshost/bitcoind:27.0
+  storage:
+    size: 15Gi
+
 
 ltc:
   enabled: true
   mainnet: true
+  storage:
+    size: 15Gi
 doge:
   enabled: true
   mainnet: true
+  storage:
+    size: 15Gi
 
 #
 # Tron
@@ -47,11 +60,17 @@ tron_fullnode:
   JAVA_TOOL_OPTIONS: ""
   nodeSelector: {}
   tolerations: []
+  storage:
+    size: 2000Gi
 
 tron_shkeeper:
   image: vsyshost/tron-shkeeper:1.0.20
   host: 'tron-shkeeper'
   port: 6000
+  storage:
+    size: 
+      app_data: 1Gi
+      redis_data: 1Gi
 
 trx:
   enabled: false
@@ -70,6 +89,8 @@ eth_fullnode:
   mainnet: true
   nodeSelector: {}
   tolerations: []
+  storage:
+    size: 1000Gi
 
 ethereum_shkeeper:
   image: vsyshost/ethereum-shkeeper:1.1.6
@@ -90,6 +111,8 @@ monero:
   enabled: false
   image: vsyshost/monero:v0.18.1.2
   mainnet: true
+  storage:
+    size: 10Gi
 
   fullnode:
     enabled: false
@@ -100,6 +123,8 @@ monero:
       password: "monerod"
       nodeSelector: {}
       tolerations: []
+      storage:
+        size: 20Gi
 
 #
 # BNB
@@ -111,6 +136,8 @@ bnb_fullnode:
   mainnet: true
   nodeSelector: {}
   tolerations: []
+  storage:
+    size: 3100Gi
 
 bnb_shkeeper:
   image: vsyshost/bnb-shkeeper:1.1.4
@@ -149,6 +176,13 @@ polygon_fullnode:
   mainnet: true
   nodeSelector: {}
   tolerations: []
+  heimdall:
+    storage:
+      size: 1000Gi
+  bor:
+    storage:
+      size: 1000Gi
+
 
 polygon_shkeeper:
   image: vsyshost/polygon-shkeeper:1.0.3
@@ -170,6 +204,8 @@ avalanche_fullnode:
   mainnet: true
   nodeSelector: {}
   tolerations: []
+  storage: 
+    size: 1000Gi
 
 avalanche_shkeeper:
   image: vsyshost/avalanche-shkeeper:1.0.0
@@ -193,8 +229,12 @@ btc_lightning:
     image: vsyshost/lndinit:v0.1.22-beta-lnd-v0.18.3-beta
     rest_url: https://lightning-lnd-rest:8080
     p2p_port: 9735
+    storage:
+      size: 10Gi
 
   rtl:
     image: shahanafarooqui/rtl:v0.15.4
     web_url: http://rtl:3000
     logout_redirect_link: http://shkeeper:5000/wallet/BTC-LIGHTNING
+    storage:
+      size: 10Gi

@@ -10,7 +10,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ .Values.polygon_fullnode.heimdall.storage.size }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -23,5 +23,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ .Values.polygon_fullnode.bor.storage.size }}
 {{- end }}

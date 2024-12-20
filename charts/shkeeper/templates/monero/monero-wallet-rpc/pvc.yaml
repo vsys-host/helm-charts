@@ -1,3 +1,4 @@
+{{- if .Values.monero.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,4 +10,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.monero.storage.size }}
+{{- end }}

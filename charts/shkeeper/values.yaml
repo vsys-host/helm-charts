@@ -80,6 +80,8 @@ eth_usdt:
   enabled: false
 eth_usdc:
   enabled: false
+eth_pyusd:
+  enabled: false
 
 #
 # Monero

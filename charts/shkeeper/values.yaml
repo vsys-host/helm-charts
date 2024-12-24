@@ -19,7 +19,7 @@ mariadb:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.2.2
+  image: vsyshost/shkeeper:2.2.4
   port: 5000
   storage:
     size: 10Gi
@@ -93,13 +93,15 @@ eth_fullnode:
     size: 1000Gi
 
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.1.6
+  image: vsyshost/ethereum-shkeeper:1.1.7
 
 eth:
   enabled: false
 eth_usdt:
   enabled: false
 eth_usdc:
+  enabled: false
+eth_pyusd:
   enabled: false
 
 #
@@ -140,7 +142,7 @@ bnb_fullnode:
     size: 3100Gi
 
 bnb_shkeeper:
-  image: vsyshost/bnb-shkeeper:1.1.4
+  image: vsyshost/bnb-shkeeper:1.1.5
 
 bnb:
   enabled: false

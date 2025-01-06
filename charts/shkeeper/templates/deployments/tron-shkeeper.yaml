@@ -70,6 +70,8 @@ spec:
           {{- end }}
           # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
+          - name: DB_URI
+            value: mysql+pymysql://root:shkeeper@mariadb/tron-shkeeper?charset=utf8mb4
 
       - name: tasks
         image: {{ .Values.tron_shkeeper.image }}
@@ -109,6 +111,8 @@ spec:
           {{- end }}
           # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
+          - name: DB_URI
+            value: mysql+pymysql://root:shkeeper@mariadb/tron-shkeeper?charset=utf8mb4
 
       - name: redis
         image: redis:7

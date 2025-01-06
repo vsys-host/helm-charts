@@ -49,7 +49,7 @@ tron_fullnode:
   tolerations: []
 
 tron_shkeeper:
-  image: vsyshost/tron-shkeeper:1.1.0
+  image: vsyshost/tron-shkeeper:1.1.1
   host: 'tron-shkeeper'
   port: 6000
 

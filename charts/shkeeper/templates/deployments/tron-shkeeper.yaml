@@ -64,6 +64,10 @@ spec:
           - name: MULTISERVER_CONFIG_JSON
             value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
           {{- end }}
+          {{- if .Values.tron_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
           {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}

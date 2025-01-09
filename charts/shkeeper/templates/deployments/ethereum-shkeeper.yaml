@@ -61,6 +61,10 @@ spec:
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.eth_fullnode.url }}
+          {{- if .Values.ethereum_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.ethereum_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
           {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
@@ -93,6 +97,10 @@ spec:
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.eth_fullnode.url }}
+          {{- if .Values.ethereum_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.ethereum_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
           - name: C_FORCE_ROOT
             value: "1"
           {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}

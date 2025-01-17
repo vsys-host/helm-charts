@@ -40,6 +40,7 @@ doge:
 #
 
 tron_fullnode:
+  image: vsyshost/javatron:GreatVoyage-v4.7.7
   enabled: false
   url: http://java-tron:8090
   solidity_url: http://java-tron:8091
@@ -49,7 +50,7 @@ tron_fullnode:
   tolerations: []
 
 tron_shkeeper:
-  image: vsyshost/tron-shkeeper:1.1.5
+  image: vsyshost/tron-shkeeper:1.1.6
   host: 'tron-shkeeper'
   port: 6000
 

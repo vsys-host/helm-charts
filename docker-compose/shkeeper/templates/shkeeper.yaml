@@ -525,7 +525,7 @@ services:
 {{- /*       tron fullnode       */}}
 {{- if .Values.tron_fullnode.enabled }}
   java-tron:
-    image: vsyshost/javatron:GreatVoyage-v4.7.5
+    image: {{ .Values.tron_fullnode.image }}
     container_name: java-tron
     environment:
       JAVA_TOOL_OPTIONS: {{ .Values.tron_fullnode.JAVA_TOOL_OPTIONS }}

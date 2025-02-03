@@ -25,7 +25,7 @@ spec:
 
       # executor
       - name: xrp
-        image: xrpllabsofficial/xrpld:2.2.0
+        image: xrpllabsofficial/xrpld:2.3.1
         volumeMounts:
         - name: xrp-fullnode-config
           mountPath: /config/rippled.cfg

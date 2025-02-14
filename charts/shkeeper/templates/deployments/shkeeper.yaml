@@ -242,13 +242,13 @@ spec:
                 optional: false
           {{- end }}
           {{- if or .Values.sol.enabled .Values.solana_usdt.enabled .Values.solana_usdc.enabled .Values.solana_pyusd.enabled}}
-          - name: SOL_USERNAME
+          - name: SOLANA_USERNAME
             valueFrom:
               secretKeyRef:
                 name: sol-rpc
                 key: username
                 optional: false
-          - name: SOL_PASSWORD
+          - name: SOLANA_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: sol-rpc

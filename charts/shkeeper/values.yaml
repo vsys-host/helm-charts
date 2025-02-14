@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.2.7
+  image: vsyshost/shkeeper:2.3.0
   port: 5000
 
 #
@@ -201,3 +201,26 @@ btc_lightning:
     image: shahanafarooqui/rtl:v0.15.4
     web_url: http://rtl:3000
     logout_redirect_link: http://shkeeper:5000/wallet/BTC-LIGHTNING
+
+#
+# Solana
+#
+
+solana_fullnode:
+  enabled: false
+  url: http://here-should-be-url-to-your-solana-rpc-node/
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+solana_shkeeper:
+  image: vsyshost/solana-shkeeper:1.0.0
+
+sol:
+  enabled: false
+solana_usdt:
+  enabled: false
+solana_usdc:
+  enabled: false
+solana_pyusd:
+  enabled: false

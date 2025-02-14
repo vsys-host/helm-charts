@@ -1,0 +1,15 @@
+{{- if or .Values.sol.enabled .Values.solana_usdt.enabled .Values.solana_usdc.enabled .Values.solana_pyusd.enabled}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solana-shkeeper
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: solana-shkeeper
+  ports:
+  - name: app-tcp
+    port: 6000
+    protocol: TCP
+{{ end }}

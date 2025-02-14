@@ -54,13 +54,13 @@ spec:
                 name: shkeeper-btc-key
                 key: password
           - name: CURRENT_SOL_NETWORK
-          {{- if .Values.sol_fullnode.mainnet }}
+          {{- if .Values.solana_fullnode.mainnet }}
             value: &CURRENT_SOL_NETWORK_VALUE "main"
           {{- else }}
             value: &CURRENT_SOL_NETWORK_VALUE "devnet"
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.sol_fullnode.url }}
+            value: {{ .Values.solana_fullnode.url }}
           {{- if .Values.solana_shkeeper.external_drain_config }}
           - name: EXTERNAL_DRAIN_CONFIG
             value: {{ .Values.solana_shkeeper.external_drain_config | toJson | quote }}
@@ -90,13 +90,13 @@ spec:
                 name: shkeeper-btc-key
                 key: password
           - name: CURRENT_SOL_NETWORK
-          {{- if .Values.sol_fullnode.mainnet }}
+          {{- if .Values.solana_fullnode.mainnet }}
             value: *CURRENT_SOL_NETWORK_VALUE
           {{- else }}
             value: *CURRENT_SOL_NETWORK_VALUE
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.sol_fullnode.url }}
+            value: {{ .Values.solana_fullnode.url }}
           {{- if .Values.solana_shkeeper.external_drain_config }}
           - name: EXTERNAL_DRAIN_CONFIG
             value: {{ .Values.solana_shkeeper.external_drain_config | toJson | quote }}

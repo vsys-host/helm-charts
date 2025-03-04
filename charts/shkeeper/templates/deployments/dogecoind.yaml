@@ -8,6 +8,8 @@ metadata:
     app: dogecoind
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: dogecoind
@@ -42,11 +44,12 @@ spec:
         {{- if not .Values.doge.mainnet }}
         command:
         - /shkeeper/dogecoind
+        - -printtoconsole
         - -testnet
         - -prune=2200
         - -rpcport=22555
-        - -rpcpassword=$DOGE_PASSWORD
-        - -rpcuser=$DOGE_USERNAME
+        - -rpcpassword=$(DOGE_PASSWORD)
+        - -rpcuser=$(DOGE_USERNAME)
         - -rpcbind=0.0.0.0
         - -rpcallowip=0.0.0.0/0
         - -wallet=shkeeper

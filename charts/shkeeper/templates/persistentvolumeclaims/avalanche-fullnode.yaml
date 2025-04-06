@@ -1,5 +1,10 @@
+{{- if .Values.avalanche_fullnode.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: avalanchego-volume
   namespace: {{ .Values.namespace }}
@@ -9,4 +14,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ .Values.avalanche_fullnode.storage.size }}
+{{- end }}

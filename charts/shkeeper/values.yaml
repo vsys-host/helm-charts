@@ -10,6 +10,9 @@ dev:
 
 storageClassName:
 
+extra:
+  keepStorageAfterDelete: true
+
 mariadb: 
   storage:
     size: 10Gi

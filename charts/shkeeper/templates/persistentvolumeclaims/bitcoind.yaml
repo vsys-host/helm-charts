@@ -1,6 +1,10 @@
 {{- if .Values.btc.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: bitcoind-claim
   namespace: {{ .Values.namespace }}

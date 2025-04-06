@@ -1,6 +1,10 @@
 {{- if .Values.avalanche_fullnode.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: avalanchego-volume
   namespace: {{ .Values.namespace }}

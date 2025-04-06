@@ -1,6 +1,10 @@
 {{- if .Values.tron_fullnode.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: tron-output-directory
   namespace: {{ .Values.namespace }}

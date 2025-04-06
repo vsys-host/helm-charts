@@ -1,6 +1,10 @@
 {{- if .Values.doge.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: dogecoind-claim
   namespace: {{ .Values.namespace }}

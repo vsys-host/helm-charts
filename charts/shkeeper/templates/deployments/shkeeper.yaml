@@ -79,6 +79,14 @@ spec:
             value: {{ if .Values.avalanche_usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: AVALANCHE_USDC_WALLET
             value: {{ if .Values.avalanche_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: SOL_WALLET
+            value: {{ if .Values.sol.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: SOLANA_USDT_WALLET
+            value: {{ if .Values.solana_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: SOLANA_USDC_WALLET
+            value: {{ if .Values.solana_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: SOLANA_PYUSD_WALLET
+            value: {{ if .Values.solana_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:
@@ -230,6 +238,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: avalanche-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.sol.enabled .Values.solana_usdt.enabled .Values.solana_usdc.enabled .Values.solana_pyusd.enabled}}
+          - name: SOLANA_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: sol-rpc
+                key: username
+                optional: false
+          - name: SOLANA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: sol-rpc
                 key: password
                 optional: false
           {{- end }}

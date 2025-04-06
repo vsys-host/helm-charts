@@ -8,6 +8,8 @@ metadata:
     app: litecoind
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: litecoind
@@ -42,11 +44,12 @@ spec:
         {{- if not .Values.ltc.mainnet }}
         command:
         - /shkeeper/litecoind
+        - -printtoconsole
         - -testnet
         - -rpcport=9332
         - -prune=550
-        - -rpcpassword=$LTC_PASSWORD
-        - -rpcuser=$LTC_USERNAME
+        - -rpcpassword=$(LTC_PASSWORD)
+        - -rpcuser=$(LTC_USERNAME)
         - -rpcbind=0.0.0.0
         - -rpcallowip=0.0.0.0/0
         - -wallet=shkeeper

@@ -1,21 +1,21 @@
-{{- if or .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled}}
+{{- if or .Values.sol.enabled .Values.solana_usdt.enabled .Values.solana_usdc.enabled .Values.solana_pyusd.enabled}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ethereum-shkeeper
+  name: solana-shkeeper
   namespace: {{ .Values.namespace }}
   labels:
-    app: ethereum-shkeeper
+    app: solana-shkeeper
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ethereum-shkeeper
+      app: solana-shkeeper
   template:
     metadata:
       labels:
-        app: ethereum-shkeeper
+        app: solana-shkeeper
     spec:
       {{- with .Values.dev.imagePullSecrets }}
       imagePullSecrets:
@@ -25,7 +25,7 @@ spec:
       containers:
 
       - name: app
-        image: {{ .Values.ethereum_shkeeper.image }}
+        image: {{ .Values.solana_shkeeper.image }}
         command:
         - gunicorn
         - --access-logfile=-
@@ -38,72 +38,72 @@ spec:
         - containerPort: 6000
           name: http
         env:
-          - name: ETH_USERNAME
+          - name: SOL_USERNAME
             valueFrom:
               secretKeyRef:
                 name: eth-rpc
                 key: username
-          - name: ETH_PASSWORD
+          - name: SOL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: sol-rpc
                 key: password
           - name: SHKEEPER_BACKEND_KEY
             valueFrom:
               secretKeyRef:
                 name: shkeeper-btc-key
                 key: password
-          - name: CURRENT_ETH_NETWORK
-          {{- if .Values.eth_fullnode.mainnet }}
-            value: &CURRENT_ETH_NETWORK_VALUE "main"
+          - name: CURRENT_SOL_NETWORK
+          {{- if .Values.solana_fullnode.mainnet }}
+            value: &CURRENT_SOL_NETWORK_VALUE "main"
           {{- else }}
-            value: &CURRENT_ETH_NETWORK_VALUE "sepolia"
+            value: &CURRENT_SOL_NETWORK_VALUE "devnet"
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.eth_fullnode.url }}
-          {{- if .Values.ethereum_shkeeper.external_drain_config }}
+            value: {{ .Values.solana_fullnode.url }}
+          {{- if .Values.solana_shkeeper.external_drain_config }}
           - name: EXTERNAL_DRAIN_CONFIG
-            value: {{ .Values.ethereum_shkeeper.external_drain_config | toJson | quote }}
+            value: {{ .Values.solana_shkeeper.external_drain_config | toJson | quote }}
           {{- end }}
-          {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
+          {{- range $name, $value := .Values.solana_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
 
       - name: tasks
-        image: {{ .Values.ethereum_shkeeper.image }}
+        image: {{ .Values.solana_shkeeper.image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
-          - name: ETH_USERNAME
+          - name: SOL_USERNAME
             valueFrom:
               secretKeyRef:
                 name: eth-rpc
                 key: username
-          - name: ETH_PASSWORD
+          - name: SOL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: sol-rpc
                 key: password
           - name: SHKEEPER_BACKEND_KEY
             valueFrom:
               secretKeyRef:
                 name: shkeeper-btc-key
                 key: password
-          - name: CURRENT_ETH_NETWORK
-          {{- if .Values.eth_fullnode.mainnet }}
-            value: *CURRENT_ETH_NETWORK_VALUE
+          - name: CURRENT_SOL_NETWORK
+          {{- if .Values.solana_fullnode.mainnet }}
+            value: *CURRENT_SOL_NETWORK_VALUE
           {{- else }}
-            value: *CURRENT_ETH_NETWORK_VALUE
+            value: *CURRENT_SOL_NETWORK_VALUE
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.eth_fullnode.url }}
-          {{- if .Values.ethereum_shkeeper.external_drain_config }}
+            value: {{ .Values.solana_fullnode.url }}
+          {{- if .Values.solana_shkeeper.external_drain_config }}
           - name: EXTERNAL_DRAIN_CONFIG
-            value: {{ .Values.ethereum_shkeeper.external_drain_config | toJson | quote }}
+            value: {{ .Values.solana_shkeeper.external_drain_config | toJson | quote }}
           {{- end }}
           - name: C_FORCE_ROOT
             value: "1"
-          {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
+          {{- range $name, $value := .Values.solana_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}

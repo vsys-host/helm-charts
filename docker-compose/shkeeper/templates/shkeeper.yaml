@@ -1,0 +1,755 @@
+---
+services:
+  shkeeper:
+    image: "{{ .Values.shkeeper.image }}"
+    container_name: shkeeper
+    ports:
+      - 5000:5000
+    environment:
+      SHKEEPER_BACKEND_KEY: "key"
+      BTC_NGINX_URL: http://nginx
+      LTC_NGINX_URL: http://nginx
+      DOGE_NGINX_URL: http://nginx
+      TRON_API_SERVER_HOST: "{{ .Values.tron_shkeeper.host }}"
+      TRON_API_SERVER_PORT: "{{ .Values.tron_shkeeper.port }}"
+      BTC_WALLET: "{{- if .Values.btc.enabled }}enabled{{ else }}disabled{{- end }}"
+      LTC_WALLET: "{{- if .Values.ltc.enabled }}enabled{{ else }}disabled{{- end }}"
+      DOGE_WALLET: "{{- if .Values.doge.enabled }}enabled{{ else }}disabled{{- end }}"
+      TRX_WALLET: "{{- if .Values.trx.enabled }}enabled{{ else }}disabled{{- end }}"
+      USDT_WALLET: "{{- if .Values.usdt.enabled }}enabled{{ else }}disabled{{- end }}"
+      USDC_WALLET: "{{- if .Values.usdc.enabled }}enabled{{ else }}disabled{{- end }}"
+      ETH_WALLET: "{{- if .Values.eth.enabled }}enabled{{ else }}disabled{{- end }}"
+      ETH_USDT_WALLET: "{{- if .Values.eth_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
+      ETH_USDC_WALLET: "{{- if .Values.eth_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
+      ETH_PYUSD_WALLET: "{{- if .Values.eth_pyusd.enabled }}enabled{{ else }}disabled{{- end }}"
+      MONERO_WALLET: "{{- if .Values.monero.enabled }}enabled{{ else }}disabled{{- end }}"
+      BNB_WALLET:  "{{- if .Values.bnb.enabled }}enabled{{ else }}disabled{{- end }}"
+      BNB_USDT_WALLET: "{{- if .Values.bnb_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
+      BNB_USDC_WALLET: "{{- if .Values.bnb_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
+      XRP_WALLET: "{{- if .Values.xrp.enabled }}enabled{{ else }}disabled{{- end }}"
+      MATIC_WALLET: "{{- if .Values.matic.enabled }}enabled{{ else }}disabled{{- end }}"
+      POLYGON_USDT_WALLET: "{{- if .Values.polygon_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
+      POLYGON_USDC_WALLET: "{{- if .Values.polygon_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
+      AVAX_WALLET: "{{- if .Values.avax.enabled }}enabled{{ else }}disabled{{ end }}"
+      AVALANCHE_USDT_WALLET: "{{- if .Values.avalanche_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
+      AVALANCHE_USDC_WALLET: "{{- if .Values.avalanche_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
+      {{- if .Values.btc.enabled }}
+      BTC_USERNAME: "test"
+      BTC_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.ltc.enabled }}
+      LTC_USERNAME: "test"
+      LTC_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.doge.enabled }}
+      DOGE_USERNAME: "test"
+      DOGE_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.trx.enabled }}
+      TRX_USERNAME: "test"
+      TRX_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.usdt.enabled }}
+      USDT_USERNAME: "test"
+      USDT_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.usdc.enabled }}
+      USDC_USERNAME: "test"
+      USDC_PASSWORD: "test"
+      {{- end }}
+      {{- if or .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled }}
+      ETH_USERNAME: "test"
+      ETH_PASSWORD: "test"
+      {{- end }}
+      {{- if or .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled }}
+      BNB_USERNAME: "test"
+      BNB_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.xrp.enabled}}
+      XRP_USERNAME: "test"
+      XRP_PASSWORD: "test"
+      {{- end }}
+      {{- if or .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
+      POLYGON_USERNAME: "test"
+      POLYGON_PASSWORD: "test"
+      {{- end }}
+      {{- if or .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled}}
+      AVALANCHE_USERNAME: "test"
+      AVALANCHE_PASSWORD: "test"
+      {{- end }}
+      {{- if .Values.monero.enabled }}
+      MONERO_WALLET_RPC_USER: "test"
+      MONERO_WALLET_RPC_PASS: "test"
+      MONERO_DAEMON_HOST: {{ .Values.monero.fullnode.monerod.host | quote  }}
+      MONERO_DAEMON_PORT: {{ .Values.monero.fullnode.monerod.port | quote }}
+      MONERO_DAEMON_USER: "{{ .Values.monero.fullnode.monerod.user }}"
+      MONERO_DAEMON_PASS: "{{ .Values.monero.fullnode.monerod.password }}"
+      {{- end }}
+      {{- if .Values.btc_lightning.enabled }}
+      LND_NETWORK: "{{ .Values.btc_lightning.network }}"
+      LND_REST_URL: "{{ .Values.btc_lightning.lnd.rest_url }}"
+      RTL_WEB_URL: "{{ .Values.btc_lightning.rtl.web_url }}"
+      BITCOINLIGHTNING_WALLET: "enabled"
+      {{- else }}
+      BITCOINLIGHTNING_WALLET: "disabled"
+      {{- end }}
+      SHKEEPER_BTC_BACKEND_KEY: "key"
+      TRON_MULTISERVER_GUI: {{ .Values.shkeeper.tron_multiserver_gui | default "" | quote }}
+      {{- range $name, $value := .Values.shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    volumes:
+      - ./shkeeper-db-storage:/shkeeper.io/instance
+      {{- if .Values.btc_lightning.enabled }}
+      - ./lightning-lnd:/lightning_shared
+      {{- end }}
+      {{- /*       Shkeeper volume       */}}
+      {{- if or .Values.btc.enabled .Values.ltc.enabled .Values.doge.enabled}}
+      - backup_volume:/backup
+      {{- end }}
+
+
+  {{- if .Values.btc.enabled }}
+  bitcoind:
+    image: "{{ .Values.btc.bitcoind.image }}"
+    container_name: bitcoind
+    environment:
+      BTC_USERNAME: "test"
+      BTC_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+    command:
+      - /shkeeper/bitcoind
+      - -rpcport=8332
+      - -prune=550
+      - -rpcpassword={{ .Values.btc.btc_password  }}
+      - -rpcuser=test
+      - -rpcbind=0.0.0.0
+      - -rpcallowip=0.0.0.0/0
+      - -wallet=shkeeper
+      - -walletnotify='/shkeeper/walletnotify.sh %s'
+      - -zmqpubrawblock=tcp://0.0.0.0:28334
+      - -zmqpubrawtx=tcp://0.0.0.0:28335
+      - -zmqpubhashblock=tcp://0.0.0.0:28336
+      - -testnet={{ if not .Values.btc.mainnet }}true{{ else }}false{{ end }}
+    volumes:
+      - ./bitcoind-storage:/root/.bitcoin
+  {{- end }}
+  {{- if .Values.doge.enabled }}
+  dogecoind:
+    image: vsyshost/dogecoind
+    container_name: dogecoind
+    {{- if not .Values.doge.mainnet }}
+    command:
+        - /shkeeper/dogecoind
+        - -testnet
+        - -prune=2200
+        - -rpcport=22555
+        - -rpcpassword=$DOGE_PASSWORD
+        - -rpcuser=$DOGE_USERNAME
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        - -wallet=shkeeper
+        - -walletnotify=/shkeeper/walletnotify.sh %s
+    {{- end }}
+    environment:
+      DOGE_USERNAME: "test"
+      DOGE_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+    volumes:
+      - ./dogecoind-storage:/root/.dogecoin
+  {{- end }}
+  {{- if .Values.ltc.enabled }}
+  litecoind:
+    image: vsyshost/litecoind
+    container_name: litecoind
+    {{- if not .Values.ltc.mainnet }}
+    command:
+        - /shkeeper/litecoind
+        - -testnet
+        - -rpcport=9332
+        - -prune=550
+        - -rpcpassword=$LTC_PASSWORD
+        - -rpcuser=$LTC_USERNAME
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        - -wallet=shkeeper
+        - -walletnotify=/shkeeper/walletnotify.sh %s
+    {{- end }}
+    environment:
+      LTC_USERNAME: test
+      LTC_PASSWORD: test
+      SHKEEPER_BACKEND_KEY: "key"
+    volumes:
+      - ./litecoind-storage:/root/.litecoin
+  {{- end }}
+  {{- if or .Values.btc.enabled .Values.ltc.enabled .Values.doge.enabled}}
+  nginx:
+    image: nginx
+    container_name: nginx
+    environment:
+      SHKEEPER_BACKEND_KEY: "key"
+      HTTP_X: "http_X_"
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./conf/default.conf.template.conf:/home/default.conf
+      - backup_volume:/backup
+    command: /bin/sh -c "envsubst < /home/default.conf > /etc/nginx/conf.d/default.conf &&   nginx -g 'daemon off;'"
+  {{- end }}
+{{- if or  .Values.trx.enabled .Values.eth.enabled .Values.bnb.enabled .Values.xrp.enabled .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.avax.enabled }}
+  mariadb:
+    image: mariadb:10.9.3
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: shkeeper
+    volumes:
+      - ./mariadb-storage:/var/lib/mysql
+      - ./conf/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+{{- end }}
+{{- if .Values.avalanche_fullnode.enabled }}
+  avalnche:
+    image: avaplatform/avalanchego:latest
+    container_name: avalnche
+    environment:
+    {{- if .Values.avalanche_fullnode.mainnet }}
+      - --network-id=mainnet
+    {{- else }}
+      - --network-id=fuji
+    {{- end }}
+      - --http-host=0.0.0.0
+      - --http-port=9650
+      - --http-allowed-hosts=*
+    volumes:
+      - ./avalanche-fullnode:/root/.avalanchego
+{{- end }}
+
+{{- if or .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled}}
+  avalanche-shkeeper:
+    image: {{ .Values.avalanche_shkeeper.image }}
+    container_name: avalanche-shkeeper
+    environment:
+      REDIS_HOST: redis
+      AVALANCHE_USERNAME: "test"
+      AVALANCHE_PASSWORD: "test"
+      {{- if .Values.avalanche_fullnode.mainnet }}
+      CURRENT_AVALANCHE_NETWORK: "main"
+      {{- else }}
+      CURRENT_AVALANCHE_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: "{{ .Values.avalanche_fullnode.url }}"
+      {{- range $name, $value := .Values.avalanche_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+      SHKEEPER_BACKEND_KEY: "key"
+    depends_on:
+      - mariadb
+    command: >
+      bash -c "sleep 30 && gunicorn
+      --access-logfile=-
+      --workers=1
+      --threads=16
+      --timeout=600
+      --bind=0.0.0.0:6000
+      run:server"
+  redis:
+    image: redis
+    container_name: redis
+  celery_worker:
+    image: {{ .Values.avalanche_shkeeper.image }}
+    container_name: celery_worker
+    depends_on:
+      - mariadb
+    environment:
+      REDIS_HOST: redis
+      AVALANCHE_USERNAME: "test"
+      AVALANCHE_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.avalanche_fullnode.mainnet }}
+      CURRENT_AVALANCHE_NETWORK: "main"
+      {{- else }}
+      CURRENT_AVALANCHE_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: "{{ .Values.avalanche_fullnode.url }}"
+      C_FORCE_ROOT: 1
+      {{- range $name, $value := .Values.avalanche_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+{{- end }}
+{{- /*       bnb fullnode       */}}
+{{- if .Values.bnb_fullnode.enabled }}
+  geth:
+    image: vsyshost/bnb-geth:1.2.22
+    container_name: bnb
+    command: >
+      ./geth
+      {{- if .Values.bnb_fullnode.mainnet }}
+      --config=./config-mainnet.toml
+      {{- else }}
+      --config=./config-testnet.toml
+      {{- end }}
+      --allow-insecure-unlock
+      --datadir=/datadir
+      --cache=8000
+      --rpc.allow-unprotected-txs
+      --history.transactions=0
+      --maxpeers=250
+      --allow-insecure-unlock
+      --http
+      --http.api="db,eth,net,web3,personal,web3"
+      --http.addr=0.0.0.0
+      --http.vhosts=*
+      --ws
+      --ws.addr=0.0.0.0
+      --syncmode=full
+      --db.engine=pebble
+      --state.scheme=path
+    volumes:
+      - ./bnb-datadir:/datadir
+{{- end }}
+{{- /*       bnb shkeeper      */}}
+{{- if or .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled}}
+  app:
+    image: {{ .Values.bnb_shkeeper.image }}
+    container_name: bnb-shkeeper
+    environment:
+      REDIS_HOST: redis
+      BNB_USERNAME: "test"
+      BNB_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.bnb_fullnode.mainnet }}
+      CURRENT_BNB_NETWORK: "main"
+      {{- else }}
+      CURRENT_BNB_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: "{{ .Values.bnb_fullnode.url }}"
+      {{- range $name, $value := .Values.bnb_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && gunicorn --access-logfile=- --workers=1 --threads=16 --timeout=600 --bind=0.0.0.0:6000 run:server"
+  tasks:
+    image: {{ .Values.bnb_shkeeper.image }}
+    container_name: tasks
+    environment:
+      REDIS_HOST: redis
+      BNB_USERNAME: "test"
+      BNB_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.bnb_fullnode.mainnet }}
+      CURRENT_BNB_NETWORK: "main"
+      {{- else }}
+      CURRENT_BNB_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: "{{ .Values.bnb_fullnode.url }}"
+      C_FORCE_ROOT: 1
+      {{- range $name, $value := .Values.bnb_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+  {{- if not (or  .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled) }}
+  redis:
+    image: redis
+    container_name: redis
+  {{- end }}
+{{- end }}
+{{- /*       ethereum fullnode       */}}
+{{- if .Values.eth_fullnode.enabled }}
+  ethereum:
+    image: ethereum/client-go:alltools-stable
+    container_name: ethereum
+    command: >
+      geth
+      {{- if .Values.eth_fullnode.mainnet }}
+      --mainnet
+      {{- else }}
+      --sepolias
+      {{- end }}
+      --syncmode=snap
+      --allow-insecure-unlock
+      --datadir=/datadir
+      --http
+      --http.api="db,eth,net,web3,personal,web3"
+      --http.addr=0.0.0.0
+      --http.vhosts=*
+      --ws
+      --ws.addr=0.0.0.0
+    volumes:
+      - ./ethereum-datadir:/datadir
+  prysm-beacon:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:v5.0.1
+    container_name: prysm-beacon
+    command:
+          - --datadir=/datadir
+          - --rpc-host=0.0.0.0
+          - --grpc-gateway-host=0.0.0.0
+          - --monitoring-host=0.0.0.0
+          - --execution-endpoint=/datadir/geth.ipc
+          - --accept-terms-of-use
+          {{- if .Values.eth_fullnode.mainnet }}
+          - --mainnet
+          - --checkpoint-sync-url=https://sync.invis.tools
+          - --genesis-beacon-api-url=https://sync.invis.tools
+          {{- else }}
+          - --sepolia
+          - --checkpoint-sync-url=https://sepolia.beaconstate.info
+          - --genesis-beacon-api-url=https://sepolia.beaconstate.info
+          {{- end }}
+    restart: unless-stopped
+    volumes:
+      - ./ethereum-datadir:/datadir
+{{- end }}
+{{- /*       Ethereum shkeeper       */}}
+{{- if or .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled}}
+  ethereum-shkeeper:
+    image: {{ .Values.ethereum_shkeeper.image }}
+    container_name: ethereum-shkeeper
+    environment:
+      REDIS_HOST: redis
+      ETH_USERNAME: "test"
+      ETH_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.eth_fullnode.mainnet }}
+      CURRENT_ETH_NETWORK: "main"
+      {{- else }}
+      CURRENT_ETH_NETWORK: "sepolia"
+      {{- end }}
+      FULLNODE_URL: {{ .Values.eth_fullnode.url }}
+      {{- if .Values.ethereum_shkeeper.external_drain_config }}
+      EXTERNAL_DRAIN_CONFIG: {{ .Values.ethereum_shkeeper.external_drain_config | toJson | quote }}
+      {{- end }}
+      {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && gunicorn
+      --access-logfile=-
+      --workers=1
+      --threads=16
+      --timeout=600
+      --bind=0.0.0.0:6000
+      run:server"
+  ethereum-tasks:
+    image: {{ .Values.ethereum_shkeeper.image }}
+    container_name: ethereum-tasks
+    environment:
+      REDIS_HOST: redis
+      ETH_USERNAME: "test"
+      ETH_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.eth_fullnode.mainnet }}
+      CURRENT_ETH_NETWORK: "mainnet"
+      {{- end }}
+      FULLNODE_URL: {{ .Values.eth_fullnode.url }}
+      C_FORCE_ROOT: 1
+      {{- range $name, $value := .Values.ethereum_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+  {{- if not (or  .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled) }}
+  redis:
+    image: redis
+    container_name: redis
+  {{- end }}
+{{- end }}
+{{- /*       polygon fullnode       */}}
+{{- if .Values.polygon_fullnode.enabled }}
+  polygon:
+    image: 0xpolygon/heimdall:1.0.7
+    container_name: polygon
+    volumes:
+      - ./heimdall-config-volume:/var/lib/heimdall
+    command: >
+      start
+      {{- if .Values.polygon_fullnode.mainnet }}
+      --chain=mainnet
+      {{- else }}
+      --chain=amoy
+      {{- end }}
+      --rest-server
+      --home=/var/lib/heimdall
+  bor:
+    image: 0xpolygon/bor:1.3.2
+    container_name: bor
+    volumes:
+      - ./bor-config-volume:/var/lib/bor
+    command: >
+      server
+      --config=/var/lib/bor/config.toml
+  rabbitmq:
+    image: rabbitmq:3.8
+    container_name: rabbitmq
+{{- end }}
+{{- /*       Polygon shkeeper       */}}
+{{- if or .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled}}
+  polygon-shkeeper:
+    image: {{ .Values.polygon_shkeeper.image }}
+    container_name: polygon-shkeeper
+    environment:
+      REDIS_HOST: redis
+      POLYGON_USERNAME: "test"
+      POLYGON_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.polygon_fullnode.mainnet }}
+      CURRENT_POLYGON_NETWORK: "mainnet"
+      {{- else }}
+      CURRENT_POLYGON_NETWORK: "amoy"
+      {{- end }}
+      FULLNODE_URL: "{{ .Values.polygon_fullnode.url }}"
+      {{- range $name, $value := .Values.polygon_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && gunicorn --access-logfile=- --workers=1 --threads=16 --timeout=600 --bind=0.0.0.0:6000 run:server"
+  polygon-tasks:
+    image: {{ .Values.polygon_shkeeper.image }}
+    container_name: polygon-tasks
+    environment:
+      REDIS_HOST: redis
+      POLYGON_USERNAME: "test"
+      POLYGON_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.polygon_fullnode.mainnet }}
+      CURRENT_POLYGON_NETWORK: "mainnet"
+      {{- end }}
+      FULLNODE_URL: "{{ .Values.polygon_fullnode.url }}"
+      C_FORCE_ROOT: 1
+      {{- range $name, $value := .Values.polygon_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+{{- end }}
+{{- /*       tron fullnode       */}}
+{{- if .Values.tron_fullnode.enabled }}
+  java-tron:
+    image: {{ .Values.tron_fullnode.image }}
+    container_name: java-tron
+    environment:
+      JAVA_TOOL_OPTIONS: {{ .Values.tron_fullnode.JAVA_TOOL_OPTIONS }}
+      {{- if .Values.tron_fullnode.mainnet }}
+      NETWORK: mainnet
+      {{- else }}
+      NETWORK: nile
+      {{- end }}
+      {{- range $name, $value := .Values.tron_fullnode.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    volumes:
+      - ./java-tron:/data
+{{- end }}
+{{- /*       tron shkeeper       */}}
+{{- if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled}}
+  tron-shkeeper:
+    image: {{ .Values.tron_shkeeper.image }}
+    container_name: tron-shkeeper
+    environment:
+      REDIS_HOST: redis
+      BTC_USERNAME: "test"
+      BTC_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      SHKEEPER_HOST: "shkeeper:5000"
+      FULLNODE_URL: {{ .Values.tron_fullnode.url }}
+      {{- if .Values.tron_shkeeper.multiserver_config_json }}
+      MULTISERVER_CONFIG_JSON: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
+      {{- end }}
+      {{- if .Values.tron_shkeeper.external_drain_config }}
+      EXTERNAL_DRAIN_CONFIG: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
+      {{- end }}
+      {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+      DB_URI: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
+    command: >
+      bash -c "sleep 30 && gunicorn --access-logfile=- --workers=1 --threads=16 --timeout=600 --bind=0.0.0.0:6000 run:server"
+
+  tron_tasks:
+    image: {{ .Values.tron_shkeeper.image }}
+    container_name: tron_tasks
+    volumes:
+      - ./tron-shkeeper-data:/app/data
+    environment:
+      REDIS_HOST: redis
+      BTC_USERNAME: "test"
+      BTC_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      SHKEEPER_HOST: "shkeeper:5000"
+      FULLNODE_URL: {{ .Values.tron_fullnode.url }}
+      C_FORCE_ROOT: 1
+      {{- if .Values.tron_shkeeper.multiserver_config_json }}
+      MULTISERVER_CONFIG_JSON: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
+      {{- end }}
+      {{- if .Values.tron_shkeeper.external_drain_config }}
+      EXTERNAL_DRAIN_CONFIG: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
+      {{- end }}
+      {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+      DB_URI: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+  {{- if not (or  .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled) }}
+  redis:
+    image: redis
+    container_name: redis
+  {{- end }}
+{{- end }}
+{{- /*       xrp fullnode       */}}
+{{- if .Values.xrp_fullnode.enabled }}
+  xrp:
+    image: xrpllabsofficial/xrpld:2.2.0
+    container_name: xrp
+    volumes:
+      - ./conf/rippled.cfg:/config/rippled.cfg
+      - ./conf/validators.txt:/config/validators.txt
+{{- end }}
+{{- /*       xrp shkeeper       */}}
+{{- if .Values.xrp.enabled}}
+  xrp-shkeeper:
+    image: {{ .Values.xrp_shkeeper.image }}
+    container_name: xrp-shkeeper
+    environment:
+      REDIS_HOST: redis
+      XRP_USERNAME: "test"
+      XRP_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.xrp_fullnode.mainnet }}
+      XRP_NETWORK: "main"
+      {{- else }}
+      XRP_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: {{ .Values.xrp_fullnode.url }}
+      {{- range $name, $value := .Values.xrp_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && gunicorn --access-logfile=- --workers=1 --threads=16 --timeout=600 --bind=0.0.0.0:6000 run:server"
+  xrp-tasks:
+    image: {{ .Values.xrp_shkeeper.image }}
+    container_name: xrp-tasks
+    environment:
+      REDIS_HOST: redis
+      XRP_USERNAME: "test"
+      XRP_PASSWORD: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+      {{- if .Values.xrp_fullnode.mainnet }}
+      XRP_NETWORK: "mainnet"
+      {{- else }}
+      XRP_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: {{ .Values.xrp_fullnode.url }}
+      C_FORCE_ROOT: 1
+      {{- range $name, $value := .Values.xrp_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+  {{- if not (or  .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled) }}
+  redis:
+    image: redis
+    container_name: redis
+  {{- end }}
+{{- end }}
+{{- /*       monerod       */}}
+{{- if .Values.monero.fullnode.enabled }}
+  monerod:
+    image: {{ .Values.monero.image }}
+    container_name: monerod
+    volumes:
+      - ./monerod-datadir:/root/.bitmonero
+    command: >
+      /monero/monerod
+      --confirm-external-bind
+      --rpc-bind-ip=0.0.0.0
+      --rpc-bind-port={{ .Values.monero.fullnode.monerod.port }}
+      --rpc-login={{ .Values.monero.fullnode.monerod.user }}:{{ .Values.monero.fullnode.monerod.password }}
+      --non-interactive
+      --prune-blockchain
+      {{- if not .Values.monero.mainnet }}
+      --stagenet
+      {{- end }}
+{{- end }}
+{{- /*       monero-wallet-rpc       */}}
+{{- if .Values.monero.enabled }}
+  monero-wallet-rpc:
+    image: {{ .Values.monero.image }}
+    container_name: monero-wallet-rpc
+    volumes:
+      - ./monero-wallet-rpc-datadir:/monero/persistent
+    environment:
+      MONERO_WALLET_RPC_USER: "test"
+      MONERO_WALLET_RPC_PASS: "test"
+      SHKEEPER_BACKEND_KEY: "key"
+    command: >
+      /monero/start-monero-wallet-rpc.sh
+      --daemon-address={{ .Values.monero.fullnode.monerod.host }}:{{ .Values.monero.fullnode.monerod.port }}
+      --daemon-login={{ .Values.monero.fullnode.monerod.user }}:{{ .Values.monero.fullnode.monerod.password }}
+      --confirm-external-bind
+      --rpc-bind-ip=0.0.0.0
+      --rpc-bind-port=2222
+      --rpc-login=$$MONERO_WALLET_RPC_USER:$$MONERO_WALLET_RPC_PASS
+      --log-file=/monero/persistent/logs/monero-wallet-rpc.log
+      --wallet-dir=/monero/persistent/wallet
+      --tx-notify="/monero/walletnotify.sh %s"
+      --max-log-files=10
+      --trusted-daemon
+      --non-interactive
+      {{- if not .Values.monero.mainnet }}
+      --stagenet
+      {{- end }}
+{{- end }}
+{{- /*       bitcoin-lightning       */}}
+{{- if .Values.btc_lightning.enabled }}
+  lightning-lnd:
+    image: {{ .Values.btc_lightning.lnd.image }}
+    container_name: lightning-lnd
+    environment:
+      EXTERNAL_IP: {{ .Values.external_ip }}
+      P2P_PORT: {{ .Values.btc_lightning.lnd.p2p_port | quote }}
+      NETWORK: {{ .Values.btc_lightning.network }}
+      BITCOIND_RPCUSER: "username"
+      BITCOIND_RPCPASS: "password"
+      {{- range $name, $value := .Values.btc_lightning.lnd.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    volumes:
+      - ./lightning-lnd:/root/.lnd
+    command: >
+      wallet-unlock-password-file=/root/.lnd/wallet-password
+      --externalip={{ .Values.external_ip }}
+      --listen=0.0.0.0:{{ .Values.btc_lightning.lnd.p2p_port }}
+      --restlisten=0.0.0.0:8080
+      --tlsextradomain=lightning-lnd-rest
+      --bitcoin.{{ .Values.btc_lightning.network }}
+      --bitcoin.node=bitcoind
+      --bitcoind.rpchost=bitcoind
+      --bitcoind.rpcuser=$${BITCOIND_RPCUSER}
+      --bitcoind.rpcpass=$${BITCOIND_RPCPASS}
+      --bitcoind.zmqpubrawblock=tcp://bitcoind:28334
+      --bitcoind.zmqpubrawtx=tcp://bitcoind:28335
+{{- end }}
+{{- if .Values.btc_lightning.enabled }}
+  lightning-rtl:
+    image: {{ .Values.btc_lightning.rtl.image }}
+    container_name: lightning-rtl
+    volumes:
+      - ./lightning-rtl:/persistent
+      - ./lightning-lnd:/shared
+    environment:
+      LN_SERVER_URL: {{ .Values.btc_lightning.lnd.rest_url }}
+      MACAROON_PATH: /shared/data/chain/bitcoin/{{ .Values.btc_lightning.network }}
+      DB_DIRECTORY_PATH: /persistent/database
+      CHANNEL_BACKUP_PATH: /persistent/backups
+      RTL_SSO: 1
+      RTL_COOKIE_PATH: /shared/rtl-cookie
+      LOGOUT_REDIRECT_LINK: {{ .Values.btc_lightning.rtl.logout_redirect_link }}
+      {{- range $name, $value := .Values.btc_lightning.rtl.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+{{- end }}
+{{- if or .Values.btc.enabled .Values.ltc.enabled .Values.doge.enabled}}
+volumes:
+  backup_volume:
+{{- end }}

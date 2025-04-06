@@ -64,12 +64,18 @@ spec:
           - name: MULTISERVER_CONFIG_JSON
             value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
           {{- end }}
+          {{- if .Values.tron_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
           {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
           # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
+          - name: DB_URI
+            value: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
 
       - name: tasks
         image: {{ .Values.tron_shkeeper.image }}
@@ -103,12 +109,18 @@ spec:
           - name: MULTISERVER_CONFIG_JSON
             value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
           {{- end }}
+          {{- if .Values.tron_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
           {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
           # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
+          - name: DB_URI
+            value: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
 
       - name: redis
         image: redis:7

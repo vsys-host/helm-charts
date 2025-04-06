@@ -1,0 +1,4 @@
+apiVersion: v2
+name: docker-compose-generator
+description: A Helm chart to generate a docker-compose.yml
+version: 0.1.0

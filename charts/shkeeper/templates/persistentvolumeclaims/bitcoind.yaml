@@ -1,3 +1,5 @@
+{{ if .Values.btc.bitcoind.storage.size }}
+{{ if or .Values.btc.enabled .Values.keepUnusedEssentialPVCs }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,4 +11,6 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 15Gi
+      storage: {{ .Values.btc.bitcoind.storage.size }}
+{{ end }}
+{{ end }}

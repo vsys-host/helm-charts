@@ -1,3 +1,5 @@
+{{ if .Values.tron_shkeeper.storage.size }}
+{{ if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled .Values.keepUnusedEssentialPVCs }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,7 +11,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.tron_shkeeper.storage.size }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,4 +24,6 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.tron_shkeeper.redis.storage.size }}
+{{ end }}
+{{ end }}

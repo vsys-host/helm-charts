@@ -1,3 +1,4 @@
+{{ if .Values.avalanche_fullnode.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,4 +10,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ .Values.avalanche_fullnode.storage.size }}
+{{ end }}

@@ -1,3 +1,6 @@
+{{ if .Values.doge.dogecoind.storage.size }}
+
+{{ if or .Values.doge.enabled .Values.keepUnusedEssentialPVCs }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,4 +12,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 15Gi
+      storage: {{ .Values.doge.dogecoind.storage.size }}
+{{ end }}
+
+{{ end }}

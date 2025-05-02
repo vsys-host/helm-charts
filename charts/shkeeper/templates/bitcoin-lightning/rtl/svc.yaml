@@ -9,7 +9,7 @@ spec:
     app: lightning-rtl
   ports:
   - name: web
-    port: 3000
+    port: {{ .Values.btc_lightning.rtl.web_port }}
     targetPort: web
   type: LoadBalancer
 

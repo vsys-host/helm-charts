@@ -40,7 +40,7 @@ doge:
 #
 
 tron_fullnode:
-  image: vsyshost/javatron:GreatVoyage-v4.7.7
+  image: vsyshost/javatron:GreatVoyage-v4.8.0
   enabled: false
   url: http://java-tron:8090
   solidity_url: http://java-tron:8091

@@ -25,7 +25,7 @@ spec:
 
       # executor
       - name: geth
-        image: vsyshost/bnb-geth:1.3.1
+        image: vsyshost/bnb-geth:1.3.2
         command:
           - ./geth
           {{- if .Values.bnb_fullnode.mainnet }}

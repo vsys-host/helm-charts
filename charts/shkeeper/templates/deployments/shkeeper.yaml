@@ -45,6 +45,8 @@ spec:
             value: {{ if .Values.doge.enabled }}enabled{{ else }}disabled{{ end }}
           - name: TRX_WALLET
             value: {{ if .Values.trx.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: TRX_READ_MODE
+            value: {{ if .Values.trx.read_mode }}enabled{{ else }}disabled{{ end }}
           - name: USDT_WALLET
             value: {{ if .Values.usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: USDC_WALLET

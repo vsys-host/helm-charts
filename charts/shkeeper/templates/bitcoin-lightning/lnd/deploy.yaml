@@ -23,7 +23,7 @@ spec:
         image:  {{ .Values.btc_lightning.lnd.image }}
         args:
         - --wallet-unlock-password-file=/root/.lnd/wallet-password
-        - --externalip=$(EXTERNAL_IP)
+        - --externalip=$(EXTERNAL_IP):$(P2P_PORT)
         - --listen=0.0.0.0:$(P2P_PORT)
         - --restlisten=0.0.0.0:8080
         - --tlsextradomain=lightning-lnd-rest

@@ -16,6 +16,7 @@ services:
       LTC_WALLET: "{{- if .Values.ltc.enabled }}enabled{{ else }}disabled{{- end }}"
       DOGE_WALLET: "{{- if .Values.doge.enabled }}enabled{{ else }}disabled{{- end }}"
       TRX_WALLET: "{{- if .Values.trx.enabled }}enabled{{ else }}disabled{{- end }}"
+      TRX_READ_MODE: "{{- if .Values.trx.read_mode }}enabled{{ else }}disabled{{- end }}"
       USDT_WALLET: "{{- if .Values.usdt.enabled }}enabled{{ else }}disabled{{- end }}"
       USDC_WALLET: "{{- if .Values.usdc.enabled }}enabled{{ else }}disabled{{- end }}"
       ETH_WALLET: "{{- if .Values.eth.enabled }}enabled{{ else }}disabled{{- end }}"

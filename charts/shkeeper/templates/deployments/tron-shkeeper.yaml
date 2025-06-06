@@ -60,6 +60,8 @@ spec:
             value: "shkeeper:5000"
           - name: FULLNODE_URL
             value: {{ .Values.tron_fullnode.url }}
+          - name: READ_MODE
+            value: {{ if .Values.trx.read_mode }}enabled{{ else }}disabled{{ end }}
           {{- if .Values.tron_shkeeper.multiserver_config_json }}
           - name: MULTISERVER_CONFIG_JSON
             value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}

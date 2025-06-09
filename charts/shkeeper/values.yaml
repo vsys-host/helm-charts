@@ -193,7 +193,7 @@ btc_lightning:
   network: mainnet
 
   lnd:
-    image: vsyshost/lndinit:v0.1.22-beta-lnd-v0.18.3-beta
+    image: vsyshost/lndinit:v0.1.28-beta-lnd-v0.19.0-beta
     rest_url: https://lightning-lnd-rest:8080
     # p2p_port should be uniq for for each namespace
     p2p_port: 9735

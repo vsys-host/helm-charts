@@ -1,5 +1,10 @@
+{{- if .Values.polygon_fullnode.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: heimdall-config-volume
   namespace: {{ .Values.namespace }}
@@ -9,10 +14,14 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ .Values.polygon_fullnode.heimdall.storage.size }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: bor-config-volume
   namespace: {{ .Values.namespace }}
@@ -22,4 +31,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1000Gi
+      storage: {{ .Values.polygon_fullnode.bor.storage.size }}
+{{- end }}

@@ -61,6 +61,8 @@ spec:
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.xrp_fullnode.url }}
+          - name: READ_MODE
+            value: {{ if .Values.xrp.read_mode }}enabled{{ else }}disabled{{ end }}
           {{- range $name, $value := .Values.xrp_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}

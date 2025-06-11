@@ -28,6 +28,7 @@ services:
       BNB_USDT_WALLET: "{{- if .Values.bnb_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
       BNB_USDC_WALLET: "{{- if .Values.bnb_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
       XRP_WALLET: "{{- if .Values.xrp.enabled }}enabled{{ else }}disabled{{- end }}"
+      XRP_READ_MODE: "{{- if .Values.xrp.read_mode }}enabled{{ else }}disabled{{- end }}"
       MATIC_WALLET: "{{- if .Values.matic.enabled }}enabled{{ else }}disabled{{- end }}"
       POLYGON_USDT_WALLET: "{{- if .Values.polygon_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
       POLYGON_USDC_WALLET: "{{- if .Values.polygon_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
@@ -552,6 +553,7 @@ services:
       BTC_PASSWORD: "test"
       SHKEEPER_BACKEND_KEY: "key"
       SHKEEPER_HOST: "shkeeper:5000"
+      READ_MODE: {{ if .Values.trx.read_mode }}enabled{{ else }}disabled{{ end }}
       FULLNODE_URL: {{ .Values.tron_fullnode.url }}
       {{- if .Values.tron_shkeeper.multiserver_config_json }}
       MULTISERVER_CONFIG_JSON: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
@@ -621,6 +623,7 @@ services:
       {{- else }}
       XRP_NETWORK: "testnet"
       {{- end }}
+      READ_MODE: {{ if .Values.xrp.read_mode }}enabled{{ else }}disabled{{ end }}
       FULLNODE_URL: {{ .Values.xrp_fullnode.url }}
       {{- range $name, $value := .Values.xrp_shkeeper.extraEnv }}
       {{ $name }}: {{ $value | quote }}

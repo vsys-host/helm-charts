@@ -137,7 +137,7 @@ xrp_fullnode:
   tolerations: []
 
 xrp_shkeeper:
-  image: vsyshost/xrp-shkeeper:1.0.14
+  image: vsyshost/xrp-shkeeper:1.0.15
 
 xrp:
   enabled: false

@@ -1,0 +1,36 @@
+namespace: shk1
+storageClassName: "longhorn"
+
+#
+# BTC and forks
+#
+btc:
+  enabled: false
+  mainnet: false
+ltc:
+  enabled: false
+  mainnet: false
+doge:
+  enabled: false
+  mainnet: false
+
+#
+# BNB
+#
+bnb_fullnode:
+  enabled: false
+  # url: https://bsc-dataseed3.binance.org/
+  # url: https://fullnode.bnb.shkeeper.io:8645
+  url: wss://bsc-rpc.publicnode.com
+  mainnet: true
+
+bnb_shkeeper:
+  extraEnv:
+    LAST_BLOCK_LOCKED: "FALSE"
+
+bnb:
+  enabled: true
+bnb_usdt:
+  enabled: true
+bnb_usdc:
+  enabled: false

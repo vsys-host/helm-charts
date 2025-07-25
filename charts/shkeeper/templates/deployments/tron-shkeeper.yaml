@@ -79,7 +79,7 @@ spec:
 
       - name: tasks
         image: {{ .Values.tron_shkeeper.image }}
-        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B", "--schedule=/app/data/celerybeat-schedule"]
         volumeMounts:
         - name: data
           mountPath: /app/data

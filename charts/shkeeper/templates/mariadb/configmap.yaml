@@ -12,3 +12,4 @@ data:
     CREATE DATABASE IF NOT EXISTS `polygon-shkeeper`;
     CREATE DATABASE IF NOT EXISTS `avalanche-shkeeper`;
     CREATE DATABASE IF NOT EXISTS `solana-shkeeper`;
+    CREATE DATABASE IF NOT EXISTS `bitcoin-shkeeper`;

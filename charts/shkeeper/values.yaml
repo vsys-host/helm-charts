@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.3.3
+  image: olegprin/shkeeper:latest
   port: 5000
 
 #
@@ -24,16 +24,16 @@ shkeeper:
 
 btc:
   enabled: true
-  mainnet: true
-  bitcoind:
-    image: vsyshost/bitcoind:27.0
+  testnet: true
+  # bitcoind:
+  #   image: vsyshost/bitcoind:27.0
 
-ltc:
-  enabled: true
-  mainnet: true
-doge:
-  enabled: true
-  mainnet: true
+# ltc:
+#   enabled: true
+#   mainnet: true
+# doge:
+#   enabled: true
+#   mainnet: true
 
 #
 # Tron
@@ -227,3 +227,21 @@ solana_usdc:
   enabled: false
 solana_pyusd:
   enabled: false
+
+
+#
+# Bitcoin
+#
+
+bitcoin_fullnode:
+  enabled: false
+  url: http://bitcoinuser:bitcoinpass@195.66.213.33:18332/
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+bitcoin_shkeeper:
+  image: olegprin/bitcoin:latest
+
+btc:
+  enabled: true

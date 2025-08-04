@@ -95,15 +95,15 @@ spec:
           - name: BTC_USERNAME
             valueFrom:
               secretKeyRef:
-                name: bitcoin-rpc
+                name: btc-rpc
                 key: username
-                optional: false
+                optional: true
           - name: BTC_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: bitcoin-rpc
+                name: btc-rpc
                 key: password
-                optional: false
+                optional: true
           {{- end }}
           {{- if .Values.ltc.enabled }}
           - name: LTC_USERNAME

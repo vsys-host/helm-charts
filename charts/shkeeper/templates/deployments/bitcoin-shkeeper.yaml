@@ -1,4 +1,4 @@
-{{- if or .Values.btc.enabled}}
+{{- if .Values.btc.enabled}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,7 +41,7 @@ spec:
           - name: BTC_USERNAME
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: btc-rpc
                 key: username
           - name: BTC_PASSWORD
             valueFrom:
@@ -53,18 +53,14 @@ spec:
               secretKeyRef:
                 name: shkeeper-btc-key
                 key: password
-          - name: CURRENT_SOL_NETWORK
-          {{- if .Values.bitcoin_fullnode.mainnet }}
-            value: &CURRENT_BTC_NETWORK_VALUE "main"
+          - name: BTC_NETWORK
+          {{- if .Values.btc_fullnode.mainnet }}
+            value: &BTC_NETWORK_VALUE "main"
           {{- else }}
-            value: &CURRENT_BTC_NETWORK_VALUE "testnet"
+            value: &BTC_NETWORK_VALUE "testnet"
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.bitcoin_fullnode.url }}
-          {{- if .Values.bitcoin_shkeeper.external_drain_config }}
-          - name: EXTERNAL_DRAIN_CONFIG
-            value: {{ .Values.bitcoin_shkeeper.external_drain_config | toJson | quote }}
-          {{- end }}
+            value: {{ .Values.btc_fullnode.url }}
           {{- range $name, $value := .Values.bitcoin_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
@@ -74,10 +70,10 @@ spec:
         image: {{ .Values.bitcoin_shkeeper.image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
-          - name: SOL_USERNAME
+          - name: BTC_USERNAME
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: btc-rpc
                 key: username
           - name: BTC_PASSWORD
             valueFrom:
@@ -89,24 +85,21 @@ spec:
               secretKeyRef:
                 name: shkeeper-btc-key
                 key: password
-          - name: CURRENT_SOL_NETWORK
-          {{- if .Values.bitcoin_fullnode.mainnet }}
-            value: *CURRENT_BTC_NETWORK_VALUE
+          - name: BTC_NETWORK
+          {{- if .Values.btc_fullnode.mainnet }}
+            value: *BTC_NETWORK_VALUE
           {{- else }}
-            value: *CURRENT_BTC_NETWORK_VALUE
+            value: *BTC_NETWORK_VALUE
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.bitcoin_fullnode.url }}
-          {{- if .Values.bitcoin_shkeeper.external_drain_config }}
-          - name: EXTERNAL_DRAIN_CONFIG
-            value: {{ .Values.bitcoin_shkeeper.external_drain_config | toJson | quote }}
-          {{- end }}
+            value: {{ .Values.btc_fullnode.url }}
           - name: C_FORCE_ROOT
             value: "1"
           {{- range $name, $value := .Values.bitcoin_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+
       - name: redis
         image: redis
 {{- end }}

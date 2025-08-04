@@ -1,0 +1,41 @@
+{{- if .Values.btc_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: btc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: btc
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: btc
+  template:
+    metadata:
+      labels:
+        app: btc
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.xrp_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.xrp_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      # executor
+      # - name: btc
+      #   image: xrpllabsofficial/xrpld:2.4.0
+      #   volumeMounts:
+      #   - name: btc-fullnode-config
+      #     mountPath: /config/rippled.cfg
+      #     subPath: rippled.cfg
+      #   - name: btc-fullnode-config
+      #     mountPath: /config/validators.txt
+      #     subPath: validators.txt
+
+      volumes:
+      - name: btc-fullnode-config
+        configMap:
+          name: btc-fullnode-config
+{{- end }}

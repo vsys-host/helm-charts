@@ -109,31 +109,31 @@ services:
       {{- end }}
 
 
-  {{- if .Values.btc.enabled }}
-  bitcoind:
-    image: "{{ .Values.btc.bitcoind.image }}"
-    container_name: bitcoind
-    environment:
-      BTC_USERNAME: "test"
-      BTC_PASSWORD: "test"
-      SHKEEPER_BACKEND_KEY: "key"
-    command:
-      - /shkeeper/bitcoind
-      - -rpcport=8332
-      - -prune=550
-      - -rpcpassword={{ .Values.btc.btc_password  }}
-      - -rpcuser=test
-      - -rpcbind=0.0.0.0
-      - -rpcallowip=0.0.0.0/0
-      - -wallet=shkeeper
-      - -walletnotify='/shkeeper/walletnotify.sh %s'
-      - -zmqpubrawblock=tcp://0.0.0.0:28334
-      - -zmqpubrawtx=tcp://0.0.0.0:28335
-      - -zmqpubhashblock=tcp://0.0.0.0:28336
-      - -testnet={{ if not .Values.btc.mainnet }}true{{ else }}false{{ end }}
-    volumes:
-      - ./bitcoind-storage:/root/.bitcoin
-  {{- end }}
+  # {{- if .Values.btc.enabled }}
+  # bitcoind:
+  #   image: "{{ .Values.btc.bitcoind.image }}"
+  #   container_name: bitcoind
+  #   environment:
+  #     BTC_USERNAME: "test"
+  #     BTC_PASSWORD: "test"
+  #     SHKEEPER_BACKEND_KEY: "key"
+  #   command:
+  #     - /shkeeper/bitcoind
+  #     - -rpcport=8332
+  #     - -prune=550
+  #     - -rpcpassword={{ .Values.btc.btc_password  }}
+  #     - -rpcuser=test
+  #     - -rpcbind=0.0.0.0
+  #     - -rpcallowip=0.0.0.0/0
+  #     - -wallet=shkeeper
+  #     - -walletnotify='/shkeeper/walletnotify.sh %s'
+  #     - -zmqpubrawblock=tcp://0.0.0.0:28334
+  #     - -zmqpubrawtx=tcp://0.0.0.0:28335
+  #     - -zmqpubhashblock=tcp://0.0.0.0:28336
+  #     - -testnet={{ if not .Values.btc.mainnet }}true{{ else }}false{{ end }}
+  #   volumes:
+  #     - ./bitcoind-storage:/root/.bitcoin
+  # {{- end }}
   {{- if .Values.doge.enabled }}
   dogecoind:
     image: vsyshost/dogecoind

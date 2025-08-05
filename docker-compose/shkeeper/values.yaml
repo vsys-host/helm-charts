@@ -25,12 +25,10 @@ shkeeper:
 btc:
   enabled: true
   testnet: true
-  # bitcoind:
-  #   image: vsyshost/bitcoind:27.0
 
-# ltc:
-#   enabled: true
-#   mainnet: true
+ltc:
+  enabled: true
+
 # doge:
 #   enabled: true
 #   mainnet: true

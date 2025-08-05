@@ -25,15 +25,14 @@ shkeeper:
 btc:
   enabled: true
   testnet: true
-  # bitcoind:
-  #   image: vsyshost/bitcoind:27.0
 
-# ltc:
-#   enabled: true
-#   mainnet: true
-# doge:
-#   enabled: true
-#   mainnet: true
+ltc:
+  enabled: true
+  mainnet: true
+
+doge:
+  enabled: true
+  mainnet: true
 
 #
 # Tron
@@ -244,4 +243,21 @@ bitcoin_shkeeper:
   image: olegprin/bitcoin:latest
 
 btc:
+  enabled: true
+
+#
+# Litcoin
+#
+
+litcoin_fullnode:
+  enabled: false
+  url: http://litecoinuser:litecoinpass@195.66.213.33:9332/
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+litecoin_shkeeper:
+  image: olegprin/litecoin:latest
+
+ltc:
   enabled: true

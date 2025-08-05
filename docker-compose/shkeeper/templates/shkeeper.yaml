@@ -107,33 +107,6 @@ services:
       {{- if or .Values.btc.enabled .Values.ltc.enabled .Values.doge.enabled}}
       - backup_volume:/backup
       {{- end }}
-
-
-  # {{- if .Values.btc.enabled }}
-  # bitcoind:
-  #   image: "{{ .Values.btc.bitcoind.image }}"
-  #   container_name: bitcoind
-  #   environment:
-  #     BTC_USERNAME: "test"
-  #     BTC_PASSWORD: "test"
-  #     SHKEEPER_BACKEND_KEY: "key"
-  #   command:
-  #     - /shkeeper/bitcoind
-  #     - -rpcport=8332
-  #     - -prune=550
-  #     - -rpcpassword={{ .Values.btc.btc_password  }}
-  #     - -rpcuser=test
-  #     - -rpcbind=0.0.0.0
-  #     - -rpcallowip=0.0.0.0/0
-  #     - -wallet=shkeeper
-  #     - -walletnotify='/shkeeper/walletnotify.sh %s'
-  #     - -zmqpubrawblock=tcp://0.0.0.0:28334
-  #     - -zmqpubrawtx=tcp://0.0.0.0:28335
-  #     - -zmqpubhashblock=tcp://0.0.0.0:28336
-  #     - -testnet={{ if not .Values.btc.mainnet }}true{{ else }}false{{ end }}
-  #   volumes:
-  #     - ./bitcoind-storage:/root/.bitcoin
-  # {{- end }}
   {{- if .Values.doge.enabled }}
   dogecoind:
     image: vsyshost/dogecoind
@@ -158,31 +131,7 @@ services:
     volumes:
       - ./dogecoind-storage:/root/.dogecoin
   {{- end }}
-  {{- if .Values.ltc.enabled }}
-  litecoind:
-    image: vsyshost/litecoind
-    container_name: litecoind
-    {{- if not .Values.ltc.mainnet }}
-    command:
-        - /shkeeper/litecoind
-        - -testnet
-        - -rpcport=9332
-        - -prune=550
-        - -rpcpassword=$LTC_PASSWORD
-        - -rpcuser=$LTC_USERNAME
-        - -rpcbind=0.0.0.0
-        - -rpcallowip=0.0.0.0/0
-        - -wallet=shkeeper
-        - -walletnotify=/shkeeper/walletnotify.sh %s
-    {{- end }}
-    environment:
-      LTC_USERNAME: test
-      LTC_PASSWORD: test
-      SHKEEPER_BACKEND_KEY: "key"
-    volumes:
-      - ./litecoind-storage:/root/.litecoin
-  {{- end }}
-  {{- if or .Values.btc.enabled .Values.ltc.enabled .Values.doge.enabled}}
+  {{- if or .Values.doge.enabled}}
   nginx:
     image: nginx
     container_name: nginx
@@ -195,7 +144,7 @@ services:
       - backup_volume:/backup
     command: /bin/sh -c "envsubst < /home/default.conf > /etc/nginx/conf.d/default.conf &&   nginx -g 'daemon off;'"
   {{- end }}
-{{- if or  .Values.trx.enabled .Values.eth.enabled .Values.bnb.enabled .Values.xrp.enabled .Values.btc.enabled .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.avax.enabled }}
+{{- if or  .Values.trx.enabled .Values.eth.enabled .Values.bnb.enabled .Values.xrp.enabled .Values.btc.enabled .Values.ltc.enabled .Values.matic.enabled .Values.polygon_usdt.enabled .Values.polygon_usdc.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.avax.enabled }}
   mariadb:
     image: mariadb:10.9.3
     container_name: mariadb
@@ -653,6 +602,54 @@ services:
     container_name: redis
   {{- end }}
 {{- end }}
+{{- /*       ltc shkeeper       */}}
+{{- if .Values.ltc.enabled }}
+  litcoin-shkeeper:
+    image: {{ .Values.ltc_shkeeper.image }}
+    container_name: litcoin-shkeeper
+    environment:
+      REDIS_HOST: redis
+      LTC_USERNAME: 'test'
+      LTC_PASSWORD: 'test'
+      SHKEEPER_BACKEND_KEY: 'key'
+      {{- if .Values.ltc_fullnode.mainnet }}
+      LTC_NETWORK: "main"
+      {{- else }}
+      LTC_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: {{ .Values.ltc_fullnode.url }}
+      {{- range $name, $value := .Values.ltc_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && gunicorn --access-logfile=- --workers=1 --threads=16 --timeout=600 --bind=0.0.0.0:6000 run:server"
+
+  litcoin-tasks:
+    image: {{ .Values.ltc_shkeeper.image }}
+    container_name: litcoin-tasks
+    environment:
+      REDIS_HOST: redis
+      LTC_USERNAME: 'test'
+      LTC_PASSWORD: 'test'
+      SHKEEPER_BACKEND_KEY: 'key'
+      {{- if .Values.ltc_fullnode.mainnet }}
+      LTC_NETWORK: "main"
+      {{- else }}
+      LTC_NETWORK: "testnet"
+      {{- end }}
+      FULLNODE_URL: {{ .Values.ltc_fullnode.url }}
+      C_FORCE_ROOT: 1
+      {{- range $name, $value := .Values.ltc_shkeeper.extraEnv }}
+      {{ $name }}: {{ $value | quote }}
+      {{- end }}
+    command: >
+      bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
+  {{- if not (or .Values.avax.enabled .Values.btc.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled .Values.xrp.enabled) }}
+  redis:
+    image: redis
+    container_name: redis
+  {{- end }}
+{{- end }}
 {{- /*       xrp shkeeper       */}}
 {{- if .Values.xrp.enabled}}
   xrp-shkeeper:
@@ -694,7 +691,7 @@ services:
       {{- end }}
     command: >
       bash -c "sleep 30 && celery -A celery_worker.celery worker --loglevel=info -B"
-  {{- if not (or  .Values.avax.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled) }}
+  {{- if not (or  .Values.avax.enabled .Values.btc.enabled .Values.ltc.enabled .Values.avalanche_usdt.enabled .Values.avalanche_usdc.enabled .Values.bnb.enabled .Values.bnb_usdt.enabled .Values.bnb_usdc.enabled .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled) }}
   redis:
     image: redis
     container_name: redis

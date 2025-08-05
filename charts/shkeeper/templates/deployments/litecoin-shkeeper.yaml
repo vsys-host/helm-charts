@@ -1,21 +1,21 @@
-{{- if .Values.btc.enabled}}
+{{- if .Values.ltc.enabled}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bitcoin-shkeeper
+  name: litecoin-shkeeper
   namespace: {{ .Values.namespace }}
   labels:
-    app: bitcoin-shkeeper
+    app: litecoin-shkeeper
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bitcoin-shkeeper
+      app: litecoin-shkeeper
   template:
     metadata:
       labels:
-        app: bitcoin-shkeeper
+        app: litecoin-shkeeper
     spec:
       {{- with .Values.dev.imagePullSecrets }}
       imagePullSecrets:
@@ -25,7 +25,7 @@ spec:
       containers:
 
       - name: app
-        image: {{ .Values.bitcoin_shkeeper.image }}
+        image: {{ .Values.litecoin_shkeeper.image }}
         command:
         - gunicorn
         - --access-logfile=-
@@ -38,64 +38,64 @@ spec:
         - containerPort: 6000
           name: http
         env:
-          - name: BTC_USERNAME
+          - name: LTC_USERNAME
             valueFrom:
               secretKeyRef:
-                name: bitcoin-rpc
+                name: litecoin-rpc
                 key: username
-          - name: BTC_PASSWORD
+          - name: LTC_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: bitcoin-rpc
+                name: litecoin-rpc
                 key: password
           - name: SHKEEPER_BACKEND_KEY
             valueFrom:
               secretKeyRef:
                 name: shkeeper-btc-key
                 key: password
-          - name: BTC_NETWORK
-          {{- if .Values.btc_fullnode.mainnet }}
-            value: &BTC_NETWORK_VALUE "main"
+          - name: LTC_NETWORK
+          {{- if .Values.ltc_fullnode.mainnet }}
+            value: &LTC_NETWORK_VALUE "main"
           {{- else }}
-            value: &BTC_NETWORK_VALUE "testnet"
+            value: &LTC_NETWORK_VALUE "testnet"
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.btc_fullnode.url }}
-          {{- range $name, $value := .Values.bitcoin_shkeeper.extraEnv }}
+            value: {{ .Values.ltc_fullnode.url }}
+          {{- range $name, $value := .Values.litecoin_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
 
       - name: tasks
-        image: {{ .Values.bitcoin_shkeeper.image }}
+        image: {{ .Values.litecoin_shkeeper.image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
-          - name: BTC_USERNAME
+          - name: LTC_USERNAME
             valueFrom:
               secretKeyRef:
-                name: bitcoin-rpc
+                name: litecoin-rpc
                 key: username
-          - name: BTC_PASSWORD
+          - name: LTC_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: bitcoin-rpc
+                name: litecoin-rpc
                 key: password
           - name: SHKEEPER_BACKEND_KEY
             valueFrom:
               secretKeyRef:
                 name: shkeeper-btc-key
                 key: password
-          - name: BTC_NETWORK
-          {{- if .Values.btc_fullnode.mainnet }}
-            value: *BTC_NETWORK_VALUE
+          - name: LTC_NETWORK
+          {{- if .Values.ltc_fullnode.mainnet }}
+            value: *LTC_NETWORK_VALUE
           {{- else }}
-            value: *BTC_NETWORK_VALUE
+            value: *LTC_NETWORK_VALUE
           {{- end }}
           - name: FULLNODE_URL
-            value: {{ .Values.btc_fullnode.url }}
+            value: {{ .Values.ltc_fullnode.url }}
           - name: C_FORCE_ROOT
             value: "1"
-          {{- range $name, $value := .Values.bitcoin_shkeeper.extraEnv }}
+          {{- range $name, $value := .Values.litecoin_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}

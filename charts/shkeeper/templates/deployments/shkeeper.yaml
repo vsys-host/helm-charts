@@ -37,10 +37,6 @@ spec:
             value: {{ .Values.tron_shkeeper.host }}
           - name: TRON_API_SERVER_PORT
             value: {{ .Values.tron_shkeeper.port | quote }}
-          - name: BTC_WALLET
-            value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
-          - name: LTC_WALLET
-            value: {{ if .Values.ltc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: DOGE_WALLET
             value: {{ if .Values.doge.enabled }}enabled{{ else }}disabled{{ end }}
           - name: TRX_WALLET
@@ -95,15 +91,15 @@ spec:
           - name: BTC_USERNAME
             valueFrom:
               secretKeyRef:
-                name: btc-rpc
+                name: bitcoin-rpc
                 key: username
-                optional: true
+                optional: false
           - name: BTC_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: btc-rpc
+                name: bitcoin-rpc
                 key: password
-                optional: true
+                optional: false
           {{- end }}
           {{- if .Values.ltc.enabled }}
           - name: LTC_USERNAME
@@ -256,20 +252,6 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: sol-rpc
-                key: password
-                optional: false
-          {{- end }}
-          {{- if or .Values.btc.enabled}}
-          - name: BTC_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: btc-rpc
-                key: username
-                optional: false
-          - name: BTC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: btc-rpc
                 key: password
                 optional: false
           {{- end }}

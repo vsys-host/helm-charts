@@ -794,7 +794,7 @@ services:
       {{ $name }}: {{ $value | quote }}
       {{- end }}
 {{- end }}
-{{- if or .Values.btc.enabled .Values.ltc.enabled .Values.doge.enabled}}
+{{- if or .Values.doge.enabled}}
 volumes:
   backup_volume:
 {{- end }}

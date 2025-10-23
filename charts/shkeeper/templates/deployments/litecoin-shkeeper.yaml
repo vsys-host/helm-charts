@@ -21,85 +21,88 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
       containers:
-
-      - name: app
-        image: {{ .Values.litecoin_shkeeper.image }}
-        command:
-        - gunicorn
-        - --access-logfile=-
-        - --workers=1
-        - --threads=16
-        - --timeout=600
-        - --bind=0.0.0.0:6000
-        - run:server
-        ports:
-        - containerPort: 6000
-          name: http
-        env:
-          - name: LTC_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: litecoin-rpc
-                key: username
-          - name: LTC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: litecoin-rpc
-                key: password
-          - name: SHKEEPER_BACKEND_KEY
-            valueFrom:
-              secretKeyRef:
-                name: shkeeper-btc-key
-                key: password
-          - name: LTC_NETWORK
-          {{- if .Values.ltc_fullnode.mainnet }}
-            value: &LTC_NETWORK_VALUE "main"
-          {{- else }}
-            value: &LTC_NETWORK_VALUE "testnet"
-          {{- end }}
-          - name: FULLNODE_URL
-            value: {{ .Values.ltc_fullnode.url }}
-          {{- range $name, $value := .Values.litecoin_shkeeper.extraEnv }}
-          - name: {{ $name | quote }}
-            value: {{ $value | quote }}
-          {{- end }}
-
-      - name: tasks
-        image: {{ .Values.litecoin_shkeeper.image }}
-        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
-        env:
-          - name: LTC_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: litecoin-rpc
-                key: username
-          - name: LTC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: litecoin-rpc
-                key: password
-          - name: SHKEEPER_BACKEND_KEY
-            valueFrom:
-              secretKeyRef:
-                name: shkeeper-btc-key
-                key: password
-          - name: LTC_NETWORK
-          {{- if .Values.ltc_fullnode.mainnet }}
-            value: *LTC_NETWORK_VALUE
-          {{- else }}
-            value: *LTC_NETWORK_VALUE
-          {{- end }}
-          - name: FULLNODE_URL
-            value: {{ .Values.ltc_fullnode.url }}
-          - name: C_FORCE_ROOT
-            value: "1"
-          {{- range $name, $value := .Values.litecoin_shkeeper.extraEnv }}
-          - name: {{ $name | quote }}
-            value: {{ $value | quote }}
-          {{- end }}
-
-      - name: redis
-        image: redis
+        - name: app
+          image: {{ .Values.litcoin_shkeeper.image }}
+          command:
+          - gunicorn
+          - --access-logfile=-
+          - --workers=1
+          - --threads=16
+          - --timeout=600
+          - --bind=0.0.0.0:6000
+          - run:server
+          ports:
+          - containerPort: 6000
+            name: http
+          env:
+            - name: ltc_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: litecoin-rpc
+                  key: username
+            - name: ltc_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: litecoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-ltc-key
+                  key: password
+            - name: ltc_NETWORK
+            {{- if .Values.ltc_fullnode.mainnet }}
+              value: &ltc_NETWORK_VALUE "main"
+            {{- else }}
+              value: &ltc_NETWORK_VALUE "testnet"
+            {{- end }}
+            - name: FULLNODE_URL
+              value: {{ .Values.ltc_fullnode.url }}
+            {{- range $name, $value := .Values.litcoin_shkeeper.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: litcoind-storage
+              mountPath: /root/.bitcoin
+        - name: tasks
+          image: {{ .Values.litcoin_shkeeper.image }}
+          command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+          env:
+            - name: ltc_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: litecoin-rpc
+                  key: username
+            - name: ltc_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: litecoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-ltc-key
+                  key: password
+            - name: ltc_NETWORK
+            {{- if .Values.ltc_fullnode.mainnet }}
+              value: *ltc_NETWORK_VALUE
+            {{- else }}
+              value: *ltc_NETWORK_VALUE
+            {{- end }}
+            - name: FULLNODE_URL
+              value: {{ .Values.ltc_fullnode.url }}
+            - name: C_FORCE_ROOT
+              value: "1"
+            {{- range $name, $value := .Values.litcoin_shkeeper.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+        - name: redis
+          image: redis
+      volumes:
+      - name: litcoind-storage
+        persistentVolumeClaim:
+          claimName: litecoind-claim
 {{- end }}

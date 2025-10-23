@@ -25,7 +25,7 @@ shkeeper:
 
 btc:
   enabled: true
-  testnet: true
+  mainnet: true
 
 ltc:
   enabled: true
@@ -235,13 +235,13 @@ solana_pyusd:
 
 bitcoin_fullnode:
   enabled: false
-  url: http://bitcoinuser:bitcoinpass@195.66.213.33:18332/
+  url: http://rpcuser:e8BKNvCnNy2VNze8BNv3nNyVNz@213.111.146.191:18332/
   mainnet: true
   nodeSelector: {}
   tolerations: []
 
 bitcoin_shkeeper:
-  image: olegprin/bitcoin:latest
+  image: olegprin/bitcoin:12
 
 btc:
   enabled: true
@@ -257,8 +257,8 @@ litcoin_fullnode:
   nodeSelector: {}
   tolerations: []
 
-litecoin_shkeeper:
-  image: olegprin/litecoin:latest
+litcoin_shkeeper:
+  image: olegprin/litecoin:2
 
 ltc:
   enabled: true

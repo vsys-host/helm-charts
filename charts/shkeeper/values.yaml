@@ -16,7 +16,7 @@ storageClassName:
 
 shkeeper:
   #image: vsyshost/shkeeper:2.3.6
-  image: olegprin/shkeeper:2
+  image: olegprin/shkeeper:3
   port: 5000
 
 #
@@ -241,7 +241,7 @@ bitcoin_fullnode:
   tolerations: []
 
 bitcoin_shkeeper:
-  image: olegprin/bitcoin:12
+  image: olegprin/bitcoin:22
 
 btc:
   enabled: true
@@ -258,7 +258,7 @@ litcoin_fullnode:
   tolerations: []
 
 litcoin_shkeeper:
-  image: olegprin/litecoin:2
+  image: olegprin/litecoin:3
 
 ltc:
   enabled: true

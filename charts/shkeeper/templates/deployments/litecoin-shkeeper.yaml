@@ -36,12 +36,12 @@ spec:
           - containerPort: 6000
             name: http
           env:
-            - name: ltc_USERNAME
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: litecoin-rpc
                   key: username
-            - name: ltc_PASSWORD
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: litecoin-rpc
@@ -49,7 +49,7 @@ spec:
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
-                  name: shkeeper-ltc-key
+                  name: shkeeper-btc-key
                   key: password
             - name: ltc_NETWORK
             {{- if .Values.ltc_fullnode.mainnet }}
@@ -65,17 +65,17 @@ spec:
             {{- end }}
           volumeMounts:
             - name: litcoind-storage
-              mountPath: /root/.bitcoin
+              mountPath: /root/.litecoin
         - name: tasks
           image: {{ .Values.litcoin_shkeeper.image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
-            - name: ltc_USERNAME
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: litecoin-rpc
                   key: username
-            - name: ltc_PASSWORD
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: litecoin-rpc
@@ -83,7 +83,7 @@ spec:
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
-                  name: shkeeper-ltc-key
+                  name: shkeeper-btc-key
                   key: password
             - name: ltc_NETWORK
             {{- if .Values.ltc_fullnode.mainnet }}
@@ -99,6 +99,9 @@ spec:
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
+          volumeMounts:
+            - name: litcoind-storage
+              mountPath: /root/.litecoin
         - name: redis
           image: redis
       volumes:

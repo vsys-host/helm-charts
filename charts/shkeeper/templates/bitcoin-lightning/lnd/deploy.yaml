@@ -41,24 +41,34 @@ spec:
             value: {{ .Values.btc_lightning.lnd.p2p_port | quote }}
           - name: NETWORK
             value: {{ .Values.btc_lightning.network }}
+
           - name: BITCOIND_RPCUSER
+          {{- if .Values.btc_lightning.lnd.BITCOIND_RPCUSER }}
+            value: {{ .Values.btc_lightning.lnd.BITCOIND_RPCUSER }}
+          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: bitcoin-rpc
                 key: username
                 optional: false
+          {{- end }}
+
           - name: BITCOIND_RPCPASS
+          {{- if .Values.btc_lightning.lnd.BITCOIND_RPCPASS }}
+            value: {{ .Values.btc_lightning.lnd.BITCOIND_RPCPASS }}
+          {{- else }}
             valueFrom:
               secretKeyRef:
                 name: bitcoin-rpc
                 key: password
                 optional: false
+          {{- end }}
           - name: BITCOIND_RPCHOST
-            value: bitcoind
+            value: {{ .Values.btc_lightning.lnd.BITCOIND_RPCHOST }}
           - name: BITCOIND_ZMQPUBRAWBLOCK
-            value: tcp://bitcoind:28334
+            value: {{ .Values.btc_lightning.lnd.BITCOIND_ZMQPUBRAWBLOCK }}
           - name: BITCOIND_ZMQPUBRAWTX
-            value: tcp://bitcoind:28335
+            value: {{ .Values.btc_lightning.lnd.BITCOIND_ZMQPUBRAWTX }}
           {{- range $name, $value := .Values.btc_lightning.lnd.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}

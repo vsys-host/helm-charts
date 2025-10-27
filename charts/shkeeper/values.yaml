@@ -197,6 +197,11 @@ btc_lightning:
     rest_url: https://lightning-lnd-rest:8080
     # p2p_port should be uniq for for each namespace
     p2p_port: 9735
+    BITCOIND_RPCHOST: bitcoind
+    BITCOIND_ZMQPUBRAWBLOCK: tcp://bitcoind:28334
+    BITCOIND_ZMQPUBRAWTX: tcp://bitcoind:28335
+    BITCOIND_RPCPASS:
+    BITCOIND_RPCUSER:
 
   rtl:
     image: shahanafarooqui/rtl:v0.15.4

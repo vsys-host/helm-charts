@@ -29,11 +29,11 @@ spec:
         - --tlsextradomain=lightning-lnd-rest
         - --bitcoin.$(NETWORK)
         - --bitcoin.node=bitcoind
-        - --bitcoind.rpchost=bitcoind
+        - --bitcoind.rpchost=$(BITCOIND_RPCHOST)
         - --bitcoind.rpcuser=$(BITCOIND_RPCUSER)
         - --bitcoind.rpcpass=$(BITCOIND_RPCPASS)
-        - --bitcoind.zmqpubrawblock=tcp://bitcoind:28334
-        - --bitcoind.zmqpubrawtx=tcp://bitcoind:28335
+        - --bitcoind.zmqpubrawblock=$(BITCOIND_ZMQPUBRAWBLOCK)
+        - --bitcoind.zmqpubrawtx=$(BITCOIND_ZMQPUBRAWTX)
         env:
           - name: EXTERNAL_IP
             value: {{ .Values.external_ip }}
@@ -53,6 +53,12 @@ spec:
                 name: bitcoin-rpc
                 key: password
                 optional: false
+          - name: BITCOIND_RPCHOST
+            value: bitcoind
+          - name: BITCOIND_ZMQPUBRAWBLOCK
+            value: tcp://bitcoind:28334
+          - name: BITCOIND_ZMQPUBRAWTX
+            value: tcp://bitcoind:28335
           {{- range $name, $value := .Values.btc_lightning.lnd.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}

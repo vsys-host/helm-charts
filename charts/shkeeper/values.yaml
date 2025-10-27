@@ -200,8 +200,8 @@ btc_lightning:
     BITCOIND_RPCHOST: bitcoind
     BITCOIND_ZMQPUBRAWBLOCK: tcp://bitcoind:28334
     BITCOIND_ZMQPUBRAWTX: tcp://bitcoind:28335
-    BITCOIND_RPCPASS:
-    BITCOIND_RPCUSER:
+    BITCOIND_RPCPASS: ""
+    BITCOIND_RPCUSER: ""
 
   rtl:
     image: shahanafarooqui/rtl:v0.15.4

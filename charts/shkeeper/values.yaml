@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.3.6
+  image: vsyshost/shkeeper:2.3.7
   port: 5000
 
 #

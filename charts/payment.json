@@ -1,0 +1,6 @@
+{
+  "external_id": 17,
+  "fiat": "USD",
+  "amount": "1",
+  "callback_url": "http://127.0.0.1"
+}

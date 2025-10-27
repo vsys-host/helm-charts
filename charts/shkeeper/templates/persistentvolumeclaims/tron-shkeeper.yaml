@@ -1,5 +1,10 @@
+{{- if or .Values.trx.enabled .Values.usdt.enabled .Values.usdc.enabled}}
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: tron-shkeeper-data
   namespace: {{ .Values.namespace }}
@@ -9,10 +14,14 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.tron_shkeeper.storage.size.app_data }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
+annotations:
+  {{- if .Values.extra.keepStorageAfterDelete }}
+  helm.sh/resource-policy: keep
+  {{- end }}
 metadata:
   name: tron-shkeeper-redis-data
   namespace: {{ .Values.namespace }}
@@ -22,4 +31,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.tron_shkeeper.storage.size.redis_data }}
+{{- end }}

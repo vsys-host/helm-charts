@@ -1,0 +1,59 @@
+{{- if .Values.btc_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-fullnode
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: bitcoin-fullnode
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcoin-fullnode
+  template:
+    metadata:
+      labels:
+        app: bitcoin-fullnode
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.btc_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.btc_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      - name: bitcoind
+        image: {{ .Values.btc_fullnode.image }}
+        command:
+        - /shkeeper/bitcoind
+        # RPC
+        - -rpcport=8332
+        - -rpcpassword=$(BTC_PASSWORD)
+        - -rpcuser=$(BTC_USERNAME)
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        # Transaction index
+        - -txindex=1
+        # Do not load the wallet and disable wallet RPC calls
+        - -disablewallet
+        # Enable zeromq socket
+        - -zmqpubrawblock=tcp://0.0.0.0:28334
+        - -zmqpubrawtx=tcp://0.0.0.0:28335
+        - -zmqpubhashblock=tcp://0.0.0.0:28336
+        {{- if not .Values.btc.mainnet }}
+        - -testnet
+        {{- end }}
+        env:
+        - name: BTC_USERNAME
+          value: shkeeper
+        - name: BTC_PASSWORD
+          value: shkeeper
+        volumeMounts:
+        - name: bitcoin-fullnode
+          mountPath: /root/.bitcoin
+      volumes:
+      - name: bitcoin-fullnode
+        persistentVolumeClaim:
+          claimName: bitcoin-fullnode
+{{- end }}

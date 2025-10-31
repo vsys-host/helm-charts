@@ -1,0 +1,23 @@
+{{- if .Values.btc_fullnode.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitcoin-fullnode
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+  - name: jsonrpc
+    port: 8332
+    targetPort: 8332
+  - name: zmq-pub-rawblock
+    port: 28334
+    targetPort: 28334
+  - name: zmq-pub-rawtx
+    port: 28335
+    targetPort: 28335
+  - name: zmq-pub-hashblock
+    port: 28336
+    targetPort: 28336
+  selector:
+    app: bitcoin-fullnode
+{{ end }}

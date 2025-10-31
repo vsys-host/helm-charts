@@ -52,7 +52,7 @@ spec:
                   name: shkeeper-btc-key
                   key: password
             - name: BTC_NETWORK
-            {{- if .Values.btc_fullnode.mainnet }}
+            {{- if .Values.btc.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
@@ -91,7 +91,7 @@ spec:
                   name: shkeeper-btc-key
                   key: password
             - name: BTC_NETWORK
-           {{- if .Values.btc_fullnode.mainnet }}
+           {{- if .Values.btc.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"

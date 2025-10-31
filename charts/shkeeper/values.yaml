@@ -24,12 +24,12 @@ shkeeper:
 
 btc:
   enabled: true
-  image: vsyshost/bitcoin-shkeeper:dev-main-a08d12c
+  mainnet: true
+  image: vsyshost/bitcoin-shkeeper:dev-main-6e7e2da
 
 btc_fullnode:
   enabled: false
   image: vsyshost/bitcoind:27.0
-  mainnet: true
   url: http://shkeeper:shkeeper@fullnode.bitcoin.shkeeper.io:8332
   nodeSelector: {}
   tolerations: []

@@ -19,14 +19,25 @@ shkeeper:
   port: 5000
 
 #
-# BTC and forks
+# BTC
 #
 
 btc:
   enabled: true
+  image: vsyshost/bitcoin-shkeeper:dev-main-a08d12c
+
+btc_fullnode:
+  enabled: false
+  image: vsyshost/bitcoind:27.0
   mainnet: true
-  bitcoind:
-    image: vsyshost/bitcoind:27.0
+  url: http://shkeeper:shkeeper@fullnode.bitcoin.shkeeper.io:8332
+  nodeSelector: {}
+  tolerations: []
+
+
+#
+# BTC forks
+#
 
 ltc:
   enabled: true

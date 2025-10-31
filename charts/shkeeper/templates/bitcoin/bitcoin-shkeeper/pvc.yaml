@@ -1,0 +1,13 @@
+# PVC from original bitcoin core now lives here
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bitcoind-claim
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi

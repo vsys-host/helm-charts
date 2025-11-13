@@ -1,0 +1,120 @@
+{{- if .Values.btc.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoin-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: bitcoin-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcoin-shkeeper
+  template:
+    metadata:
+      labels:
+        app: bitcoin-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: app
+          image: {{ .Values.btc.image }}
+          command:
+          - gunicorn
+          - --access-logfile=-
+          - --workers=1
+          - --threads=16
+          - --timeout=600
+          - --bind=0.0.0.0:6000
+          - run:server
+          ports:
+          - containerPort: 6000
+            name: http
+          env:
+            - name: BTC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-rpc
+                  key: username
+            - name: BTC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
+            - name: BTC_NETWORK
+            {{- if .Values.btc.mainnet }}
+              value: "main"
+            {{- else }}
+              value: "testnet"
+            {{- end }}
+            - name: FULLNODE_URL
+            {{- if .Values.btc_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- else }}
+              value: {{ .Values.btc_fullnode.url }}
+            {{- end }}
+
+            {{- range $name, $value := .Values.btc.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: bitcoind-storage
+              mountPath: /root/.bitcoin
+        - name: tasks
+          image: {{ .Values.btc.image }}
+          command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+          env:
+            - name: BTC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-rpc
+                  key: username
+            - name: BTC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
+            - name: BTC_NETWORK
+           {{- if .Values.btc.mainnet }}
+              value: "main"
+            {{- else }}
+              value: "testnet"
+            {{- end }}
+            - name: FULLNODE_URL
+            {{- if .Values.btc_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- else }}
+              value: {{ .Values.btc_fullnode.url }}
+            {{- end }}
+            - name: C_FORCE_ROOT
+              value: "1"
+            {{- range $name, $value := .Values.btc.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: bitcoind-storage
+              mountPath: /root/.bitcoin
+        - name: redis
+          image: redis
+      volumes:
+      - name: bitcoind-storage
+        persistentVolumeClaim:
+          claimName: bitcoind-claim
+{{- end }}

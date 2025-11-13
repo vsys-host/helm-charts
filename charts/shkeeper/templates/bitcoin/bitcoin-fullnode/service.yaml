@@ -1,14 +1,13 @@
-{{ if .Values.btc.enabled }}
+{{- if .Values.btc_fullnode.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: bitcoind
+  name: bitcoin-fullnode
   namespace: {{ .Values.namespace }}
 spec:
   ports:
   - name: jsonrpc
     port: 8332
-    protocol: TCP
     targetPort: 8332
   - name: zmq-pub-rawblock
     port: 28334
@@ -19,10 +18,6 @@ spec:
   - name: zmq-pub-hashblock
     port: 28336
     targetPort: 28336
-  - name: nginx
-    port: 5555
-    protocol: TCP
-    targetPort: 80
   selector:
-    app: bitcoind
+    app: bitcoin-fullnode
 {{ end }}

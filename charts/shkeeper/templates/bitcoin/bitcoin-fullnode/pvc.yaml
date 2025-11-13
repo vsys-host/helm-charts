@@ -1,7 +1,8 @@
+{{- if .Values.btc_fullnode.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: bitcoind-claim
+  name: bitcoin-fullnode
   namespace: {{ .Values.namespace }}
 spec:
   storageClassName: {{ .Values.storageClassName }}
@@ -9,4 +10,5 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 15Gi
+      storage: 600Gi
+{{- end }}

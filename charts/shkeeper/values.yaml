@@ -15,18 +15,29 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.3.9
+  image: vsyshost/shkeeper:2.4.0
   port: 5000
 
 #
-# BTC and forks
+# BTC
 #
 
 btc:
   enabled: true
   mainnet: true
-  bitcoind:
-    image: vsyshost/bitcoind:27.0
+  image: vsyshost/bitcoin-shkeeper:1.0.2
+
+btc_fullnode:
+  enabled: false
+  image: vsyshost/bitcoind:27.0
+  url: http://shkeeper:shkeeper@fullnode.bitcoin.shkeeper.io:8332
+  nodeSelector: {}
+  tolerations: []
+
+
+#
+# BTC forks
+#
 
 ltc:
   enabled: true
@@ -197,11 +208,11 @@ btc_lightning:
     rest_url: https://lightning-lnd-rest:8080
     # p2p_port should be uniq for for each namespace
     p2p_port: 9735
-    BITCOIND_RPCHOST: bitcoind
-    BITCOIND_ZMQPUBRAWBLOCK: tcp://bitcoind:28334
-    BITCOIND_ZMQPUBRAWTX: tcp://bitcoind:28335
-    BITCOIND_RPCPASS: ""
-    BITCOIND_RPCUSER: ""
+    BITCOIND_RPCHOST: fullnode.bitcoin.shkeeper.io
+    BITCOIND_ZMQPUBRAWBLOCK: tcp://fullnode.bitcoin.shkeeper.io:28334
+    BITCOIND_ZMQPUBRAWTX: tcp://fullnode.bitcoin.shkeeper.io:28335
+    BITCOIND_RPCPASS: "shkeeper"
+    BITCOIND_RPCUSER: "shkeeper"
 
   rtl:
     image: shahanafarooqui/rtl:v0.15.4

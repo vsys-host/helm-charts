@@ -1,0 +1,64 @@
+{{- if .Values.btc.legacy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcoind-legacy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: bitcoind-legacy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bitcoind-legacy
+  template:
+    metadata:
+      labels:
+        app: bitcoind-legacy
+    spec:
+      containers:
+      - name: bitcoind
+        image: {{ .Values.btc_fullnode.image }}
+        command:
+        - /shkeeper/bitcoind
+        - -rpcport=8332
+        - -prune=550
+        - -rpcpassword=$(BTC_PASSWORD)
+        - -rpcuser=$(BTC_USERNAME)
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        - -wallet=shkeeper
+        - -walletnotify=/shkeeper/walletnotify.sh %s
+        - -zmqpubrawblock=tcp://0.0.0.0:28334
+        - -zmqpubrawtx=tcp://0.0.0.0:28335
+        - -zmqpubhashblock=tcp://0.0.0.0:28336
+        {{- if not .Values.btc.mainnet }}
+        - -testnet
+        {{- end }}
+        env:
+          - name: BTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: bitcoin-rpc
+                key: username
+                optional: false
+          - name: BTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: bitcoin-rpc
+                key: password
+                optional: false
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+                optional: false
+        volumeMounts:
+        - name: bitcoind-storage
+          mountPath: /root/.bitcoin
+      volumes:
+      - name: bitcoind-storage
+        persistentVolumeClaim:
+          claimName: bitcoind-legacy
+{{- end }}

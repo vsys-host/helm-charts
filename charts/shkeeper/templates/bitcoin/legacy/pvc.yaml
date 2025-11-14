@@ -1,0 +1,14 @@
+{{- if .Values.btc.legacy.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bitcoind-legacy
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+{{- end }}

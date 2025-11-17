@@ -25,7 +25,7 @@ shkeeper:
 btc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin-shkeeper:1.0.3
+  image: vsyshost/bitcoin-shkeeper:1.0.4
 
 btc_fullnode:
   enabled: false

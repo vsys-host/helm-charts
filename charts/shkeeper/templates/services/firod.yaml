@@ -1,0 +1,19 @@
+{{ if .Values.firo.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: firod
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+  - name: jsonrpc
+    port: 8332 
+    protocol: TCP
+    targetPort: 8332 
+  - name: nginx
+    port: 5555
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: firod
+{{ end }}

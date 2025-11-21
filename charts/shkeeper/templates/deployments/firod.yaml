@@ -1,0 +1,93 @@
+{{- if .Values.firo.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firod-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: firod
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: firod
+  template:
+    metadata:
+      labels:
+        app: firod
+    spec:
+      containers:
+
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-config
+          mountPath: /etc/nginx/templates/default.conf.template
+          subPath: default.conf.template
+        - mountPath: /backup
+          name: backup
+        env:
+        - name: SHKEEPER_BACKEND_KEY
+          valueFrom:
+            secretKeyRef:
+              name: shkeeper-btc-key
+              key: password
+
+
+      - name: firod
+        image: vsyshost/firod:0.14.15.0
+        command:
+        - /shkeeper/firod
+        {{- if not .Values.firo.mainnet }}
+        - -testnet
+        {{- end }}
+        - -prune=550
+        - -txindex=0
+        - -rpcpassword=$(FIRO_PASSWORD)
+        - -rpcuser=$(FIRO_USERNAME)
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        - -rpcport=8332
+        - -wallet=shkeeper
+        - -walletnotify=/shkeeper/walletnotify.sh %s
+        
+        env:
+          - name: FIRO_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: firo-rpc
+                key: username
+                optional: false
+          - name: FIRO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: firo-rpc
+                key: password
+                optional: false
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+                optional: false
+        volumeMounts:
+        - name: firod-storage
+          mountPath: /root/.firo
+        - name: backup
+          mountPath: /backup
+      volumes:
+      - name: firod-storage
+        persistentVolumeClaim:
+          claimName: firod-claim
+      - name: backup
+        emptyDir:
+          medium: Memory
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+{{- end }}

@@ -45,6 +45,10 @@ ltc:
 doge:
   enabled: true
   mainnet: true
+firo:
+  enabled: false
+  mainnet: true
+
 
 #
 # Tron

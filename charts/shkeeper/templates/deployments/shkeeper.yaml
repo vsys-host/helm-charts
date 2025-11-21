@@ -43,6 +43,10 @@ spec:
             value: {{ if .Values.ltc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: DOGE_WALLET
             value: {{ if .Values.doge.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: FIRO_WALLET
+            value: {{ if .Values.firo.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: FIRO_SPARK_WALLET
+            value: {{ if .Values.firo.enabled }}enabled{{ else }}disabled{{ end }}
           - name: TRX_WALLET
             value: {{ if .Values.trx.enabled }}enabled{{ else }}disabled{{ end }}
           - name: USDT_WALLET
@@ -126,6 +130,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: dogecoin-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if .Values.firo.enabled }}
+          - name: FIRO_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: firo-rpc
+                key: username
+                optional: false
+          - name: FIRO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: firo-rpc
                 key: password
                 optional: false
           {{- end }}

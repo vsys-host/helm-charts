@@ -81,6 +81,8 @@ spec:
             value: {{ if .Values.avax.enabled }}enabled{{ else }}disabled{{ end }}
           - name: AVALANCHE_USDT_WALLET
             value: {{ if .Values.avalanche_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ENABLE_PAYOUT_CALLBACK
+            value: {{ if .Values.shkeeper.enable_payout_callback }}enabled{{ else }}disabled{{ end }}
           - name: AVALANCHE_USDC_WALLET
             value: {{ if .Values.avalanche_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: SOL_WALLET

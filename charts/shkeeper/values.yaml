@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.4.2
+  image: vsyshost/shkeeper:2.4.3
   port: 5000
 
 #
@@ -26,6 +26,8 @@ btc:
   enabled: true
   mainnet: true
   image: vsyshost/bitcoin-shkeeper:1.0.5
+  legacy:
+    enabled: false
 
 btc_fullnode:
   enabled: false
@@ -45,6 +47,10 @@ ltc:
 doge:
   enabled: true
   mainnet: true
+firo:
+  enabled: false
+  mainnet: true
+
 
 #
 # Tron

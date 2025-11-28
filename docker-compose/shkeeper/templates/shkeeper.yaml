@@ -33,7 +33,9 @@ services:
       AVAX_WALLET: "{{- if .Values.avax.enabled }}enabled{{ else }}disabled{{ end }}"
       AVALANCHE_USDT_WALLET: "{{- if .Values.avalanche_usdt.enabled }}enabled{{ else }}disabled{{- end }}"
       AVALANCHE_USDC_WALLET: "{{- if .Values.avalanche_usdc.enabled }}enabled{{ else }}disabled{{- end }}"
-      ENABLE_PAYOUT_CALLBACK: "{{- if .Values.enable_payout_callback.enabled }}enabled{{ else }}disabled{{- end }}"
+      {{- if .Values.shkeeper.enable_payout_callback }}
+        ENABLE_PAYOUT_CALLBACK: "enabled"
+      {{- end }}
       {{- if .Values.btc.enabled }}
       BTC_USERNAME: "test"
       BTC_PASSWORD: "test"

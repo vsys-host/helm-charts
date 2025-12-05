@@ -25,7 +25,7 @@ spec:
 
       # executor
       - name: geth
-        image: ethereum/client-go:alltools-v1.15.11
+        image: ethereum/client-go:alltools-v1.16.7
         command:
           - geth
           {{- if .Values.eth_fullnode.mainnet }}
@@ -48,7 +48,7 @@ spec:
 
       # consensus
       - name: prysm-beacon
-        image: gcr.io/prysmaticlabs/prysm/beacon-chain:v6.0.1
+        image: gcr.io/prysmaticlabs/prysm/beacon-chain:v7.0.0
         args:
           - --datadir=/datadir
           - --rpc-host=0.0.0.0

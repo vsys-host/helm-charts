@@ -1,21 +1,21 @@
-{{- if .Values.btc.enabled}}
+{{- if .Values.ltc.enabled}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bitcoin-shkeeper
+  name: litecoin-shkeeper
   namespace: {{ .Values.namespace }}
   labels:
-    app: bitcoin-shkeeper
+    app: litecoin-shkeeper
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bitcoin-shkeeper
+      app: litecoin-shkeeper
   template:
     metadata:
       labels:
-        app: bitcoin-shkeeper
+        app: litecoin-shkeeper
     spec:
       {{- with .Values.dev.imagePullSecrets }}
       imagePullSecrets:
@@ -23,7 +23,7 @@ spec:
       {{- end }}
       containers:
         - name: app
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.ltc.image }}
           command:
           - gunicorn
           - --access-logfile=-
@@ -36,89 +36,91 @@ spec:
           - containerPort: 6000
             name: http
           env:
-            - name: BTC_USERNAME
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: LTC_WALLET
+              value: {{ if .Values.ltc.enabled }}enabled{{ else }}disabled{{ end }}
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: password
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: shkeeper-btc-key
                   key: password
-            - name: BTC_NETWORK
-            {{- if .Values.btc.mainnet }}
+            - name: LTC_NETWORK
+            {{- if .Values.ltc.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
             {{- end }}
-            - name: BTC_WALLET
-              value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
             - name: FULLNODE_URL
-            {{- if .Values.btc_fullnode.enabled }}
-              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- if .Values.ltc_fullnode.enabled }}
+              # !!!!!!!!!!!!! add PUBLIC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              value: http://litecoinuser:litecoinpass@195.66.213.33:9332
             {{- else }}
-              value: {{ .Values.btc_fullnode.url }}
+              value: {{ .Values.ltc_fullnode.url }}
             {{- end }}
 
-            {{- range $name, $value := .Values.btc.extraEnv }}
+            {{- range $name, $value := .Values.ltc.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            - name: bitcoind-storage
-              mountPath: /root/.bitcoin
+            - name: litecoind-storage
+              mountPath: /root/.litecoin
         - name: tasks
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.ltc.image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
-            - name: BTC_USERNAME
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: password
-            - name: BTC_WALLET
+            - name: LTC_WALLET
               value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: shkeeper-btc-key
                   key: password
-            - name: BTC_NETWORK
-           {{- if .Values.btc.mainnet }}
+            - name: LTC_NETWORK
+           {{- if .Values.ltc.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
             {{- end }}
             - name: FULLNODE_URL
-            {{- if .Values.btc_fullnode.enabled }}
-              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- if .Values.ltc_fullnode.enabled }}
+              # !!!!!!!!!!!!! add PUBLIC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              value: http://litecoinuser:litecoinpass@195.66.213.33:9332
             {{- else }}
-              value: {{ .Values.btc_fullnode.url }}
+              value: {{ .Values.ltc_fullnode.url }}
             {{- end }}
             - name: C_FORCE_ROOT
               value: "1"
-            {{- range $name, $value := .Values.btc.extraEnv }}
+            {{- range $name, $value := .Values.ltc.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            - name: bitcoind-storage
-              mountPath: /root/.bitcoin
+            - name: litecoind-storage
+              mountPath: /root/.litecoin
         - name: redis
           image: redis
       volumes:
-      - name: bitcoind-storage
+      - name: litecoind-storage
         persistentVolumeClaim:
-          claimName: bitcoind-claim
+          claimName: litecoind-claim
 {{- end }}

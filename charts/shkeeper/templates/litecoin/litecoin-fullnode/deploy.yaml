@@ -1,0 +1,55 @@
+{{- if .Values.ltc_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litecoin-fullnode
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: litecoin-fullnode
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: litecoin-fullnode
+  template:
+    metadata:
+      labels:
+        app: litecoin-fullnode
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.ltc_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.ltc_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      - name: litecoind
+        image: {{ .Values.ltc_fullnode.image }}
+        command:
+        - /shkeeper/litecoind
+        # RPC
+        - -rpcport=9332
+        - -rpcpassword=$(LTC_PASSWORD)
+        - -rpcuser=$(LTC_USERNAME)
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        # Transaction index
+        - -txindex=1
+        # Do not load the wallet and disable wallet RPC calls
+        - -disablewallet
+        {{- if not .Values.ltc.mainnet }}
+        - -testnet
+        {{- end }}
+        env:
+        - name: LTC_USERNAME
+          value: shkeeper
+        - name: LTC_PASSWORD
+          value: shkeeper
+        volumeMounts:
+        - name: litecoin-fullnode
+          mountPath: /root/.litecoin
+      volumes:
+      - name: litecoin-fullnode
+        persistentVolumeClaim:
+          claimName: litecoin-fullnode
+{{- end }}

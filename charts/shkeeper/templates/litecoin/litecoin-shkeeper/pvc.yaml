@@ -1,4 +1,5 @@
-# PVC from original bitcoin core now lives here
+# PVC from original litecoin core now lives here
+{{- if .Values.ltc.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -11,3 +12,4 @@ spec:
   resources:
     requests:
       storage: 15Gi
+{{- end }}

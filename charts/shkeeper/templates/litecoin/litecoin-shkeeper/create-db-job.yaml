@@ -1,4 +1,5 @@
 ---
+{{- if .Values.ltc.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -19,3 +20,4 @@ spec:
           - CREATE DATABASE IF NOT EXISTS `litecoin-shkeeper`
       restartPolicy: Never
   backoffLimit: 4
+{{- end }}

@@ -41,10 +41,16 @@ spec:
         - -testnet
         {{- end }}
         env:
-        - name: LTC_USERNAME
-          value: shkeeper
-        - name: LTC_PASSWORD
-          value: shkeeper
+          - name: LTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: litecoin-rpc
+                key: username
+          - name: LTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: litecoin-rpc
+                key: password
         volumeMounts:
         - name: litecoin-fullnode
           mountPath: /root/.litecoin

@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.3.1
+  image: vsyshost/shkeeper:2.4.4
   port: 5000
 
 #
@@ -25,7 +25,7 @@ shkeeper:
 btc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin_like:1.0.0
+  image: vsyshost/bitcoin-shkeeper:1.1.0
   legacy:
     enabled: false
 
@@ -40,14 +40,13 @@ btc_fullnode:
 ltc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin_like:1.0.0
+  image: vsyshost/bitcoin-shkeeper:1.1.0
   legacy:
     enabled: false
 
 ltc_fullnode:
   enabled: false
-  # !!! change
-  image: vsyshost/litecoind
+  image: vsyshost/litecoind:0.21.2.2
   url: http://shkeeper:shkeeper@fullnode.litecoin.shkeeper.io:9332
   nodeSelector: {}
   tolerations: []

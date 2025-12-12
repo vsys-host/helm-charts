@@ -91,6 +91,10 @@ spec:
             value: {{ if .Values.solana_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: SOLANA_PYUSD_WALLET
             value: {{ if .Values.solana_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
+          {{ if .Values.shkeeper.enable_payout_callback }}
+          - name: ENABLE_PAYOUT_CALLBACK
+            value: enabled
+          {{ end }}
           {{- if .Values.btc.enabled }}
           - name: BTC_USERNAME
             valueFrom:

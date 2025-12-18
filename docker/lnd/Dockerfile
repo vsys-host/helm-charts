@@ -1,11 +1,9 @@
-# LNDINIT_VERSION="v0.1.22-beta"
-# LND_VERSION="v0.18.3-beta"
-# docker build --build-arg LNDINIT_VERSION=$LNDINIT_VERSION --build-arg LND_VERSION=$LND_VERSION -t vsyshost/lndinit:${LNDINIT_VERSION}-lnd-${LND_VERSION} .
-# docker push vsyshost/lndinit:${LNDINIT_VERSION}-lnd-${LND_VERSION}
+# VERSION="v0.1.33-beta-lnd-v0.20.0-beta"
+# docker build --build-arg VERSION=$VERSION -t vsyshost/lndinit:${VERSION} .
+# docker push vsyshost/lndinit:${VERSION}
 
-ARG LNDINIT_VERSION="v0.1.22-beta"
-ARG LND_VERSION="v0.18.3-beta"
+ARG VERSION="v0.1.33-beta-lnd-v0.20.0-beta"
 
-FROM lightninglabs/lndinit:${LNDINIT_VERSION}-lnd-${LND_VERSION}
+FROM lightninglabs/lndinit:${VERSION}
 COPY ./entrypoint.sh  /
 ENTRYPOINT ["/entrypoint.sh"]

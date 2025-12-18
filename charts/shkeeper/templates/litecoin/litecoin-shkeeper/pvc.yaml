@@ -1,0 +1,15 @@
+# PVC from original litecoin core now lives here
+{{- if .Values.ltc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: litecoind-claim
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+{{- end }}

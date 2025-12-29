@@ -240,7 +240,7 @@ solana_fullnode:
   tolerations: []
 
 solana_shkeeper:
-  image: vsyshost/solana-shkeeper:1.0.2
+  image: vsyshost/solana-shkeeper:1.0.3
 
 sol:
   enabled: false

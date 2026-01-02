@@ -28,6 +28,8 @@ spec:
           image: {{ .Values.btc.image }}
           command: ["python", "manage.py", "init_db"]
           env:
+            - name: WALLET
+              value: 'BTC'
             - name: BTC_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -79,8 +81,8 @@ spec:
             {{- else }}
               value: "testnet"
             {{- end }}
-            - name: BTC_WALLET
-              value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
+            - name: WALLET
+              value: 'BTC'
             - name: FULLNODE_URL
             {{- if .Values.btc_fullnode.enabled }}
               value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
@@ -109,8 +111,8 @@ spec:
                 secretKeyRef:
                   name: bitcoin-rpc
                   key: password
-            - name: BTC_WALLET
-              value: {{ if .Values.btc.enabled }}enabled{{ else }}disabled{{ end }}
+            - name: WALLET
+              value: 'BTC'
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:

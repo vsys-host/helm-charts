@@ -48,7 +48,7 @@ ltc:
 ltc_fullnode:
   enabled: false
   image: vsyshost/litecoind:0.21.2.2
-  url: http://shkeeper:shkeeper@fullnode.litecoin.shkeeper.io:9332
+  url: http://shkeeper:shkeeper@fullnode.litecoin.shkeeper.io:80
   nodeSelector: {}
   tolerations: []
 

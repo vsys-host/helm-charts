@@ -8,6 +8,8 @@ metadata:
   labels:
     app: litecoin-shkeeper
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -21,6 +23,28 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: db-init-tables
+          image: {{ .Values.ltc.image }}
+          command: ["python", "manage.py", "init_db"]
+          env:
+            - name: WALLET
+              value: 'LTC'
+            - name: LTC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: litecoin-rpc
+                  key: username
+            - name: LTC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: litecoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
       containers:
         - name: app
           image: {{ .Values.ltc.image }}
@@ -41,8 +65,6 @@ spec:
                 secretKeyRef:
                   name: litecoin-rpc
                   key: username
-            - name: LTC_WALLET
-              value: {{ if .Values.ltc.enabled }}enabled{{ else }}disabled{{ end }}
             - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -59,6 +81,8 @@ spec:
             {{- else }}
               value: "testnet"
             {{- end }}
+            - name: WALLET
+              value: 'LTC'
             - name: FULLNODE_URL
             {{- if .Values.ltc_fullnode.enabled }}
               value: http://shkeeper:shkeeper@fullnode.litecoin.shkeeper.io
@@ -87,8 +111,8 @@ spec:
                 secretKeyRef:
                   name: litecoin-rpc
                   key: password
-            - name: LTC_WALLET
-              value: {{ if .Values.ltc.enabled }}enabled{{ else }}disabled{{ end }}
+            - name: WALLET
+              value: 'LTC'
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:

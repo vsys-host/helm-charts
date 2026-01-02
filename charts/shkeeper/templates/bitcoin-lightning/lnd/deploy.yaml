@@ -34,6 +34,7 @@ spec:
         - --bitcoind.rpcpass=$(BITCOIND_RPCPASS)
         - --bitcoind.zmqpubrawblock=$(BITCOIND_ZMQPUBRAWBLOCK)
         - --bitcoind.zmqpubrawtx=$(BITCOIND_ZMQPUBRAWTX)
+        - --no-disconnect-on-pong-failure
         env:
           - name: EXTERNAL_IP
             value: {{ .Values.external_ip }}

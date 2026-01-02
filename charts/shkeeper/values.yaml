@@ -15,8 +15,9 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.4.4
+  image: vsyshost/shkeeper:2.4.9
   port: 5000
+  enable_payout_callback: false
 
 #
 # BTC
@@ -77,7 +78,7 @@ tron_fullnode:
   tolerations: []
 
 tron_shkeeper:
-  image: vsyshost/tron-shkeeper:1.1.10
+  image: vsyshost/tron-shkeeper:1.1.12
   host: 'tron-shkeeper'
   port: 6000
 
@@ -100,7 +101,7 @@ eth_fullnode:
   tolerations: []
 
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.2.0
+  image: vsyshost/ethereum-shkeeper:1.2.1
 
 eth:
   enabled: false
@@ -220,7 +221,7 @@ btc_lightning:
   network: mainnet
 
   lnd:
-    image: vsyshost/lndinit:v0.1.28-beta-lnd-v0.19.0-beta
+    image: vsyshost/lndinit:v0.1.33-beta-lnd-v0.20.0-beta
     rest_url: https://lightning-lnd-rest:8080
     # p2p_port should be uniq for for each namespace
     p2p_port: 9735
@@ -231,7 +232,7 @@ btc_lightning:
     BITCOIND_RPCUSER: "shkeeper"
 
   rtl:
-    image: shahanafarooqui/rtl:v0.15.4
+    image: shahanafarooqui/rtl:v0.15.6
     # web_url and web_port should be uniq for for each namespace
     web_url: http://rtl:3000
     web_port: 3000
@@ -249,7 +250,7 @@ solana_fullnode:
   tolerations: []
 
 solana_shkeeper:
-  image: vsyshost/solana-shkeeper:1.0.2
+  image: vsyshost/solana-shkeeper:1.0.3
 
 sol:
   enabled: false

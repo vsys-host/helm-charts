@@ -1,4 +1,4 @@
-{{ if .Values.eth_fullnode.enabled }}
+{{ if .Values.bnb_fullnode.enabled }}
 ---
 apiVersion: v1
 kind: Service

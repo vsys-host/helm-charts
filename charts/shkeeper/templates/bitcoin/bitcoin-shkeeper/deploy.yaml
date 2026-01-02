@@ -8,6 +8,8 @@ metadata:
   labels:
     app: bitcoin-shkeeper
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -21,6 +23,26 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: db-init-tables
+          image: {{ .Values.btc.image }}
+          command: ["python", "manage.py", "init_db"]
+          env:
+            - name: BTC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-rpc
+                  key: username
+            - name: BTC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bitcoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
       containers:
         - name: app
           image: {{ .Values.btc.image }}

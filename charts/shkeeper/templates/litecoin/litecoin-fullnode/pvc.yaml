@@ -1,0 +1,14 @@
+{{- if .Values.ltc_fullnode.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: litecoin-fullnode
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 600Gi
+{{- end }}

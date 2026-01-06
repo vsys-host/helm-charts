@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.4.9
+  image: vsyshost/shkeeper:2.5.0
   port: 5000
   enable_payout_callback: false
 

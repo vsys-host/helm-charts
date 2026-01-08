@@ -1,0 +1,61 @@
+{{- if .Values.doge_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dogecoin-fullnode
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: dogecoin-fullnode
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dogecoin-fullnode
+  template:
+    metadata:
+      labels:
+        app: dogecoin-fullnode
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.doge_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.doge_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      - name: dogecoind
+        image: {{ .Values.doge_fullnode.image }}
+        command:
+        - /shkeeper/dogecoind
+        # RPC
+        - -rpcport=22555
+        - -rpcpassword=$(DOGE_PASSWORD)
+        - -rpcuser=$(DOGE_USERNAME)
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        # Transaction index
+        - -txindex=1
+        # Do not load the wallet and disable wallet RPC calls
+        - -disablewallet
+        {{- if not .Values.doge.mainnet }}
+        - -testnet
+        {{- end }}
+        env:
+          - name: DOGE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: dogecoin-rpc
+                key: username
+          - name: DOGE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: dogecoin-rpc
+                key: password
+        volumeMounts:
+        - name: dogecoin-fullnode
+          mountPath: /root/.dogecoin
+      volumes:
+      - name: dogecoin-fullnode
+        persistentVolumeClaim:
+          claimName: dogecoin-fullnode
+{{- end }}

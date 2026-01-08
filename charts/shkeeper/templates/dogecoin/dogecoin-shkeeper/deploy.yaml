@@ -1,0 +1,146 @@
+{{- if .Values.doge.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dogecoin-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: dogecoin-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dogecoin-shkeeper
+  template:
+    metadata:
+      labels:
+        app: dogecoin-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: db-init-tables
+          image: {{ .Values.doge.image }}
+          command: ["python", "manage.py", "init_db"]
+          env:
+            - name: WALLET
+              value: 'DOGE'
+            - name: DOGE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: dogecoin-rpc
+                  key: username
+            - name: DOGE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dogecoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
+      containers:
+        - name: app
+          image: {{ .Values.doge.image }}
+          command:
+          - gunicorn
+          - --access-logfile=-
+          - --workers=1
+          - --threads=16
+          - --timeout=600
+          - --bind=0.0.0.0:6000
+          - run:server
+          ports:
+          - containerPort: 6000
+            name: http
+          env:
+            - name: DOGE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: dogecoin-rpc
+                  key: username
+            - name: WALLET
+              value: 'DOGE'
+            - name: DOGE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dogecoin-rpc
+                  key: password
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
+            - name: DOGE_NETWORK
+            {{- if .Values.doge.mainnet }}
+              value: "main"
+            {{- else }}
+              value: "testnet"
+            {{- end }}
+            - name: FULLNODE_URL
+            {{- if .Values.doge_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@fullnode.dogecoin.shkeeper.io
+            {{- else }}
+              value: {{ .Values.doge_fullnode.url }}
+            {{- end }}
+
+            {{- range $name, $value := .Values.doge.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: dogecoind-storage
+              mountPath: /root/.dogecoin
+        - name: tasks
+          image: {{ .Values.doge.image }}
+          command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+          env:
+            - name: DOGE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: dogecoin-rpc
+                  key: username
+            - name: DOGE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dogecoin-rpc
+                  key: password
+            - name: WALLET
+              value: 'DOGE'
+            - name: SHKEEPER_BACKEND_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: shkeeper-btc-key
+                  key: password
+            - name: DOGE_NETWORK
+            {{- if .Values.doge.mainnet }}
+              value: "main"
+            {{- else }}
+              value: "testnet"
+            {{- end }}
+            - name: FULLNODE_URL
+            {{- if .Values.doge_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@fullnode.dogecoin.shkeeper.io
+            {{- else }}
+              value: {{ .Values.doge_fullnode.url }}
+            {{- end }}
+            - name: C_FORCE_ROOT
+              value: "1"
+            {{- range $name, $value := .Values.doge.extraEnv }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: dogecoind-storage
+              mountPath: /root/.dogecoin
+        - name: redis
+          image: redis
+      volumes:
+      - name: dogecoind-storage
+        persistentVolumeClaim:
+          claimName: dogecoind-claim
+{{- end }}

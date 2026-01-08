@@ -52,12 +52,23 @@ ltc_fullnode:
   nodeSelector: {}
   tolerations: []
 
-#
-# BTC forks
-#
 doge:
   enabled: true
   mainnet: true
+  image: vsyshost/bitcoin-shkeeper:1.1.0
+  legacy:
+    enabled: false
+
+doge_fullnode:
+  enabled: false
+  image: vsyshost/dogecoind:latest
+  url: http://shkeeper:shkeeper@fullnode.dogecoin.shkeeper.io
+  nodeSelector: {}
+  tolerations: []
+
+#
+# BTC forks
+#
 firo:
   enabled: false
   mainnet: true

@@ -28,6 +28,8 @@ spec:
           image: {{ .Values.btc.image }}
           command: ["python", "manage.py", "init_db"]
           env:
+            - name: WALLET
+              value: 'BTC'
             - name: BTC_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -58,6 +60,8 @@ spec:
           - containerPort: 6000
             name: http
           env:
+            - name: WALLET
+              value: 'BTC'
             - name: BTC_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -97,6 +101,8 @@ spec:
           image: {{ .Values.btc.image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
+            - name: WALLET
+              value: 'BTC'
             - name: BTC_USERNAME
               valueFrom:
                 secretKeyRef:

@@ -266,7 +266,7 @@ arb_fullnode:
 arbitrum_shkeeper:
   image: vsyshost/arbitrum-shkeeper:0.0.1
 
-arbeht:
+arbeth:
   enabled: false
 arb_token:
   enabled: false

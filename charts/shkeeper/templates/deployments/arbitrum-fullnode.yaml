@@ -1,0 +1,55 @@
+{{- if .Values.arb_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arbitrum
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: arbitrum
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arbitrum
+  template:
+    metadata:
+      labels:
+        app: arbitrum
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.arb_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.arb_fullnode.nodeSelector | nindent 8 }}
+      containers:
+
+      # executor
+      - name: nitro
+        image: offchainlabs/nitro-node:v3.9.5-66e42c4
+        command:
+          - geth
+          {{- if .Values.arb_fullnode.mainnet }}
+          - --parent-chain.connection.url=https://fullnode.ethereum.shkeeper.io:8645
+          - --parent-chain.blob-client.beacon-url=https://fullnode.ethereum.shkeeper.io:4000
+          - --chain.id=42161
+          {{- else }}
+          - --parent-chain.connection.url=https://fullnode.ethereum.sepolia.shkeeper.io:8645
+          - --parent-chain.blob-client.beacon-url=https://fullnode.ethereum.sepolia.shkeeper.io:4000
+          - --chain.id=421614
+          {{- end }}
+
+          - --init.prune=minimal
+          - --init.latest=pruned
+          - --http.api=net,web3,eth,debug
+          - --http.corsdomain=*
+          - --http.addr=0.0.0.0
+          - --http.vhosts=*
+        volumeMounts:
+        - name: arbitrum-datadir
+          mountPath: /datadir
+
+      volumes:
+      - name: arbitrum-datadir
+        persistentVolumeClaim:
+          claimName: arbitrum-datadir
+{{- end }}

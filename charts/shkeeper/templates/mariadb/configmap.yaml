@@ -13,3 +13,4 @@ data:
     CREATE DATABASE IF NOT EXISTS `avalanche-shkeeper`;
     CREATE DATABASE IF NOT EXISTS `solana-shkeeper`;
     CREATE DATABASE IF NOT EXISTS `bitcoin-shkeeper`;
+    CREATE DATABASE IF NOT EXISTS `arbitrum-shkeeper`;

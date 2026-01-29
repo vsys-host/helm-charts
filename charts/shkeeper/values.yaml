@@ -250,3 +250,27 @@ solana_usdc:
   enabled: false
 solana_pyusd:
   enabled: false
+
+
+#
+# Arbitrum
+#
+
+arb_fullnode:
+  enabled: false
+  url: http://arbitrum:8547
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+arbitrum_shkeeper:
+  image: vsyshost/arbitrum-shkeeper:0.0.1
+
+arbeht:
+  enabled: false
+arb_token:
+  enabled: false
+arb_usdc:
+  enabled: false
+arb_pyusd:
+  enabled: false

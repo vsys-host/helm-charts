@@ -91,6 +91,14 @@ spec:
             value: {{ if .Values.solana_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: SOLANA_PYUSD_WALLET
             value: {{ if .Values.solana_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARBETH_WALLET
+            value: {{ if .Values.arbeth.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARB_USDC_WALLET
+            value: {{ if .Values.arb_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARB_PYUSD_WALLET
+            value: {{ if .Values.arb_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARB_TOKEN_WALLET
+            value: {{ if .Values.arb_token.enabled }}enabled{{ else }}disabled{{ end }}
           {{ if .Values.shkeeper.enable_payout_callback }}
           - name: ENABLE_PAYOUT_CALLBACK
             value: enabled
@@ -274,6 +282,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: sol-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.arbeth.enabled .Values.arb_token.enabled .Values.arb_usdc.enabled .Values.arb_pyusd.enabled}}
+          - name: ARB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: username
+                optional: false
+          - name: ARB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
                 key: password
                 optional: false
           {{- end }}

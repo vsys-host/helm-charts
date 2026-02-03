@@ -89,7 +89,10 @@ spec:
             {{- else }}
               value: {{ .Values.btc_fullnode.url }}
             {{- end }}
-
+            {{- if .Values.btc.external_drain_config }}
+            - name: EXTERNAL_DRAIN_CONFIG
+              value: {{ .Values.btc.external_drain_config | toJson | quote }}
+            {{- end }}
             {{- range $name, $value := .Values.btc.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
@@ -125,6 +128,10 @@ spec:
               value: "testnet"
             {{- end }}
             - name: FULLNODE_URL
+            {{- if .Values.btc.external_drain_config }}
+            - name: EXTERNAL_DRAIN_CONFIG
+              value: {{ .Values.btc.external_drain_config | toJson | quote }}
+            {{- end }}
             {{- if .Values.btc_fullnode.enabled }}
               value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
             {{- else }}

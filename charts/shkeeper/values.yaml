@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.5.3
+  image: vsyshost/shkeeper:2.5.4
   port: 5000
   enable_payout_callback: false
 
@@ -288,7 +288,7 @@ optimism_fullnode:
   tolerations: []
 
 optimism_shkeeper:
-  image: vsyshost/optimism-shkeeper:0.0.1
+  image: vsyshost/optimism-shkeeper:0.0.2
 
 opeth:
   enabled: false

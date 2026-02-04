@@ -274,3 +274,27 @@ arb_usdc:
   enabled: false
 arb_pyusd:
   enabled: false
+
+
+#
+# Optimism
+#
+
+optimism_fullnode:
+  enabled: false
+  url: http://optimism:8545
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+optimism_shkeeper:
+  image: vsyshost/optimism-shkeeper:0.0.1
+
+opeth:
+  enabled: false
+op_token:
+  enabled: false
+op_usdc:
+  enabled: false
+op_usdt:
+  enabled: false

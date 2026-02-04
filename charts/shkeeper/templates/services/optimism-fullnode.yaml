@@ -1,0 +1,31 @@
+{{ if .Values.optimism_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: optimism
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: optimism
+  # executor
+  - name: fullnode-tcp
+    port: 30303
+    protocol: TCP
+  - name: fullnode-udp
+    port: 30303
+    protocol: UDP
+  - name: http-tcp
+    port: 8545
+    protocol: TCP
+  - name: http-udp
+    port: 8545
+    protocol: UDP
+  - name: ws-tcp
+    port: 8546
+    protocol: TCP
+  - name: ws-udp
+    port: 8546
+    protocol: UDP
+
+{{ end }}

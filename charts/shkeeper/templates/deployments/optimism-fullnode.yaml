@@ -1,0 +1,72 @@
+{{- if .Values.optimism_fullnode.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: optimism
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: optimism
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: optimism
+  template:
+    metadata:
+      labels:
+        app: optimism
+    spec:
+      terminationGracePeriodSeconds: 300
+      tolerations: {{- toYaml .Values.optimism_fullnode.tolerations | nindent 8 }}
+      nodeSelector: {{- toYaml .Values.optimism_fullnode.nodeSelector | nindent 8 }}
+      containers:
+      # Execution Client
+      - name: op-geth
+        image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-geth:v1.101603.5
+        args:
+          - --datadir=/datadir
+          - --http
+          - --http.addr=0.0.0.0
+          - --http.port=8545
+          - --http.api=eth,net,web3,debug
+          - --http.corsdomain=*
+          - --http.vhosts=*
+          - --ws
+          - --ws.addr=0.0.0.0
+          - --ws.port=8546
+          - --syncmode=snap
+          - --authrpc.addr=0.0.0.0
+          - --authrpc.port=8551
+          - --authrpc.vhosts=*
+          - --authrpc.jwtsecret=/datadir/jwt.hex
+        volumeMounts:
+          - name: optimism-datadir
+            mountPath: /datadir
+
+      # Rollup / Consensus
+      - name: op-node
+        image: us-docker.pkg.dev/oplabs-tools-artifacts/images/op-node:v1.16.2
+        args:
+          {{- if .Values.optimism_fullnode.mainnet }}
+          - --network=mainnet
+          - --l1=https://fullnode.ethereum.shkeeper.io:8645
+          {{- else }}
+          - --network=sepolia
+          - --l1=https://fullnode.ethereum.sepolia.shkeeper.io:8645
+          {{- end }}
+          - --l2=http://localhost:8551
+          - --l2.jwt-secret=/datadir/jwt.hex
+          - --rpc.addr=0.0.0.0
+          - --rpc.port=9545
+          - --syncmode=execution-layer
+        volumeMounts:
+          - name: optimism-datadir
+            mountPath: /datadir
+
+      volumes:
+      - name: optimism-datadir
+        persistentVolumeClaim:
+          claimName: optimism-datadir
+{{- end }}

@@ -1,0 +1,113 @@
+{{- if or .Values.opeth.enabled .Values.op_usdc.enabled .Values.op_usdt.enabled .Values.op_token.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: optimism-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: optimism-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: optimism-shkeeper
+  template:
+    metadata:
+      labels:
+        app: optimism-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.optimism_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: OP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: username
+          - name: OP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_OP_NETWORK
+          {{- if .Values.optimism_fullnode.mainnet }}
+            value: &CURRENT_OP_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_OP_NETWORK_VALUE "sepolia"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.optimism_fullnode.url }}
+          {{- if .Values.optimism_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.optimism_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          {{- range $name, $value := .Values.optimism_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.optimism_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: OP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: username
+          - name: OP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_OP_NETWORK
+          {{- if .Values.optimism_fullnode.mainnet }}
+            value: *CURRENT_OP_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_OP_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.optimism_fullnode.url }}
+          {{- if .Values.optimism_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.optimism_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.optimism_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

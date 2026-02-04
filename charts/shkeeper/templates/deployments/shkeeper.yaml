@@ -99,6 +99,14 @@ spec:
             value: {{ if .Values.arb_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
           - name: ARB_TOKEN_WALLET
             value: {{ if .Values.arb_token.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OPETH_WALLET
+            value: {{ if .Values.opeth.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OP_USDC_WALLET
+            value: {{ if .Values.op_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OP_USDT_WALLET
+            value: {{ if .Values.op_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OP_TOKEN_WALLET
+            value: {{ if .Values.op_token.enabled }}enabled{{ else }}disabled{{ end }}
           {{ if .Values.shkeeper.enable_payout_callback }}
           - name: ENABLE_PAYOUT_CALLBACK
             value: enabled
@@ -296,6 +304,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: arb-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.opeth.enabled .Values.op_token.enabled .Values.op_usdc.enabled .Values.op_usdt.enabled}}
+          - name: OP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: username
+                optional: false
+          - name: OP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
                 key: password
                 optional: false
           {{- end }}

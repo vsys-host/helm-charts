@@ -1,0 +1,15 @@
+{{- if .Values.btc_lightning.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: lightning-lnbits
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: lightning-lnbits
+  ports:
+  - name: web
+    port: {{ .Values.btc_lightning.lnbits.web_port }}
+    targetPort: web
+  type: LoadBalancer
+{{ end }}

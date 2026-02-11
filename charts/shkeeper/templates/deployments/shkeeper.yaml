@@ -388,7 +388,7 @@ spec:
         - name: lightning-lnd
           mountPath: /lightning_shared
         - name: lightning-lnbits
-          mountPath: /lnbits_shared
+          mountPath: /lnbits_shared/data
         {{- end }}
       volumes:
       - name: shkeeper-db-storage

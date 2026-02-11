@@ -387,6 +387,8 @@ spec:
         {{- if .Values.btc_lightning.enabled }}
         - name: lightning-lnd
           mountPath: /lightning_shared
+        - name: lightning-lnbits
+          mountPath: /lnbits_shared
         {{- end }}
       volumes:
       - name: shkeeper-db-storage
@@ -396,4 +398,7 @@ spec:
       - name: lightning-lnd
         persistentVolumeClaim:
           claimName: lightning-lnd
+      - name: lightning-lnbits
+        persistentVolumeClaim:
+          claimName: lightning-lnbits
       {{- end }}

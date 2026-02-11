@@ -36,18 +36,18 @@ spec:
               secretKeyRef:
                 name: lightning-lnbits-account
                 key: password
-          - name: DEBUG
-            value: "True"
-          - name: LNBITS_ADMIN_UI
-            value: "false"
-          - name: HOST
-            value: 127.0.0.1
-          - name: PORT
-            value: "5000"
-          - name: LNBITS_DATA_FOLDER
-            value: "./data"
-          - name: LNBITS_ALLOWED_FUNDING_SOURCES
-            value: "LndRestWallet"
+          # - name: DEBUG
+          #   value: "True"
+          # - name: LNBITS_ADMIN_UI
+          #   value: "false"
+          # - name: HOST
+          #   value: 127.0.0.1
+          # - name: PORT
+          #   value: "5000"
+          # - name: LNBITS_DATA_FOLDER
+          #   value: "./data"
+          # - name: LNBITS_ALLOWED_FUNDING_SOURCES
+          #   value: "LndRestWallet"
           - name: LNBITS_BACKEND_WALLET_CLASS
             value: LndRestWallet
           - name: LIGHTNING_INVOICE_EXPIRY
@@ -72,7 +72,9 @@ spec:
           mountPath: /app/data
         - name: lightning-lnd
           mountPath: /.lnd
-
+        - name: lightning-lnbits-config
+          mountPath: /app/.env
+          subPath: .env
 
       containers:
       - name: lightning-lnbits
@@ -88,18 +90,18 @@ spec:
               secretKeyRef:
                 name: lightning-lnbits-account
                 key: password
-          - name: DEBUG
-            value: "True"
-          - name: LNBITS_ADMIN_UI
-            value: "false"
-          - name: HOST
-            value: 127.0.0.1
-          - name: PORT
-            value: "5000"
-          - name: LNBITS_DATA_FOLDER
-            value: "./data"
-          - name: LNBITS_ALLOWED_FUNDING_SOURCES
-            value: "LndRestWallet"
+          # - name: DEBUG
+          #   value: "True"
+          # - name: LNBITS_ADMIN_UI
+          #   value: "false"
+          # - name: HOST
+          #   value: 127.0.0.1
+          # - name: PORT
+          #   value: "5000"
+          # - name: LNBITS_DATA_FOLDER
+          #   value: "./data"
+          # - name: LNBITS_ALLOWED_FUNDING_SOURCES
+          #   value: "LndRestWallet"
           - name: LNBITS_BACKEND_WALLET_CLASS
             value: LndRestWallet
           - name: LIGHTNING_INVOICE_EXPIRY
@@ -128,6 +130,9 @@ spec:
           mountPath: /app/data
         - name: lightning-lnd
           mountPath: /.lnd
+        - name: lightning-lnbits-config
+          mountPath: /app/.env
+          subPath: .env
 
       volumes:
       - name: lightning-lnbits
@@ -136,4 +141,7 @@ spec:
       - name: lightning-lnd
         persistentVolumeClaim:
           claimName: lightning-lnd
+      - name: lightning-lnbits-config
+        configMap:
+          name: lightning-lnbits-config
 {{- end }}

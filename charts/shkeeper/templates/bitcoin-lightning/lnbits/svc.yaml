@@ -11,5 +11,4 @@ spec:
   - name: web
     port: {{ .Values.btc_lightning.lnbits.web_port }}
     targetPort: web
-  type: LoadBalancer
 {{ end }}

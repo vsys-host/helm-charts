@@ -1,0 +1,21 @@
+{{- if .Values.btc_lightning.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lightning-lnbits
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: {{ .Values.btc_lightning.lnbits.public_url }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: lightning-lnbits
+            port:
+              number: {{ .Values.btc_lightning.lnbits.web_port }}
+{{- end }}

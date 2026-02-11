@@ -352,6 +352,19 @@ spec:
             value: {{ .Values.btc_lightning.rtl.web_url }}
           - name: BITCOINLIGHTNING_WALLET
             value: enabled
+          # LNBITS/LNURL
+          - name: LNBITS_ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: user
+          - name: LNBITS_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: password
+          - name: LNBITS_URL
+            value: {{ .Values.btc_lightning.lnbits.public_url }}
           {{- else }}
           - name: BITCOINLIGHTNING_WALLET
             value: disabled

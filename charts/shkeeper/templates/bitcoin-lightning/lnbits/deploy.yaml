@@ -57,7 +57,7 @@ spec:
           - name: LND_REST_CERT
             value: "/.lnd/tls.cert"
           - name: LND_REST_MACAROON
-            value: "/.lnd/data/chain/bitcoin/regtest/admin.macaroon"
+            value: "/.lnd/data/chain/bitcoin/{{ .Values.btc_lightning.network }}/admin.macaroon"
           - name: LNBITS_USER_DEFAULT_EXTENSIONS
             value: "lnurlp"
           - name: LNBITS_ALLOW_NEW_ACCOUNTS

@@ -36,32 +36,6 @@ spec:
               secretKeyRef:
                 name: lightning-lnbits-account
                 key: password
-          # - name: DEBUG
-          #   value: "True"
-          # - name: LNBITS_ADMIN_UI
-          #   value: "false"
-          # - name: HOST
-          #   value: 127.0.0.1
-          # - name: PORT
-          #   value: "5000"
-          # - name: LNBITS_DATA_FOLDER
-          #   value: "./data"
-          # - name: LNBITS_ALLOWED_FUNDING_SOURCES
-          #   value: "LndRestWallet"
-          - name: LNBITS_BACKEND_WALLET_CLASS
-            value: LndRestWallet
-          - name: LIGHTNING_INVOICE_EXPIRY
-            value: "3600"
-          - name: LND_REST_ENDPOINT
-            value: {{ .Values.btc_lightning.lnd.rest_url }}
-          - name: LND_REST_CERT
-            value: "/.lnd/tls.cert"
-          - name: LND_REST_MACAROON
-            value: "/.lnd/data/chain/bitcoin/{{ .Values.btc_lightning.network }}/admin.macaroon"
-          - name: LNBITS_USER_DEFAULT_EXTENSIONS
-            value: "lnurlp"
-          - name: LNBITS_ALLOW_NEW_ACCOUNTS
-            value: "false"
           {{- range $name, $value := .Values.btc_lightning.lnbits.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
@@ -90,32 +64,6 @@ spec:
               secretKeyRef:
                 name: lightning-lnbits-account
                 key: password
-          # - name: DEBUG
-          #   value: "True"
-          # - name: LNBITS_ADMIN_UI
-          #   value: "false"
-          # - name: HOST
-          #   value: 127.0.0.1
-          # - name: PORT
-          #   value: "5000"
-          # - name: LNBITS_DATA_FOLDER
-          #   value: "./data"
-          # - name: LNBITS_ALLOWED_FUNDING_SOURCES
-          #   value: "LndRestWallet"
-          - name: LNBITS_BACKEND_WALLET_CLASS
-            value: LndRestWallet
-          - name: LIGHTNING_INVOICE_EXPIRY
-            value: "3600"
-          - name: LND_REST_ENDPOINT
-            value: {{ .Values.btc_lightning.lnd.rest_url }}
-          - name: LND_REST_CERT
-            value: "/.lnd/tls.cert"
-          - name: LND_REST_MACAROON
-            value: "/.lnd/data/chain/bitcoin/{{ .Values.btc_lightning.network }}/admin.macaroon"
-          - name: LNBITS_USER_DEFAULT_EXTENSIONS
-            value: "lnurlp"
-          - name: LNBITS_ALLOW_NEW_ACCOUNTS
-            value: "false"
           {{- range $name, $value := .Values.btc_lightning.lnbits.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}

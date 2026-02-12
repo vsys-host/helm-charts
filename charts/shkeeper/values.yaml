@@ -231,7 +231,6 @@ btc_lightning:
 
   lnbits:
     image: ghcr.io/vsys-host/lnbits:1.4.2
-    public_url: https://alice.lnurl.example.com
     web_port: 9000
 
 #

@@ -19,7 +19,6 @@ spec:
     app.kubernetes.io/name: shkeeper
 
 
-{{- if eq .Values.domain "" }}
 ---
 apiVersion: v1
 kind: Service
@@ -41,4 +40,3 @@ spec:
     app.kubernetes.io/instance: shkeeper-vsys
     app.kubernetes.io/name: shkeeper
   type: LoadBalancer
-{{- end }}

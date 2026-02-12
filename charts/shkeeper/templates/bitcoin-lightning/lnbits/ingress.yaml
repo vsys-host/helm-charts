@@ -1,4 +1,7 @@
 {{- if .Values.btc_lightning.enabled }}
+  {{- if eq .Values.domain "" }}
+    {{- fail "ERROR: Bitcoin Lightning requires domain to be set in values.yaml" -}}
+  {{- end }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

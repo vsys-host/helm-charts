@@ -1,0 +1,95 @@
+{{- if .Values.btc_lightning.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lightning-lnbits
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: lightning-lnbits
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lightning-lnbits
+  template:
+    metadata:
+      labels:
+        app: lightning-lnbits
+    spec:
+
+      initContainers:
+      - name: lightning-lnbits-init
+        image:  {{ .Values.btc_lightning.lnbits.image }}
+        command:
+        - /app/.venv/bin/python
+        - /app/setup_lnbits.py
+        env:
+          - name: LNBITS_ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: user
+          - name: LNBITS_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: password
+          {{- range $name, $value := .Values.btc_lightning.lnbits.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+        volumeMounts:
+        - name: lightning-lnbits
+          mountPath: /app/data
+        - name: lightning-lnd
+          mountPath: /.lnd
+        - name: lightning-lnbits-config
+          mountPath: /app/.env
+          subPath: .env
+
+      containers:
+      - name: lightning-lnbits
+        image:  {{ .Values.btc_lightning.lnbits.image }}
+        env:
+          - name: LNBITS_ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: user
+          - name: LNBITS_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: password
+          {{- range $name, $value := .Values.btc_lightning.lnbits.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+        ports:
+        - containerPort: 5000
+          name: web
+
+        volumeMounts:
+        - name: lightning-lnbits
+          mountPath: /app/data
+        - name: lightning-lnd
+          mountPath: /.lnd
+        - name: lightning-lnbits-config
+          mountPath: /app/.env
+          subPath: .env
+
+      volumes:
+      - name: lightning-lnbits
+        persistentVolumeClaim:
+          claimName: lightning-lnbits
+      - name: lightning-lnd
+        persistentVolumeClaim:
+          claimName: lightning-lnd
+      - name: lightning-lnbits-config
+        configMap:
+          name: lightning-lnbits-config
+{{- end }}

@@ -352,6 +352,19 @@ spec:
             value: {{ .Values.btc_lightning.rtl.web_url }}
           - name: BITCOINLIGHTNING_WALLET
             value: enabled
+          # LNBITS/LNURL
+          - name: LNBITS_ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: user
+          - name: LNBITS_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: password
+          - name: LNBITS_URL
+            value: {{ .Values.domain }}
           {{- else }}
           - name: BITCOINLIGHTNING_WALLET
             value: disabled
@@ -374,6 +387,8 @@ spec:
         {{- if .Values.btc_lightning.enabled }}
         - name: lightning-lnd
           mountPath: /lightning_shared
+        - name: lightning-lnbits
+          mountPath: /lnbits_shared/data
         {{- end }}
       volumes:
       - name: shkeeper-db-storage
@@ -383,4 +398,7 @@ spec:
       - name: lightning-lnd
         persistentVolumeClaim:
           claimName: lightning-lnd
+      - name: lightning-lnbits
+        persistentVolumeClaim:
+          claimName: lightning-lnbits
       {{- end }}

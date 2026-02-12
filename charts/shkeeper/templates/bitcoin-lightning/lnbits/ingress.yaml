@@ -1,0 +1,29 @@
+{{- if .Values.btc_lightning.enabled }}
+  {{- if eq .Values.domain "" }}
+    {{- fail "ERROR: Bitcoin Lightning requires domain to be set in values.yaml" -}}
+  {{- end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lightning-lnbits
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: lnurl
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.domain }}
+  rules:
+  - host: {{ .Values.domain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: lightning-lnbits
+            port:
+              number: {{ .Values.btc_lightning.lnbits.web_port }}
+{{- end }}

@@ -4,6 +4,7 @@
 
 namespace: shkeeper
 external_ip: 0.0.0.0
+domain: ""
 
 dev:
   imagePullSecrets:
@@ -227,6 +228,10 @@ btc_lightning:
     web_url: http://rtl:3000
     web_port: 3000
     logout_redirect_link: http://shkeeper:5000/wallet/BTC-LIGHTNING
+
+  lnbits:
+    image: ghcr.io/vsys-host/lnbits:1.4.2
+    web_port: 9000
 
 #
 # Solana

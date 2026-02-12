@@ -12,7 +12,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.domain }}
-    secretName: lightning-lnbits-tls
+    # secretName: lightning-lnbits-tls
   rules:
   - host: {{ .Values.domain }}
     http:

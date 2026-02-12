@@ -12,7 +12,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.domain }}
-    secretName: shkeeper-tls
+    # secretName: shkeeper-tls
   rules:
   - host: {{ .Values.domain }}
     http:

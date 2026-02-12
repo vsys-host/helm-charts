@@ -364,7 +364,7 @@ spec:
                 name: lightning-lnbits-account
                 key: password
           - name: LNBITS_URL
-            value: {{ .Values.btc_lightning.lnbits.public_url }}
+            value: {{ .Values.domain }}
           {{- else }}
           - name: BITCOINLIGHTNING_WALLET
             value: disabled

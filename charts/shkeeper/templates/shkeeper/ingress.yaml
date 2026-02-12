@@ -1,18 +1,18 @@
-{{- if .Values.btc_lightning.enabled }}
+{{- if ne .Values.domain "" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: lightning-lnbits
+  name: shkeeper
   namespace: {{ .Values.namespace }}
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure-shkeeper
     traefik.ingress.kubernetes.io/router.tls.certresolver: default
 spec:
   tls:
   - hosts:
     - {{ .Values.domain }}
-    secretName: lightning-lnbits-tls
+    secretName: shkeeper-tls
   rules:
   - host: {{ .Values.domain }}
     http:
@@ -21,7 +21,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: lightning-lnbits
+            name: shkeeper
             port:
-              number: {{ .Values.btc_lightning.lnbits.web_port }}
+              number: 5000
 {{- end }}

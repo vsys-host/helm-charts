@@ -16,7 +16,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.5.6
+  image: vsyshost/shkeeper:2.5.7
   port: 5000
   enable_payout_callback: false
 
@@ -27,7 +27,7 @@ shkeeper:
 btc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin-shkeeper:2.0.0
+  image: vsyshost/bitcoin-shkeeper:2.0.1
   legacy:
     enabled: false
 

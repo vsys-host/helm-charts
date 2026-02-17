@@ -321,6 +321,20 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+           {{- if or .Values.aml.enabled}}
+          - name: AML_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: username
+                optional: false
+          - name: AML_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: password
+                optional: false
+          {{- end }}
           {{- if .Values.monero.enabled }}
           - name: MONERO_WALLET_RPC_USER
             valueFrom:

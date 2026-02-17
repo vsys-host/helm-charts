@@ -1,0 +1,99 @@
+{{- if or .Values.aml.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aml-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: aml-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aml-shkeeper
+  template:
+    metadata:
+      labels:
+        app: aml-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.aml_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: AML_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: username
+          - name: AML_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          {{- if .Values.aml_shkeeper.providers }}
+          - name: PROVIDERS
+            value: {{ .Values.aml_shkeeper.providers | toJson | quote }}
+          {{- end }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.aml_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.aml_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: AML_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: username
+          - name: AML_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          {{- if .Values.aml_shkeeper.providers }}
+          - name: PROVIDERS
+            value: {{ .Values.aml_shkeeper.providers | toJson | quote }}
+          {{- end }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.aml_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

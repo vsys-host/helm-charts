@@ -163,7 +163,7 @@ services:
   {{- end }}
   {{- if .Values.ltc.enabled }}
   litecoind:
-    image: vsyshost/litecoind
+    image: vsyshost/litecoind:0.21.2.2
     container_name: litecoind
     {{- if not .Values.ltc.mainnet }}
     command:

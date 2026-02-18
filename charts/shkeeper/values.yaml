@@ -303,3 +303,15 @@ op_usdc:
   enabled: false
 op_usdt:
   enabled: false
+
+
+
+#
+# AML
+#
+
+aml_shkeeper:
+  image: vsyshost/aml-shkeeper:0.0.1
+
+aml:
+  enabled: false

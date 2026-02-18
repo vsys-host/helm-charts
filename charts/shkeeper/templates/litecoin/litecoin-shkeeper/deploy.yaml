@@ -25,7 +25,7 @@ spec:
       {{- end }}
       initContainers:
         - name: db-init-tables
-          image: {{ .Values.ltc.image }}
+          image: {{ .Values.unifiend_btc_image }}
           command: ["python", "manage.py", "init_db"]
           env:
             - name: WALLET
@@ -47,7 +47,7 @@ spec:
                   key: password
       containers:
         - name: app
-          image: {{ .Values.ltc.image }}
+          image: {{ .Values.unifiend_btc_image }}
           command:
           - gunicorn
           - --access-logfile=-
@@ -98,7 +98,7 @@ spec:
             - name: litecoind-storage
               mountPath: /root/.litecoin
         - name: tasks
-          image: {{ .Values.ltc.image }}
+          image: {{ .Values.unifiend_btc_image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
             - name: LTC_USERNAME

@@ -24,10 +24,11 @@ shkeeper:
 # BTC
 #
 
+unifiend_btc_image: vsyshost/bitcoin-shkeeper:2.0.1
+
 btc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin-shkeeper:2.0.1
   legacy:
     enabled: false
 
@@ -42,7 +43,6 @@ btc_fullnode:
 ltc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin-shkeeper:2.0.1
   legacy:
     enabled: false
 

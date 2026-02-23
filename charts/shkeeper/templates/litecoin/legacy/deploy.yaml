@@ -30,7 +30,7 @@ spec:
         - -rpcbind=0.0.0.0
         - -rpcallowip=0.0.0.0/0
         - -wallet=shkeeper
-        - -walletnotify=/shkeeper/walletnotify.sh %s
+        #- -walletnotify=/shkeeper/walletnotify.sh %s
         {{- if not .Values.ltc.mainnet }}
         - -testnet
         {{- end }}

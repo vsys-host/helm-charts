@@ -7,10 +7,10 @@ WORKDIR /shkeeper
 COPY ./walletnotify.sh .
 
 RUN chmod +x walletnotify.sh \
-    && curl -L https://github.com/dogecoin/dogecoin/releases/download/v1.14.5/dogecoin-1.14.5-x86_64-linux-gnu.tar.gz -o dogecoin.tar.gz \
+    && curl -L https://github.com/dogecoin/dogecoin/releases/download/v1.14.9/dogecoin-1.14.9-x86_64-linux-gnu.tar.gz -o dogecoin.tar.gz \
     && tar -xzvf dogecoin.tar.gz \
-    && cp dogecoin-1.14.5/bin/dogecoind dogecoin-1.14.5/bin/dogecoin-cli . \
-    && rm -rf dogecoin.tar.gz dogecoin-1.14.5
+    && cp dogecoin-1.14.9/bin/dogecoind dogecoin-1.14.9/bin/dogecoin-cli . \
+    && rm -rf dogecoin.tar.gz dogecoin-1.14.9
 
 CMD /shkeeper/dogecoind \
     -prune=2200 \

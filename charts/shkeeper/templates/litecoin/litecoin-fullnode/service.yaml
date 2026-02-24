@@ -1,0 +1,14 @@
+{{- if .Values.ltc_fullnode.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: litecoin-fullnode
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+  - name: jsonrpc
+    port: 9332
+    targetPort: 9332
+  selector:
+    app: litecoin-fullnode
+{{ end }}

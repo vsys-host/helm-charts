@@ -1,23 +1,23 @@
-{{- if .Values.btc.enabled}}
+{{- if .Values.ltc.enabled}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bitcoin-shkeeper
+  name: litecoin-shkeeper
   namespace: {{ .Values.namespace }}
   labels:
-    app: bitcoin-shkeeper
+    app: litecoin-shkeeper
 spec:
   strategy:
     type: Recreate
   replicas: 1
   selector:
     matchLabels:
-      app: bitcoin-shkeeper
+      app: litecoin-shkeeper
   template:
     metadata:
       labels:
-        app: bitcoin-shkeeper
+        app: litecoin-shkeeper
     spec:
       {{- with .Values.dev.imagePullSecrets }}
       imagePullSecrets:
@@ -25,20 +25,20 @@ spec:
       {{- end }}
       initContainers:
         - name: db-init-tables
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.ltc.image }}
           command: ["python", "manage.py", "init_db"]
           env:
             - name: WALLET
-              value: 'BTC'
-            - name: BTC_USERNAME
+              value: 'LTC'
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: password
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
@@ -47,7 +47,7 @@ spec:
                   key: password
       containers:
         - name: app
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.ltc.image }}
           command:
           - gunicorn
           - --access-logfile=-
@@ -60,93 +60,89 @@ spec:
           - containerPort: 6000
             name: http
           env:
-            - name: WALLET
-              value: 'BTC'
-            - name: BTC_USERNAME
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: password
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: shkeeper-btc-key
                   key: password
-            - name: BTC_NETWORK
-            {{- if .Values.btc.mainnet }}
+            - name: LTC_NETWORK
+            {{- if .Values.ltc.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
             {{- end }}
             - name: WALLET
-              value: 'BTC'
+              value: 'LTC'
             - name: FULLNODE_URL
-            {{- if .Values.btc_fullnode.enabled }}
-              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- if .Values.ltc_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@fullnode.litecoin.shkeeper.io
             {{- else }}
-              value: {{ .Values.btc_fullnode.url }}
+              value: {{ .Values.ltc_fullnode.url }}
             {{- end }}
 
-            {{- range $name, $value := .Values.btc.extraEnv }}
+            {{- range $name, $value := .Values.ltc.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            - name: bitcoind-storage
-              mountPath: /root/.bitcoin
+            - name: litecoind-storage
+              mountPath: /root/.litecoin
         - name: tasks
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.ltc.image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
-            - name: WALLET
-              value: 'BTC'
-            - name: BTC_USERNAME
+            - name: LTC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: LTC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: litecoin-rpc
                   key: password
             - name: WALLET
-              value: 'BTC'
+              value: 'LTC'
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: shkeeper-btc-key
                   key: password
-            - name: BTC_NETWORK
-           {{- if .Values.btc.mainnet }}
+            - name: LTC_NETWORK
+            {{- if .Values.ltc.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
             {{- end }}
             - name: FULLNODE_URL
-            {{- if .Values.btc_fullnode.enabled }}
-              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- if .Values.ltc_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@fullnode.litecoin.shkeeper.io
             {{- else }}
-              value: {{ .Values.btc_fullnode.url }}
+              value: {{ .Values.ltc_fullnode.url }}
             {{- end }}
             - name: C_FORCE_ROOT
               value: "1"
-            {{- range $name, $value := .Values.btc.extraEnv }}
+            {{- range $name, $value := .Values.ltc.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            - name: bitcoind-storage
-              mountPath: /root/.bitcoin
+            - name: litecoind-storage
+              mountPath: /root/.litecoin
         - name: redis
           image: redis
       volumes:
-      - name: bitcoind-storage
+      - name: litecoind-storage
         persistentVolumeClaim:
-          claimName: bitcoind-claim
+          claimName: litecoind-claim
 {{- end }}

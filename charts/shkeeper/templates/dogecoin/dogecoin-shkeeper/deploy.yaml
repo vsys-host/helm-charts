@@ -1,23 +1,21 @@
-{{- if .Values.btc.enabled}}
+{{- if .Values.doge.enabled}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bitcoin-shkeeper
+  name: dogecoin-shkeeper
   namespace: {{ .Values.namespace }}
   labels:
-    app: bitcoin-shkeeper
+    app: dogecoin-shkeeper
 spec:
-  strategy:
-    type: Recreate
   replicas: 1
   selector:
     matchLabels:
-      app: bitcoin-shkeeper
+      app: dogecoin-shkeeper
   template:
     metadata:
       labels:
-        app: bitcoin-shkeeper
+        app: dogecoin-shkeeper
     spec:
       {{- with .Values.dev.imagePullSecrets }}
       imagePullSecrets:
@@ -25,20 +23,20 @@ spec:
       {{- end }}
       initContainers:
         - name: db-init-tables
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.doge.image }}
           command: ["python", "manage.py", "init_db"]
           env:
             - name: WALLET
-              value: 'BTC'
-            - name: BTC_USERNAME
+              value: 'DOGE'
+            - name: DOGE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: dogecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: DOGE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: dogecoin-rpc
                   key: password
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
@@ -47,7 +45,7 @@ spec:
                   key: password
       containers:
         - name: app
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.doge.image }}
           command:
           - gunicorn
           - --access-logfile=-
@@ -60,93 +58,89 @@ spec:
           - containerPort: 6000
             name: http
           env:
-            - name: WALLET
-              value: 'BTC'
-            - name: BTC_USERNAME
+            - name: DOGE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: dogecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: WALLET
+              value: 'DOGE'
+            - name: DOGE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: dogecoin-rpc
                   key: password
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: shkeeper-btc-key
                   key: password
-            - name: BTC_NETWORK
-            {{- if .Values.btc.mainnet }}
+            - name: DOGE_NETWORK
+            {{- if .Values.doge.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
             {{- end }}
-            - name: WALLET
-              value: 'BTC'
             - name: FULLNODE_URL
-            {{- if .Values.btc_fullnode.enabled }}
-              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- if .Values.doge_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@fullnode.dogecoin.shkeeper.io
             {{- else }}
-              value: {{ .Values.btc_fullnode.url }}
+              value: {{ .Values.doge_fullnode.url }}
             {{- end }}
 
-            {{- range $name, $value := .Values.btc.extraEnv }}
+            {{- range $name, $value := .Values.doge.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            - name: bitcoind-storage
-              mountPath: /root/.bitcoin
+            - name: dogecoind-storage
+              mountPath: /root/.dogecoin
         - name: tasks
-          image: {{ .Values.btc.image }}
+          image: {{ .Values.doge.image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
-            - name: WALLET
-              value: 'BTC'
-            - name: BTC_USERNAME
+            - name: DOGE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: dogecoin-rpc
                   key: username
-            - name: BTC_PASSWORD
+            - name: DOGE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: bitcoin-rpc
+                  name: dogecoin-rpc
                   key: password
             - name: WALLET
-              value: 'BTC'
+              value: 'DOGE'
             - name: SHKEEPER_BACKEND_KEY
               valueFrom:
                 secretKeyRef:
                   name: shkeeper-btc-key
                   key: password
-            - name: BTC_NETWORK
-           {{- if .Values.btc.mainnet }}
+            - name: DOGE_NETWORK
+            {{- if .Values.doge.mainnet }}
               value: "main"
             {{- else }}
               value: "testnet"
             {{- end }}
             - name: FULLNODE_URL
-            {{- if .Values.btc_fullnode.enabled }}
-              value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
+            {{- if .Values.doge_fullnode.enabled }}
+              value: http://shkeeper:shkeeper@fullnode.dogecoin.shkeeper.io
             {{- else }}
-              value: {{ .Values.btc_fullnode.url }}
+              value: {{ .Values.doge_fullnode.url }}
             {{- end }}
             - name: C_FORCE_ROOT
               value: "1"
-            {{- range $name, $value := .Values.btc.extraEnv }}
+            {{- range $name, $value := .Values.doge.extraEnv }}
             - name: {{ $name | quote }}
               value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
-            - name: bitcoind-storage
-              mountPath: /root/.bitcoin
+            - name: dogecoind-storage
+              mountPath: /root/.dogecoin
         - name: redis
           image: redis
       volumes:
-      - name: bitcoind-storage
+      - name: dogecoind-storage
         persistentVolumeClaim:
-          claimName: bitcoind-claim
+          claimName: dogecoind-claim
 {{- end }}

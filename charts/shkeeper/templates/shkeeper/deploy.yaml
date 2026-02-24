@@ -91,6 +91,22 @@ spec:
             value: {{ if .Values.solana_usdc.enabled }}enabled{{ else }}disabled{{ end }}
           - name: SOLANA_PYUSD_WALLET
             value: {{ if .Values.solana_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARBETH_WALLET
+            value: {{ if .Values.arbeth.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARB_USDC_WALLET
+            value: {{ if .Values.arb_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARB_PYUSD_WALLET
+            value: {{ if .Values.arb_pyusd.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: ARB_TOKEN_WALLET
+            value: {{ if .Values.arb_token.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OPETH_WALLET
+            value: {{ if .Values.opeth.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OP_USDC_WALLET
+            value: {{ if .Values.op_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OP_USDT_WALLET
+            value: {{ if .Values.op_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: OP_TOKEN_WALLET
+            value: {{ if .Values.op_token.enabled }}enabled{{ else }}disabled{{ end }}
           {{ if .Values.shkeeper.enable_payout_callback }}
           - name: ENABLE_PAYOUT_CALLBACK
             value: enabled
@@ -277,6 +293,48 @@ spec:
                 key: password
                 optional: false
           {{- end }}
+          {{- if or .Values.arbeth.enabled .Values.arb_token.enabled .Values.arb_usdc.enabled .Values.arb_pyusd.enabled}}
+          - name: ARB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: username
+                optional: false
+          - name: ARB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.opeth.enabled .Values.op_token.enabled .Values.op_usdc.enabled .Values.op_usdt.enabled}}
+          - name: OP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: username
+                optional: false
+          - name: OP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: op-rpc
+                key: password
+                optional: false
+          {{- end }}
+           {{- if or .Values.aml.enabled}}
+          - name: AML_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: username
+                optional: false
+          - name: AML_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: aml-rpc
+                key: password
+                optional: false
+          {{- end }}
           {{- if .Values.monero.enabled }}
           - name: MONERO_WALLET_RPC_USER
             valueFrom:
@@ -308,6 +366,19 @@ spec:
             value: {{ .Values.btc_lightning.rtl.web_url }}
           - name: BITCOINLIGHTNING_WALLET
             value: enabled
+          # LNBITS/LNURL
+          - name: LNBITS_ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: user
+          - name: LNBITS_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lightning-lnbits-account
+                key: password
+          - name: LNBITS_URL
+            value: {{ .Values.domain }}
           {{- else }}
           - name: BITCOINLIGHTNING_WALLET
             value: disabled
@@ -330,6 +401,8 @@ spec:
         {{- if .Values.btc_lightning.enabled }}
         - name: lightning-lnd
           mountPath: /lightning_shared
+        - name: lightning-lnbits
+          mountPath: /lnbits_shared/data
         {{- end }}
       volumes:
       - name: shkeeper-db-storage
@@ -339,4 +412,7 @@ spec:
       - name: lightning-lnd
         persistentVolumeClaim:
           claimName: lightning-lnd
+      - name: lightning-lnbits
+        persistentVolumeClaim:
+          claimName: lightning-lnbits
       {{- end }}

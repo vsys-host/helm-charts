@@ -1,0 +1,113 @@
+{{- if or .Values.arbeth.enabled .Values.arb_usdc.enabled .Values.arb_pyusd.enabled .Values.arb_token.enabled}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arbitrum-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: arbitrum-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arbitrum-shkeeper
+  template:
+    metadata:
+      labels:
+        app: arbitrum-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.arbitrum_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: ARB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: username
+          - name: ARB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_ARB_NETWORK
+          {{- if .Values.arb_fullnode.mainnet }}
+            value: &CURRENT_ARB_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_ARB_NETWORK_VALUE "sepolia"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.arb_fullnode.url }}
+          {{- if .Values.arbitrum_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.arbitrum_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          {{- range $name, $value := .Values.arbitrum_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.arbitrum_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: ARB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: username
+          - name: ARB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: arb-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_ARB_NETWORK
+          {{- if .Values.arb_fullnode.mainnet }}
+            value: *CURRENT_ARB_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_ARB_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.arb_fullnode.url }}
+          {{- if .Values.arbitrum_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.arbitrum_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.arbitrum_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

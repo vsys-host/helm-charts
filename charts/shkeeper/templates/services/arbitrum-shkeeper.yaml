@@ -1,0 +1,15 @@
+{{- if or .Values.arbeth.enabled .Values.arb_token.enabled .Values.arb_usdc.enabled .Values.arb_pyusd.enabled}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arbitrum-shkeeper
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: arbitrum-shkeeper
+  ports:
+  - name: app-tcp
+    port: 6000
+    protocol: TCP
+{{ end }}

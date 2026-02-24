@@ -1,0 +1,31 @@
+{{ if .Values.arb_fullnode.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arbitrum
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: arbitrum
+  # executor
+  - name: fullnode-tcp
+    port: 9642
+    protocol: TCP
+  - name: fullnode-udp
+    port: 9642
+    protocol: UDP
+  - name: http-tcp
+    port: 8547
+    protocol: TCP
+  - name: http-udp
+    port: 8547
+    protocol: UDP
+  - name: ws-tcp
+    port: 8548
+    protocol: TCP
+  - name: ws-udp
+    port: 8548
+    protocol: UDP
+
+{{ end }}

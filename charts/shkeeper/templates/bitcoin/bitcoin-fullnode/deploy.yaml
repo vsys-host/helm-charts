@@ -41,8 +41,12 @@ spec:
         - -zmqpubrawblock=tcp://0.0.0.0:28334
         - -zmqpubrawtx=tcp://0.0.0.0:28335
         - -zmqpubhashblock=tcp://0.0.0.0:28336
-        {{- if not .Values.btc.mainnet }}
-        - -testnet
+        {{- if .Values.btc.regtest }}
+        - -regtest
+        {{- else }}
+          {{- if not .Values.btc.mainnet }}
+          - -testnet
+          {{- end }}
         {{- end }}
         env:
         - name: BTC_USERNAME

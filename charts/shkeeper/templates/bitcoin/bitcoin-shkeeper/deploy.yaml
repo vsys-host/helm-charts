@@ -78,11 +78,16 @@ spec:
                   name: shkeeper-btc-key
                   key: password
             - name: BTC_NETWORK
-            {{- if .Values.btc.mainnet }}
+              {{- if .Values.btc.regtest }}
+              value: regtest
+              {{- else }}
+              {{- if .Values.btc.mainnet }}
               value: "main"
-            {{- else }}
+              {{- else }}
               value: "testnet"
-            {{- end }}
+              {{- end }}
+              {{- end }}
+
             - name: FULLNODE_URL
             {{- if .Values.btc_fullnode.enabled }}
               value: http://shkeeper:shkeeper@bitcoin-fullnode:8332
@@ -119,11 +124,15 @@ spec:
                   name: shkeeper-btc-key
                   key: password
             - name: BTC_NETWORK
-           {{- if .Values.btc.mainnet }}
+              {{- if .Values.btc.regtest }}
+              value: regtest
+              {{- else }}
+              {{- if .Values.btc.mainnet }}
               value: "main"
-            {{- else }}
+              {{- else }}
               value: "testnet"
-            {{- end }}
+              {{- end }}
+              {{- end }}
             - name: FULLNODE_URL
             {{- if .Values.btc_fullnode.enabled }}
               value: http://shkeeper:shkeeper@bitcoin-fullnode:8332

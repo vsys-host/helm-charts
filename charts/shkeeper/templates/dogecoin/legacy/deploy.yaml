@@ -1,0 +1,46 @@
+{{- if .Values.doge.legacy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dogecoind-legacy
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: dogecoind-legacy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: dogecoind-legacy
+  template:
+    metadata:
+      labels:
+        app: dogecoind-legacy
+    spec:
+      containers:
+      - name: dogecoind
+        image: {{ .Values.doge_fullnode.image }}
+        command:
+        - /shkeeper/dogecoind
+        - -rpcport=22555
+        - -prune=550
+        - -rpcpassword=$(DOGE_PASSWORD)
+        - -rpcuser=$(DOGE_USERNAME)
+        - -rpcbind=0.0.0.0
+        - -rpcallowip=0.0.0.0/0
+        - -wallet=shkeeper
+        # - -walletnotify=/shkeeper/walletnotify.sh %s
+        {{- if not .Values.doge.mainnet }}
+        - -testnet
+        {{- end }}
+        env:
+          - name: DOGE_USERNAME
+        volumeMounts:
+        - name: dogecoind-storage
+          mountPath: /root/.dogecoin
+      volumes:
+      - name: dogecoind-storage
+        persistentVolumeClaim:
+          claimName: dogecoind-legacy
+{{- end }}

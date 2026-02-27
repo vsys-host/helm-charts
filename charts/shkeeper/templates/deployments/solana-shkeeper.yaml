@@ -41,7 +41,7 @@ spec:
           - name: SOL_USERNAME
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: sol-rpc
                 key: username
           - name: SOL_PASSWORD
             valueFrom:
@@ -77,7 +77,7 @@ spec:
           - name: SOL_USERNAME
             valueFrom:
               secretKeyRef:
-                name: eth-rpc
+                name: sol-rpc
                 key: username
           - name: SOL_PASSWORD
             valueFrom:

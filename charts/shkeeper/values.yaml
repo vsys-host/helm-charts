@@ -27,7 +27,7 @@ shkeeper:
 btc:
   enabled: true
   mainnet: true
-  image: vsyshost/bitcoin-shkeeper:2.0.1
+  image: vsyshost/bitcoin-shkeeper:2.0.3
   legacy:
     enabled: false
 

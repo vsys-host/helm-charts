@@ -16,7 +16,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.5.7
+  image: vsyshost/shkeeper:2.5.8
   port: 5000
   enable_payout_callback: false
 
@@ -24,7 +24,7 @@ shkeeper:
 # BTC
 #
 
-unifiend_btc_image: vsyshost/bitcoin-shkeeper:2.0.1
+unifiend_btc_image: vsyshost/bitcoin-shkeeper:2.0.4
 
 btc:
   enabled: true
@@ -325,4 +325,16 @@ op_token:
 op_usdc:
   enabled: false
 op_usdt:
+  enabled: false
+
+
+
+#
+# AML
+#
+
+aml_shkeeper:
+  image: vsyshost/aml-shkeeper:0.0.1
+
+aml:
   enabled: false

@@ -1,7 +1,8 @@
+{{- if .Values.doge.legacy.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: dogecoind-claim
+  name: dogecoind-legacy
   namespace: {{ .Values.namespace }}
 spec:
   storageClassName: {{ .Values.storageClassName }}
@@ -10,3 +11,4 @@ spec:
   resources:
     requests:
       storage: 15Gi
+{{- end }}

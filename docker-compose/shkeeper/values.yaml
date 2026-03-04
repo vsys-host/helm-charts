@@ -15,7 +15,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.3.1
+  image: vsyshost/shkeeper:2.5.7
   port: 5000
 
 #
@@ -31,6 +31,9 @@ btc:
 ltc:
   enabled: true
   mainnet: true
+  litecoind:
+    image: vsyshost/litecoind:0.21.2.2
+#
 doge:
   enabled: true
   mainnet: true

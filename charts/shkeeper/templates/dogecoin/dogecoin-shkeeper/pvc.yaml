@@ -1,0 +1,15 @@
+# PVC from original litecoin core now lives here
+{{- if .Values.doge.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dogecoind-claim
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+{{- end }}

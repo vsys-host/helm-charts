@@ -35,14 +35,18 @@ spec:
         - -rpcallowip=0.0.0.0/0
         # Transaction index
         - -txindex=1
-        # Do not load the wallet and disable wallet RPC calls
-        - -disablewallet
         # Enable zeromq socket
         - -zmqpubrawblock=tcp://0.0.0.0:28334
         - -zmqpubrawtx=tcp://0.0.0.0:28335
         - -zmqpubhashblock=tcp://0.0.0.0:28336
+        {{- if .Values.btc.regtest }}
+        - -regtest
+        {{- else }}
+        # Do not load the wallet and disable wallet RPC calls
+        - -disablewallet
         {{- if not .Values.btc.mainnet }}
         - -testnet
+        {{- end }}
         {{- end }}
         env:
         - name: BTC_USERNAME

@@ -1,0 +1,15 @@
+
+{{- if .Values.doge_fullnode.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dogecoin-fullnode
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 600Gi
+{{- end }}

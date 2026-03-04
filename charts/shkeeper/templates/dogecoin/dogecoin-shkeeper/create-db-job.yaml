@@ -1,0 +1,23 @@
+---
+{{- if .Values.doge.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-db-dogecoin-shkeeper
+  namespace: {{ .Values.namespace }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: mysql
+        image: mariadb:10.9.3
+        command:
+          - mysql
+          - --host=mariadb
+          - --user=root
+          - --password=shkeeper
+          - --execute
+          - CREATE DATABASE IF NOT EXISTS `dogecoin-shkeeper`
+      restartPolicy: Never
+  backoffLimit: 4
+{{- end }}

@@ -24,7 +24,7 @@ shkeeper:
 # BTC
 #
 
-unifiend_btc_image: vsyshost/bitcoin-shkeeper:2.0.4
+unifiend_btc_image: vsyshost/bitcoin-shkeeper:2.0.5
 
 btc:
   enabled: true

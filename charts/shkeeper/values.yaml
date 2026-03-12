@@ -16,7 +16,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.5.8
+  image: vsyshost/shkeeper:2.5.9
   port: 5000
   enable_payout_callback: false
 
@@ -115,7 +115,7 @@ eth_fullnode:
   tolerations: []
 
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.2.2
+  image: vsyshost/ethereum-shkeeper:1.2.3
 
 eth:
   enabled: false

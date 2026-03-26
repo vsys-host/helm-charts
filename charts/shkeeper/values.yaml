@@ -334,7 +334,7 @@ op_usdt:
 #
 
 aml_shkeeper:
-  image: vsyshost/aml-shkeeper:0.0.1
+  image: vsyshost/aml-shkeeper:0.0.2
 
 aml:
   enabled: false

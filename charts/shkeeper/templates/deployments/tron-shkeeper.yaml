@@ -78,7 +78,7 @@ spec:
             value: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
           - name: TRON_NETWORK
             {{- if .Values.tron_fullnode.mainnet }}
-            value: mainnet
+            value: main
             {{- else }}
             value: nile
             {{- end }}
@@ -129,7 +129,7 @@ spec:
             value: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
           - name: TRON_NETWORK
             {{- if .Values.tron_fullnode.mainnet }}
-            value: mainnet
+            value: main
             {{- else }}
             value: nile
             {{- end }}

@@ -76,6 +76,12 @@ spec:
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
           - name: DB_URI
             value: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
+          - name: TRON_NETWORK
+            {{- if .Values.tron_fullnode.mainnet }}
+            value: mainnet
+            {{- else }}
+            value: nile
+            {{- end }}
 
       - name: tasks
         image: {{ .Values.tron_shkeeper.image }}
@@ -121,7 +127,13 @@ spec:
           #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
           - name: DB_URI
             value: mysql+pymysql://root:shkeeper@mariadb/shkeeper?charset=utf8mb4
-
+          - name: TRON_NETWORK
+            {{- if .Values.tron_fullnode.mainnet }}
+            value: mainnet
+            {{- else }}
+            value: nile
+            {{- end }}
+            
       - name: redis
         image: redis:7
         command: ["redis-server", "--loglevel", "warning",  "--bind",  "0.0.0.0", "--protected-mode", "no", "--appendonly", "yes", "--shutdown-on-sigint", "save", "--shutdown-on-sigterm", "save"]

@@ -16,3 +16,4 @@ data:
     CREATE DATABASE IF NOT EXISTS `arbitrum-shkeeper`;
     CREATE DATABASE IF NOT EXISTS `optimism-shkeeper`;
     CREATE DATABASE IF NOT EXISTS `aml-shkeeper`;
+    CREATE DATABASE IF NOT EXISTS `ton-shkeeper`;

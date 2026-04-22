@@ -16,7 +16,7 @@ storageClassName:
 #
 
 shkeeper:
-  image: vsyshost/shkeeper:2.5.12
+  image: vsyshost/shkeeper:2.5.13
   port: 5000
   enable_payout_callback: false
 
@@ -327,6 +327,25 @@ op_usdc:
 op_usdt:
   enabled: false
 
+
+#
+# TON
+#
+
+ton_fullnode:
+  enabled: false
+  url: http://here-should-be-url-to-your-ton-rpc-node/
+  mainnet: true
+  nodeSelector: {}
+  tolerations: []
+
+ton_shkeeper:
+  image: vsyshost/ton-shkeeper:0.0.2
+
+ton:
+  enabled: false
+ton_usdt:
+  enabled: false
 
 
 #

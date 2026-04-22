@@ -1,0 +1,113 @@
+{{- if or .Values.ton.enabled .Values.ton_usdt.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ton-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: ton-shkeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ton-shkeeper
+  template:
+    metadata:
+      labels:
+        app: ton-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      containers:
+
+      - name: app
+        image: {{ .Values.ton_shkeeper.image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: TON_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ton-rpc
+                key: username
+          - name: TON_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ton-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_TON_NETWORK
+          {{- if .Values.ton_fullnode.mainnet }}
+            value: &CURRENT_TON_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_TON_NETWORK_VALUE "testnet"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.ton_fullnode.url }}
+          {{- if .Values.ton_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.ton_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          {{- range $name, $value := .Values.ton_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: tasks
+        image: {{ .Values.ton_shkeeper.image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: TON_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ton-rpc
+                key: username
+          - name: TON_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ton-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_TON_NETWORK
+          {{- if .Values.ton_fullnode.mainnet }}
+            value: *CURRENT_TON_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_TON_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.ton_fullnode.url }}
+          {{- if .Values.ton_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.ton_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.ton_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+
+      - name: redis
+        image: redis
+{{- end }}

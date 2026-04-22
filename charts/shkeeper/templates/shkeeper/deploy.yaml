@@ -107,6 +107,10 @@ spec:
             value: {{ if .Values.op_usdt.enabled }}enabled{{ else }}disabled{{ end }}
           - name: OP_TOKEN_WALLET
             value: {{ if .Values.op_token.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: TON_WALLET
+            value: {{ if .Values.ton.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: TON_USDT_WALLET
+            value: {{ if .Values.ton_usdt.enabled }}enabled{{ else }}disabled{{ end }}
           {{ if .Values.shkeeper.enable_payout_callback }}
           - name: ENABLE_PAYOUT_CALLBACK
             value: enabled
@@ -321,7 +325,21 @@ spec:
                 key: password
                 optional: false
           {{- end }}
-           {{- if or .Values.aml.enabled}}
+          {{- if or .Values.ton.enabled .Values.ton_usdt.enabled}}
+          - name: TON_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: ton-rpc
+                key: username
+                optional: false
+          - name: TON_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ton-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.aml.enabled}}
           - name: AML_USERNAME
             valueFrom:
               secretKeyRef:

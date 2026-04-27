@@ -9,7 +9,7 @@ COPY ./walletnotify.sh .
 ARG BITCOIN_VERSION
 
 RUN chmod +x walletnotify.sh \
-    && curl -L https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz -o bitcoin.tar.gz \
+    && curl -L https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz -o bitcoin.tar.gz \
     && tar -xzvf bitcoin.tar.gz \
     && cp bitcoin-${BITCOIN_VERSION}/bin/bitcoind bitcoin-${BITCOIN_VERSION}/bin/bitcoin-cli . \
     && rm -rf bitcoin.tar.gz bitcoin-${BITCOIN_VERSION}

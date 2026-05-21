@@ -75,8 +75,11 @@ eth_fullnode:
   nodeSelector: {}
   tolerations: []
 
+ethereum_like_shkeeper:
+  image: &ethereum_like_image vsyshost/ethereum_like_coin:1.0.1
+
 ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.1.7
+  image: *ethereum_like_image
 
 eth:
   enabled: false
@@ -121,7 +124,7 @@ bnb_fullnode:
   tolerations: []
 
 bnb_shkeeper:
-  image: vsyshost/bnb-shkeeper:1.1.5
+  image: *ethereum_like_image
 
 bnb:
   enabled: false
@@ -159,7 +162,7 @@ polygon_fullnode:
   tolerations: []
 
 polygon_shkeeper:
-  image: vsyshost/polygon-shkeeper:1.0.3
+  image: *ethereum_like_image
 
 matic:
   enabled: false
@@ -180,7 +183,7 @@ avalanche_fullnode:
   tolerations: []
 
 avalanche_shkeeper:
-  image: vsyshost/avalanche-shkeeper:1.0.0
+  image: *ethereum_like_image
 
 avax:
   enabled: false

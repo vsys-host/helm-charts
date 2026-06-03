@@ -82,7 +82,7 @@ firo:
 #
 
 tron_fullnode:
-  image: vsyshost/javatron:GreatVoyage-v4.8.1
+  image: vsyshost/javatron:GreatVoyage-v4.8.1.1
   enabled: false
   url: http://java-tron:8090
   solidity_url: http://java-tron:8091

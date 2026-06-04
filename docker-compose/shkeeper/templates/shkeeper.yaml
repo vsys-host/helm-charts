@@ -407,9 +407,10 @@ services:
 {{- /*       Ethereum shkeeper       */}}
 {{- if or .Values.eth.enabled .Values.eth_usdt.enabled .Values.eth_usdc.enabled .Values.eth_pyusd.enabled .Values.eth_dai.enabled}}
   ethereum-shkeeper:
-    image: {{ .Values.ethereum_shkeeper.image }}
+    image: {{ .Values.ethereum_like_shkeeper.image }}
     container_name: ethereum-shkeeper
     environment:
+      WALLET: ETH
       REDIS_HOST: redis
       ETH_USERNAME: "test"
       ETH_PASSWORD: "test"
@@ -435,9 +436,10 @@ services:
       --bind=0.0.0.0:6000
       run:server"
   ethereum-tasks:
-    image: {{ .Values.ethereum_shkeeper.image }}
+    image: {{ .Values.ethereum_like_shkeeper.image }}
     container_name: ethereum-tasks
     environment:
+      WALLET: ETH
       REDIS_HOST: redis
       ETH_USERNAME: "test"
       ETH_PASSWORD: "test"

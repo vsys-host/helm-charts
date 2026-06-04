@@ -25,7 +25,7 @@ spec:
       containers:
 
       - name: app
-        image: {{ .Values.ethereum_like_shkeeper.image }}
+        image: {{ .Values.polygon_shkeeper.image }}
         command:
         - gunicorn
         - --access-logfile=-
@@ -38,8 +38,6 @@ spec:
         - containerPort: 6000
           name: http
         env:
-          - name: WALLET
-            value: "MATIC"
           - name: POLYGON_USERNAME
             valueFrom:
               secretKeyRef:
@@ -63,21 +61,15 @@ spec:
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.polygon_fullnode.url }}
-          {{- if .Values.polygon_shkeeper.external_drain_config }}
-          - name: EXTERNAL_DRAIN_CONFIG
-            value: {{ .Values.polygon_shkeeper.external_drain_config | toJson | quote }}
-          {{- end }}
           {{- range $name, $value := .Values.polygon_shkeeper.extraEnv }}
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
 
       - name: tasks
-        image: {{ .Values.ethereum_like_shkeeper.image }}
+        image: {{ .Values.polygon_shkeeper.image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
-          - name: WALLET
-            value: "MATIC"
           - name: POLYGON_USERNAME
             valueFrom:
               secretKeyRef:
@@ -101,10 +93,6 @@ spec:
           {{- end }}
           - name: FULLNODE_URL
             value: {{ .Values.polygon_fullnode.url }}
-          {{- if .Values.polygon_shkeeper.external_drain_config }}
-          - name: EXTERNAL_DRAIN_CONFIG
-            value: {{ .Values.polygon_shkeeper.external_drain_config | toJson | quote }}
-          {{- end }}
           - name: C_FORCE_ROOT
             value: "1"
           {{- range $name, $value := .Values.polygon_shkeeper.extraEnv }}

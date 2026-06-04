@@ -104,13 +104,6 @@ usdc:
   enabled: false
 
 #
-# EVM (ethereum_like_coin): shared image for ETH/BNB/MATIC/AVAX/ARB/OP
-#
-
-ethereum_like_shkeeper:
-  image: &ethereum_like_image vsyshost/ethereum_like_coin:1.0.1
-
-#
 # Ethereum
 #
 
@@ -122,7 +115,7 @@ eth_fullnode:
   tolerations: []
 
 ethereum_shkeeper:
-  image: *ethereum_like_image
+  image: vsyshost/ethereum-shkeeper:1.2.4
 
 eth:
   enabled: false
@@ -167,7 +160,7 @@ bnb_fullnode:
   tolerations: []
 
 bnb_shkeeper:
-  image: *ethereum_like_image
+  image: vsyshost/bnb-shkeeper:1.1.9
 
 bnb:
   enabled: false
@@ -205,7 +198,7 @@ polygon_fullnode:
   tolerations: []
 
 polygon_shkeeper:
-  image: *ethereum_like_image
+  image: vsyshost/polygon-shkeeper:1.0.4
 
 matic:
   enabled: false
@@ -226,7 +219,7 @@ avalanche_fullnode:
   tolerations: []
 
 avalanche_shkeeper:
-  image: *ethereum_like_image
+  image: vsyshost/avalanche-shkeeper:1.0.2
 
 avax:
   enabled: false
@@ -301,7 +294,7 @@ arb_fullnode:
   tolerations: []
 
 arbitrum_shkeeper:
-  image: *ethereum_like_image
+  image: vsyshost/arbitrum-shkeeper:0.0.1
 
 arbeth:
   enabled: false
@@ -325,7 +318,7 @@ optimism_fullnode:
   tolerations: []
 
 optimism_shkeeper:
-  image: *ethereum_like_image
+  image: vsyshost/optimism-shkeeper:0.0.2
 
 opeth:
   enabled: false

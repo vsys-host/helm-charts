@@ -5,6 +5,7 @@
 namespace: shkeeper
 external_ip: 0.0.0.0
 domain: ""
+additional_domains: []
 
 dev:
   imagePullSecrets:

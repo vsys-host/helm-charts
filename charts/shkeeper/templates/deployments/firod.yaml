@@ -40,7 +40,7 @@ spec:
 
 
       - name: firod
-        image: vsyshost/firod:0.14.15
+        image: vsyshost/firod:0.14.16
         command:
         - /shkeeper/firod
         {{- if not .Values.firo.mainnet }}

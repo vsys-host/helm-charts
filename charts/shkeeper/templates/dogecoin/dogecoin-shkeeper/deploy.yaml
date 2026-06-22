@@ -23,7 +23,7 @@ spec:
       {{- end }}
       initContainers:
         - name: db-init-tables
-          image: {{ .Values.unifiend_btc_image }}
+          image: {{ .Values.unified_btc_image }}
           command: ["python", "manage.py", "init_db"]
           env:
             - name: WALLET
@@ -45,7 +45,7 @@ spec:
                   key: password
       containers:
         - name: app
-          image: {{ .Values.unifiend_btc_image }}
+          image: {{ .Values.unified_btc_image }}
           command:
           - gunicorn
           - --access-logfile=-
@@ -96,7 +96,7 @@ spec:
             - name: dogecoind-storage
               mountPath: /root/.dogecoin
         - name: tasks
-          image: {{ .Values.unifiend_btc_image }}
+          image: {{ .Values.unified_btc_image }}
           command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
           env:
             - name: DOGE_USERNAME

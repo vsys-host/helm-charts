@@ -25,7 +25,7 @@ spec:
       containers:
 
       - name: app
-        image: {{ .Values.arbitrum_shkeeper.image }}
+        image: {{ .Values.unified_evm_image }}
         command:
         - gunicorn
         - --access-logfile=-
@@ -69,9 +69,11 @@ spec:
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: "WALLET"
+            value: "ARB"
 
       - name: tasks
-        image: {{ .Values.arbitrum_shkeeper.image }}
+        image: {{ .Values.unified_evm_image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
           - name: ARB_USERNAME
@@ -107,6 +109,8 @@ spec:
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: "WALLET"
+            value: "ARB"
 
       - name: redis
         image: redis

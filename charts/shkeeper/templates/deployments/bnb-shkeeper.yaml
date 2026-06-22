@@ -25,7 +25,7 @@ spec:
       containers:
 
       - name: app
-        image: {{ .Values.bnb_shkeeper.image }}
+        image: {{ .Values.unified_evm_image }}
         command:
         - gunicorn
         - --access-logfile=-
@@ -65,9 +65,11 @@ spec:
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: "WALLET"
+            value: "BNB"
 
       - name: tasks
-        image: {{ .Values.bnb_shkeeper.image }}
+        image: {{ .Values.unified_evm_image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
           - name: BNB_USERNAME
@@ -99,6 +101,8 @@ spec:
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: "WALLET"
+            value: "BNB"
 
       - name: redis
         image: redis

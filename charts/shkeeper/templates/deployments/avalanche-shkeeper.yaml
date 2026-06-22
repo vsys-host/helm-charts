@@ -25,7 +25,7 @@ spec:
       containers:
 
       - name: app
-        image: {{ .Values.avalanche_shkeeper.image }}
+        image: {{ .Values.unified_evm_image }}
         command:
         - gunicorn
         - --access-logfile=-
@@ -65,9 +65,11 @@ spec:
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: "WALLET"
+            value: "AVAX"
 
       - name: tasks
-        image: {{ .Values.avalanche_shkeeper.image }}
+        image: {{ .Values.unified_evm_image }}
         command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
         env:
           - name: AVALANCHE_USERNAME
@@ -99,6 +101,8 @@ spec:
           - name: {{ $name | quote }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: "WALLET"
+            value: "AVAX"
 
       - name: redis
         image: redis

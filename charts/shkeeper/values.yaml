@@ -108,6 +108,8 @@ usdc:
 # Ethereum
 #
 
+unified_btc_image: vsyshost/evm-shkeeper:1.1.0
+
 eth_fullnode:
   enabled: false
   url: http://ethereum:8545
@@ -115,8 +117,7 @@ eth_fullnode:
   nodeSelector: {}
   tolerations: []
 
-ethereum_shkeeper:
-  image: vsyshost/ethereum-shkeeper:1.2.4
+ethereum_shkeeper: {}
 
 eth:
   enabled: false
@@ -160,8 +161,7 @@ bnb_fullnode:
   nodeSelector: {}
   tolerations: []
 
-bnb_shkeeper:
-  image: vsyshost/bnb-shkeeper:1.1.9
+bnb_shkeeper: {}
 
 bnb:
   enabled: false
@@ -198,8 +198,7 @@ polygon_fullnode:
   nodeSelector: {}
   tolerations: []
 
-polygon_shkeeper:
-  image: vsyshost/polygon-shkeeper:1.0.4
+polygon_shkeeper: {}
 
 matic:
   enabled: false
@@ -219,8 +218,7 @@ avalanche_fullnode:
   nodeSelector: {}
   tolerations: []
 
-avalanche_shkeeper:
-  image: vsyshost/avalanche-shkeeper:1.0.2
+avalanche_shkeeper: {}
 
 avax:
   enabled: false
@@ -294,8 +292,7 @@ arb_fullnode:
   nodeSelector: {}
   tolerations: []
 
-arbitrum_shkeeper:
-  image: vsyshost/arbitrum-shkeeper:0.0.1
+arbitrum_shkeeper: {}
 
 arbeth:
   enabled: false
@@ -318,8 +315,7 @@ optimism_fullnode:
   nodeSelector: {}
   tolerations: []
 
-optimism_shkeeper:
-  image: vsyshost/optimism-shkeeper:0.0.2
+optimism_shkeeper: {}
 
 opeth:
   enabled: false

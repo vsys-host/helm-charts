@@ -8,6 +8,8 @@ metadata:
   labels:
     app: polygon-shkeeper
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:

@@ -21,9 +21,14 @@ spec:
         app.kubernetes.io/name: shkeeper
     spec:
 
-      {{- with .Values.dev.imagePullSecrets }}
+      {{- if or .Values.dev.imagePullSecrets (and .Values.multishkeeper.enabled .Values.multishkeeper.imagePullSecret) }}
       imagePullSecrets:
+        {{- with .Values.dev.imagePullSecrets }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.multishkeeper.enabled .Values.multishkeeper.imagePullSecret }}
+        - name: {{ .Values.multishkeeper.imagePullSecret }}
+        {{- end }}
       {{- end }}
 
       hostname: shkeeper
@@ -32,7 +37,11 @@ spec:
       {{- include "shkeeper.createDb" (dict "dbName" "shkeeper" "Values" .Values) | nindent 6 }}
       containers:
       - name: shkeeper
+        {{- if .Values.multishkeeper.enabled }}
+        image: {{ .Values.multishkeeper.image }}
+        {{- else }}
         image: {{ .Values.shkeeper.image }}
+        {{- end }}
         ports:
         - containerPort: 5000
         env:

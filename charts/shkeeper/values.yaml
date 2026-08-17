@@ -31,6 +31,24 @@ shkeeper:
   enable_payout_callback: false
 
 #
+# Multishkeeper (paid image from private GHCR package)
+#
+# 1. Create pull secret once:
+#      kubectl create secret docker-registry shkeeper-multishkeeper-pull \
+#        --namespace shkeeper \
+#        --docker-server=ghcr.io \
+#        --docker-username=<gh-user> \
+#        --docker-password=<ghcr-pat>
+# 2. Enable:
+#      multishkeeper:
+#        enabled: true
+#
+multishkeeper:
+  enabled: false
+  image: ghcr.io/vsys-host/shkeeper-multishkeeper:0.1.0
+  imagePullSecret: shkeeper-multishkeeper-pull
+
+#
 # BTC
 #
 

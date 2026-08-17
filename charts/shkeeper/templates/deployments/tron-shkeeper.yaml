@@ -26,55 +26,54 @@ spec:
       initContainers:
       {{- include "shkeeper.waitForDb" . | nindent 6 }}
       {{- include "shkeeper.createDb" (dict "dbName" "tron-shkeeper" "Values" .Values) | nindent 6 }}
-
-      # - name: migrate-db
-      #   image: {{ .Values.tron_shkeeper.image }}
-      #   command: ["python", "scripts/init_db.py"]
-      #   volumeMounts:
-      #   - name: data
-      #     mountPath: /app/data
-      #   env:
-      #     - name: BTC_USERNAME
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: usdt-rpc
-      #           key: username
-      #     - name: BTC_PASSWORD
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: usdt-rpc
-      #           key: password
-      #     - name: SHKEEPER_BACKEND_KEY
-      #       valueFrom:
-      #         secretKeyRef:
-      #           name: shkeeper-btc-key
-      #           key: password
-      #     - name: SHKEEPER_HOST
-      #       value: "shkeeper:5000"
-      #     - name: FULLNODE_URL
-      #       value: {{ .Values.tron_fullnode.url }}
-      #     - name: C_FORCE_ROOT
-      #       value: "1"
-      #     {{- if .Values.tron_shkeeper.multiserver_config_json }}
-      #     - name: MULTISERVER_CONFIG_JSON
-      #       value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
-      #     {{- end }}
-      #     {{- if .Values.tron_shkeeper.external_drain_config }}
-      #     - name: EXTERNAL_DRAIN_CONFIG
-      #       value: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
-      #     {{- end }}
-      #     {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
-      #     - name: {{ $name | quote }}
-      #       value: {{ $value | quote }}
-      #     {{- end }}
-      #     # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
-      #     #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
-      #     - name: TRON_NETWORK
-      #       {{- if .Values.tron_fullnode.mainnet }}
-      #       value: main
-      #       {{- else }}
-      #       value: nile
-      #       {{- end }}
+      - name: migrate-db
+        image: {{ .Values.tron_shkeeper.image }}
+        command: ["python", "scripts/init_db.py"]
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        env:
+          - name: BTC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: username
+          - name: BTC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: usdt-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: SHKEEPER_HOST
+            value: "shkeeper:5000"
+          - name: FULLNODE_URL
+            value: {{ .Values.tron_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- if .Values.tron_shkeeper.multiserver_config_json }}
+          - name: MULTISERVER_CONFIG_JSON
+            value: {{ .Values.tron_shkeeper.multiserver_config_json | toJson | quote }}
+          {{- end }}
+          {{- if .Values.tron_shkeeper.external_drain_config }}
+          - name: EXTERNAL_DRAIN_CONFIG
+            value: {{ .Values.tron_shkeeper.external_drain_config | toJson | quote }}
+          {{- end }}
+          {{- range $name, $value := .Values.tron_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          # - name: MULTISERVER_REFRESH_BEST_SERVER_PERIOD
+          #   value: {{ .Values.tron_shkeeper.multiserver_refresh_best_server_period | default "" | quote }}
+          - name: TRON_NETWORK
+            {{- if .Values.tron_fullnode.mainnet }}
+            value: main
+            {{- else }}
+            value: nile
+            {{- end }}
 
       containers:
 

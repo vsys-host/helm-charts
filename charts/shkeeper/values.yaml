@@ -117,7 +117,7 @@ usdc:
 # Ethereum
 #
 
-unified_evm_image: vsyshost/evm-shkeeper:1.1.2
+unified_evm_image: vsyshost/evm-shkeeper:1.1.3
 
 eth_fullnode:
   enabled: false

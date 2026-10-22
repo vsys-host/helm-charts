@@ -256,7 +256,7 @@ btc_lightning:
     BITCOIND_RPCUSER: "shkeeper"
 
   rtl:
-    image: shahanafarooqui/rtl:v0.15.9
+    image: shahanafarooqui/rtl:v0.15.15
     # web_url and web_port should be uniq for for each namespace
     web_url: http://rtl:3000
     web_port: 3000

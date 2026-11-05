@@ -116,6 +116,12 @@ spec:
             value: {{ if .Values.ton.enabled }}enabled{{ else }}disabled{{ end }}
           - name: TON_USDT_WALLET
             value: {{ if .Values.ton_usdt.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: XDC_WALLET
+            value: {{ if .Values.xdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: XDC_USDC_WALLET
+            value: {{ if .Values.xdc_usdc.enabled }}enabled{{ else }}disabled{{ end }}
+          - name: XDC_AUDD_WALLET
+            value: {{ if .Values.xdc_audd.enabled }}enabled{{ else }}disabled{{ end }}
           {{ if .Values.shkeeper.enable_payout_callback }}
           - name: ENABLE_PAYOUT_CALLBACK
             value: enabled
@@ -327,6 +333,20 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: op-rpc
+                key: password
+                optional: false
+          {{- end }}
+          {{- if or .Values.xdc.enabled .Values.xdc_usdc.enabled .Values.xdc_audd.enabled }}
+          - name: XDC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: xdc-rpc
+                key: username
+                optional: false
+          - name: XDC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: xdc-rpc
                 key: password
                 optional: false
           {{- end }}

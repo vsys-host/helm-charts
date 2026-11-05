@@ -9,16 +9,13 @@ spec:
   selector:
     app: polygon
   ports:
-  - name: heimdall-port
-    port: 26656
-    protocol: TCP
-  - name: rabbit-port
-    port: 5672
-    protocol: TCP
-  - name: rabbit-port2
-    port: 15672
-    protocol: TCP
-  - name: bor-port
+  - name: erigon-port-tcp
     port: 30303
+    protocol: TCP
+  - name: erigon-port-udp
+    port: 30303
+    protocol: UDP
+  - name: erigon-rpc
+    port: 8545
     protocol: TCP
 {{ end }}

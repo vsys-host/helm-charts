@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: heimdall-config-volume
+  name: polygon-datadir
   namespace: {{ .Values.namespace }}
 spec:
   storageClassName: {{ .Values.storageClassName }}
@@ -11,15 +11,3 @@ spec:
     requests:
       storage: 1000Gi
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: bor-config-volume
-  namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.storageClassName }}
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1000Gi

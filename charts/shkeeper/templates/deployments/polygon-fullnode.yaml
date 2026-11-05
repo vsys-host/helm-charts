@@ -23,49 +23,30 @@ spec:
       nodeSelector: {{- toYaml .Values.polygon_fullnode.nodeSelector | nindent 8 }}
       containers:
 
-        - name: heimdall
-          image: 0xpolygon/heimdall:1.0.7
-          command:
-            - heimdalld
-            - start
+        - name: erigon
+          image: 0xpolygon/erigon:v3.7.2 #erigontech/erigon:v3.5.0
           args:
             {{- if .Values.polygon_fullnode.mainnet }}
-            - --chain=mainnet
+            - --chain=bor-mainnet
             {{- else }}
             - --chain=amoy
             {{- end }}
-            - --rest-server
-            - --home=/var/lib/heimdall
-          ports:
-            - containerPort: 26656
-          volumeMounts:
-            - name: heimdall-config-volume
-              mountPath: /var/lib/heimdall
+            - --bor.heimdall=https://heimdall-api.polygon.technology
+            - --http.addr=0.0.0.0
+            - --http.api=eth,web3,net,debug,trace,txpool
+            - --torrent.download.rate=512mb
+            - --prune.mode=minimal
+            - --http.vhosts=*
+            - --nat=extip:{{ .Values.external_ip }}
 
-        - name: bor
-          image: 0xpolygon/bor:1.3.2
-          command:
-            - bor
-            - server
-            - --config=/var/lib/bor/config.toml
-          ports:
-            - containerPort: 30303
           volumeMounts:
-            - name: bor-config-volume
-              mountPath: /var/lib/bor
-
-        - name: rabbitmq
-          image: rabbitmq:3.8
-          ports:
-            - containerPort: 5672
-            - containerPort: 15672
+            - name: polygon-datadir
+              mountPath: /home/erigon/
 
       volumes:
-        - name: heimdall-config-volume
+        - name: polygon-datadir
           persistentVolumeClaim:
-            claimName: heimdall-config-volume
-        - name: bor-config-volume
-          persistentVolumeClaim:
-            claimName: bor-config-volume
-      
+            claimName: polygon-datadir
+
 {{- end }}
+

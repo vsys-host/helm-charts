@@ -8,6 +8,8 @@ metadata:
   labels:
     app: dogecoin-shkeeper
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -22,6 +24,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
+      {{- include "shkeeper.waitForDb" . | nindent 8 }}
+      {{- include "shkeeper.createDb" (dict "dbName" "dogecoin-shkeeper" "Values" .Values) | nindent 8 }}
         - name: db-init-tables
           image: {{ .Values.unified_btc_image }}
           command: ["python", "manage.py", "init_db"]

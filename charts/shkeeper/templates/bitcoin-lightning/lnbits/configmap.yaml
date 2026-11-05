@@ -30,3 +30,4 @@ data:
     LND_REST_MACAROON="/.lnd/data/chain/bitcoin/{{ .Values.btc_lightning.network }}/admin.macaroon"
     LNBITS_USER_DEFAULT_EXTENSIONS="lnurlp"
     LNBITS_ALLOW_NEW_ACCOUNTS="false"
+    LNBITS_MAX_INCOMING_PAYMENT_AMOUNT_SATS=100000000

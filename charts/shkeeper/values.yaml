@@ -237,6 +237,25 @@ avalanche_usdc:
   enabled: false
 
 #
+# XDC Network (chain id 50, Apothem testnet chain id 51)
+#
+
+xdc_fullnode:
+  # No in-cluster XDC node template yet: point url at your own XDC node
+  # (v2.6.8+) or a trusted RPC provider.
+  url: http://xdc:8989
+  mainnet: true
+
+xdc_shkeeper: {}
+
+xdc:
+  enabled: false
+xdc_usdc:
+  enabled: false
+xdc_audd:
+  enabled: false
+
+#
 # BTC Lightning
 #
 
@@ -353,27 +372,6 @@ ton_shkeeper:
 ton:
   enabled: false
 ton_usdt:
-  enabled: false
-
-
-#
-# XDC
-#
-
-xdc_fullnode:
-  enabled: false
-  url: http://xdc:8989
-  mainnet: true
-  nodeSelector: {}
-  tolerations: []
-
-xdc_shkeeper: {}
-
-xdc:
-  enabled: false
-xdc_usdc:
-  enabled: false
-xdc_audd:
   enabled: false
 
 

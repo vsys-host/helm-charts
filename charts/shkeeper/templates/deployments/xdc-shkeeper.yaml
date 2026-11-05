@@ -1,0 +1,113 @@
+{{- if or .Values.xdc.enabled .Values.xdc_usdc.enabled .Values.xdc_audd.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xdc-shkeeper
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: xdc-shkeeper
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xdc-shkeeper
+  template:
+    metadata:
+      labels:
+        app: xdc-shkeeper
+    spec:
+      {{- with .Values.dev.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+      {{- include "shkeeper.waitForDb" . | nindent 6 }}
+      {{- include "shkeeper.createDb" (dict "dbName" "xdc-shkeeper" "Values" .Values) | nindent 6 }}
+      containers:
+
+      - name: app
+        image: {{ .Values.unified_evm_image }}
+        command:
+        - gunicorn
+        - --access-logfile=-
+        - --workers=1
+        - --threads=16
+        - --timeout=600
+        - --bind=0.0.0.0:6000
+        - run:server
+        ports:
+        - containerPort: 6000
+          name: http
+        env:
+          - name: XDC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: xdc-rpc
+                key: username
+          - name: XDC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: xdc-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_XDC_NETWORK
+          {{- if .Values.xdc_fullnode.mainnet }}
+            value: &CURRENT_XDC_NETWORK_VALUE "main"
+          {{- else }}
+            value: &CURRENT_XDC_NETWORK_VALUE "apothem"
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.xdc_fullnode.url }}
+          {{- range $name, $value := .Values.xdc_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          - name: "WALLET"
+            value: "XDC"
+
+      - name: tasks
+        image: {{ .Values.unified_evm_image }}
+        command: ["celery", "-A", "celery_worker.celery", "worker", "--loglevel=info", "-B"]
+        env:
+          - name: XDC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: xdc-rpc
+                key: username
+          - name: XDC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: xdc-rpc
+                key: password
+          - name: SHKEEPER_BACKEND_KEY
+            valueFrom:
+              secretKeyRef:
+                name: shkeeper-btc-key
+                key: password
+          - name: CURRENT_XDC_NETWORK
+          {{- if .Values.xdc_fullnode.mainnet }}
+            value: *CURRENT_XDC_NETWORK_VALUE
+          {{- else }}
+            value: *CURRENT_XDC_NETWORK_VALUE
+          {{- end }}
+          - name: FULLNODE_URL
+            value: {{ .Values.xdc_fullnode.url }}
+          - name: C_FORCE_ROOT
+            value: "1"
+          {{- range $name, $value := .Values.xdc_shkeeper.extraEnv }}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{- end }}
+          - name: "WALLET"
+            value: "XDC"
+
+      - name: redis
+        image: redis
+{{- end }}

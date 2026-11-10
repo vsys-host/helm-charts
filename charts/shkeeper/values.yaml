@@ -245,7 +245,7 @@ btc_lightning:
   network: mainnet
 
   lnd:
-    image: vsyshost/lndinit:v0.1.33-beta-lnd-v0.20.0-beta
+    image: vsyshost/lndinit:v0.1.38-beta-lnd-v0.21.5-beta
     rest_url: https://lightning-lnd-rest:8080
     # p2p_port should be uniq for for each namespace
     p2p_port: 9735
@@ -256,14 +256,14 @@ btc_lightning:
     BITCOIND_RPCUSER: "shkeeper"
 
   rtl:
-    image: shahanafarooqui/rtl:v0.15.15
+    image: shahanafarooqui/rtl:v0.15.17
     # web_url and web_port should be uniq for for each namespace
     web_url: http://rtl:3000
     web_port: 3000
     logout_redirect_link: http://shkeeper:5000/wallet/BTC-LIGHTNING
 
   lnbits:
-    image: ghcr.io/vsys-host/lnbits:1.4.2
+    image: ghcr.io/vsys-host/lnbits:1.7.0
     web_port: 9000
 
 #

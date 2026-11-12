@@ -263,7 +263,7 @@ btc_lightning:
     logout_redirect_link: http://shkeeper:5000/wallet/BTC-LIGHTNING
 
   lnbits:
-    image: ghcr.io/vsys-host/lnbits:1.7.0
+    image: ghcr.io/vsys-host/lnbits:1.7.1
     web_port: 9000
 
 #
